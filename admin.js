@@ -3,6 +3,7 @@ import { GoogleSheetAdapter } from './google-sheet-adapter.js';
 class AdminApplication {
     constructor() {
         this.isAuthenticated = false;
+        this.adminToken = null; // Memory-held password
         this.selectedFiles = [];
         this.sheetDb = new GoogleSheetAdapter(CONFIG.sheetID);
         this.inventoryProducts = [];
@@ -43,13 +44,14 @@ class AdminApplication {
 
     login() {
         const input = document.getElementById('access-code').value;
-        if (input === CONFIG.adminCode) {
-            this.isAuthenticated = true;
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('admin-dashboard').classList.remove('hidden');
-        } else {
-            alert('Invalid Access Code');
-        }
+        if (!input) return alert('Please enter the access code.');
+
+        // Hold password in memory, bypass local plaintext checking
+        this.adminToken = input;
+        this.isAuthenticated = true;
+        
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('admin-dashboard').classList.remove('hidden');
     }
 
     switchTab(tabId) {
@@ -252,15 +254,33 @@ class AdminApplication {
             return;
         }
 
-        // Use 'no-cors' if on a simple static site to avoid CORS errors, 
-        // but note you won't get a readable response. 
-        // Or use a JSONP wrapper or properly CORS-enabled script.
+        // Inject memory-held password to verify actions against Apps Script Proxy
+        data.password = this.adminToken;
+
         const response = await fetch(CONFIG.googleScriptUrl, {
             method: 'POST',
             body: JSON.stringify(data)
         });
 
-        // If successful
+        // The script returns JSON {"result": "success"} or error
+        // Note: For advanced setups where basic cors isn't an issue, we can parse response here.
+        // Google scripts often return 200 with JSON payload
+        try {
+            const resultData = await response.json();
+            if(resultData.result === "error") {
+                 throw new Error(resultData.error);
+            }
+        } catch(e) {
+            // Provide a graceful failure format if fetch parses wrongly or Unauthorized triggers
+            console.warn("Fetch parsed gracefully or threw specific response log:", e.message);
+            if(e.message === "Unauthorized Access") {
+                 alert("Unauthorized: Incorrect Admin Password!");
+                 // Kick back to login
+                 location.reload();
+                 throw e;
+            }
+        }
+
         return true;
     }
 
