@@ -11,5 +11,5 @@ const CONFIG = {
     // GitHub Configuration is now securely stored out of sight in the Google Apps Script backend (code.gs).
 
     // Admin Security
-    adminCode: "admin123" // Simple client-side protection
+    adminCode: "admincpmax2030" // Simple client-side protection
 };
