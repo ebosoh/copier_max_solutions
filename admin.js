@@ -49,7 +49,7 @@ class AdminApplication {
         // Hold password in memory, bypass local plaintext checking
         this.adminToken = input;
         this.isAuthenticated = true;
-        
+
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('admin-dashboard').classList.remove('hidden');
     }
@@ -60,8 +60,8 @@ class AdminApplication {
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
 
         // Reset form completely if switching manually to Add
-        if(tabId === 'add') {
-             this.resetForm();
+        if (tabId === 'add') {
+            this.resetForm();
         }
 
         // Show selected
@@ -69,7 +69,7 @@ class AdminApplication {
         if (view) view.classList.remove('hidden');
 
         if (tabId === 'list') {
-             this.loadInventory();
+            this.loadInventory();
         }
     }
 
@@ -80,7 +80,7 @@ class AdminApplication {
         document.getElementById('preview-area').innerHTML = '';
         document.getElementById('form-title').innerText = "Add New Product";
         const subBtn = document.querySelector('#product-form button[type="submit"]');
-        if(subBtn) subBtn.innerHTML = '<i class="fas fa-save"></i> Save Product';
+        if (subBtn) subBtn.innerHTML = '<i class="fas fa-save"></i> Save Product';
         this.selectedFiles = [];
     }
 
@@ -92,12 +92,12 @@ class AdminApplication {
 
         try {
             this.inventoryProducts = await this.sheetDb.fetchProducts();
-            
+
             this.inventoryProducts.forEach((p, index) => {
                 const tr = document.createElement('tr');
                 tr.style.borderBottom = "1px solid var(--border)";
                 let imgSrc = p.images ? p.images.split(',')[0] : 'https://via.placeholder.com/50';
-                
+
                 // Using implicit rowId mapping based on length + 1. If code.gs sends rowId, use that.
                 // Assuming GoogleSheetAdapter parses CSV, which doesn't know rowId natively.
                 // We'll compute it: Header is row 1. First product is row 2. Thus rowId = index + 2.
@@ -116,16 +116,16 @@ class AdminApplication {
                 tbody.appendChild(tr);
             });
         } catch (e) {
-             console.error(e);
-             alert("Error loading inventory");
+            console.error(e);
+            alert("Error loading inventory");
         } finally {
-             loading.classList.add('hidden');
+            loading.classList.add('hidden');
         }
     }
 
     editProduct(rowId, arrayIndex) {
         const p = this.inventoryProducts[arrayIndex];
-        if(!p) return;
+        if (!p) return;
 
         // Switch Tab UI without resetting
         document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
@@ -134,7 +134,7 @@ class AdminApplication {
         // Populate Form
         document.getElementById('form-title').innerText = "Edit Product";
         document.querySelector('#product-form button[type="submit"]').innerHTML = '<i class="fas fa-sync"></i> Update Product';
-        
+
         const form = document.getElementById('product-form');
         form.name.value = p.name;
         form.category.value = p.category;
@@ -143,31 +143,44 @@ class AdminApplication {
         form.description.value = p.description || '';
         document.getElementById('rowId').value = rowId;
         document.getElementById('existingImages').value = p.images || '';
-        
+
         // Show existing images in preview
         const previewArea = document.getElementById('preview-area');
         previewArea.innerHTML = '';
         this.selectedFiles = []; // Reset new file selections
-        if(p.images) {
-            p.images.split(',').forEach(imgUrl => {
-                if(!imgUrl) return;
+        if (p.images) {
+            let existingImagesArray = p.images.split(',').filter(imgUrl => imgUrl);
+            existingImagesArray.forEach(imgUrl => {
                 const div = document.createElement('div');
                 div.className = 'preview-item';
-                div.innerHTML = `<img src="${imgUrl}"><div style="position:absolute; top:4px; right:4px; background:rgba(0,0,0,0.5); color:white; font-size:0.7rem; padding:2px;">Old</div>`;
+                div.innerHTML = `
+                    <img src="${imgUrl}">
+                    <div style="position:absolute; bottom:4px; left:4px; background:rgba(0,0,0,0.5); color:white; font-size:0.7rem; padding:2px; border-radius:4px;">Old</div>
+                    <button type="button" class="remove-old-btn" title="Remove image" style="position:absolute; top:4px; right:4px; background:rgba(239,68,68,0.9); color:white; border:none; border-radius:50%; width:24px; height:24px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                div.querySelector('.remove-old-btn').addEventListener('click', (evt) => {
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                    existingImagesArray = existingImagesArray.filter(url => url !== imgUrl);
+                    document.getElementById('existingImages').value = existingImagesArray.join(',');
+                    div.remove();
+                });
                 previewArea.appendChild(div);
             });
         }
     }
 
     async deleteProduct(rowId) {
-        if(!confirm("Are you sure you want to permanently delete this product?")) return;
-        
+        if (!confirm("Are you sure you want to permanently delete this product?")) return;
+
         try {
-             await this.sendToSheet({ action: "delete", rowId: rowId });
-             alert("Product Deleted!");
-             this.loadInventory(); // Refresh
+            await this.sendToSheet({ action: "delete", rowId: rowId });
+            alert("Product Deleted!");
+            this.loadInventory(); // Refresh
         } catch (e) {
-             alert("Failed to delete product.");
+            alert("Failed to delete product.");
         }
     }
 
@@ -185,7 +198,20 @@ class AdminApplication {
             reader.onload = (e) => {
                 const div = document.createElement('div');
                 div.className = 'preview-item';
-                div.innerHTML = `<img src="${e.target.result}">`;
+                div.innerHTML = `
+                    <img src="${e.target.result}">
+                    <button type="button" class="remove-btn" title="Remove image" style="position:absolute; top:4px; right:4px; background:rgba(239,68,68,0.9); color:white; border:none; border-radius:50%; width:24px; height:24px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+
+                div.querySelector('.remove-btn').addEventListener('click', (evt) => {
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                    this.selectedFiles = this.selectedFiles.filter(f => f !== file);
+                    div.remove();
+                });
+
                 previewArea.appendChild(div);
             };
             reader.readAsDataURL(file);
@@ -217,7 +243,7 @@ class AdminApplication {
             // 2. Prepare Data
             const formData = new FormData(e.target);
             const rowId = formData.get('rowId');
-            
+
             const productCmd = {
                 action: rowId ? "edit" : "add",
                 rowId: rowId || null,
@@ -267,17 +293,17 @@ class AdminApplication {
         // Google scripts often return 200 with JSON payload
         try {
             const resultData = await response.json();
-            if(resultData.result === "error") {
-                 throw new Error(resultData.error);
+            if (resultData.result === "error") {
+                throw new Error(resultData.error);
             }
-        } catch(e) {
+        } catch (e) {
             // Provide a graceful failure format if fetch parses wrongly or Unauthorized triggers
             console.warn("Fetch parsed gracefully or threw specific response log:", e.message);
-            if(e.message === "Unauthorized Access") {
-                 alert("Unauthorized: Incorrect Admin Password!");
-                 // Kick back to login
-                 location.reload();
-                 throw e;
+            if (e.message === "Unauthorized Access") {
+                alert("Unauthorized: Incorrect Admin Password!");
+                // Kick back to login
+                location.reload();
+                throw e;
             }
         }
 
