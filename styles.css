@@ -232,6 +232,13 @@ h3 {
     color: var(--accent-color);
 }
 
+.desktop-nav {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
 .desktop-nav a {
     margin: 0 1rem;
     font-weight: 500;
