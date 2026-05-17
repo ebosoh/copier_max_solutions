@@ -1,5 +1,4 @@
-# copier_max_solutions
-Copier Maximum solutions e-com website
+# Copier Maximum Solutions
 
 A premium, mobile-first e-commerce website for Copier Maximum Solutions, specializing in refurbished copiers, printers, and office supplies.
 
@@ -9,3 +8,5 @@ A premium, mobile-first e-commerce website for Copier Maximum Solutions, special
 - **Dynamic Inventory**: Fetches products directly from a Google Sheet.
 - **Admin Panel**: Manage products and upload images via a secure dashboard.
 - **GitHub Integration**: Images are stored in the repo, frontend hosted on GitHub Pages.
+
+
