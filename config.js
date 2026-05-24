@@ -4,7 +4,7 @@ const CONFIG = {
 
     // Google Sheets
     // The ID of the Google Sheet containing product data
-    sheetID: "YOUR_GOOGLE_SHEET_ID_HERE",
+    sheetID: "12c-_4A1eiSz9aN9SVIoqBMCKSlKXfHpMK2qbB_CzOHA",
     // The deployed Web App URL for submitting forms (writing data)
     googleScriptUrl: "https://script.google.com/macros/s/AKfycbzPmdBgKhA2JxoJho8GN-HWSe8j1aDkd5oYLVFcLhY_A4tuMAC-aTGaBNA2m-GdVuJmtg/exec",
 
