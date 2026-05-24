@@ -239,18 +239,42 @@ class App {
             return;
         }
 
-        // Count items
-        const counts = {};
-        this.cart.forEach(x => { counts[x] = (counts[x] || 0) + 1; });
-
-        let message = "Hello Copier Maximum, I would like to order:\n\n";
-        for (const [name, qty] of Object.entries(counts)) {
-            message += `- ${name} (x${qty})\n`;
+        // Prompt for customer phone number
+        const customerPhone = prompt("Please enter your phone number so we can reach you:\n(e.g. +254712345678)");
+        if (customerPhone === null) return; // User cancelled
+        if (!customerPhone.trim()) {
+            alert("A phone number is required to proceed with checkout.");
+            return;
         }
-        message += "\nPlease confirm availability and total price.";
 
-        const phone = "254700000000"; // Replace with real number
-        const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+        // Build item list with prices
+        const counts = {};
+        this.cart.forEach(name => { counts[name] = (counts[name] || 0) + 1; });
+
+        let message = `📞 My Phone Number: ${customerPhone.trim()}\n\n`;
+        message += `Hello Copier Maximum Solutions, I would like to order the following:\n\n`;
+
+        let grandTotal = 0;
+        for (const [name, qty] of Object.entries(counts)) {
+            const product = this.products.find(p => p.name === name);
+            const unitPrice = product ? parseFloat(product.price) : 0;
+            const lineTotal = unitPrice * qty;
+            grandTotal += lineTotal;
+
+            const priceStr = unitPrice > 0
+                ? ` — KES ${unitPrice.toLocaleString()} x${qty} = KES ${lineTotal.toLocaleString()}`
+                : ` (x${qty})`;
+            message += `• ${name}${priceStr}\n`;
+        }
+
+        if (grandTotal > 0) {
+            message += `\n💰 Estimated Total: KES ${grandTotal.toLocaleString()}`;
+        }
+
+        message += `\n\nKindly confirm availability and arrange delivery. Thank you! 🙏`;
+
+        const waNumber = "254717520268";
+        const url = `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
         window.open(url, '_blank');
     }
 
