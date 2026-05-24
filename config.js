@@ -6,7 +6,7 @@ const CONFIG = {
     // The ID of the Google Sheet containing product data
     sheetID: "12c-_4A1eiSz9aN9SVIoqBMCKSlKXfHpMK2qbB_CzOHA",
     // The deployed Web App URL for submitting forms (writing data)
-    googleScriptUrl: "https://script.google.com/macros/s/AKfycbzPmdBgKhA2JxoJho8GN-HWSe8j1aDkd5oYLVFcLhY_A4tuMAC-aTGaBNA2m-GdVuJmtg/exec",
+    googleScriptUrl: "https://script.google.com/macros/s/AKfycbx6w5OLSutIUUFeTxhAXAKYs7-pREcOV1hpIrv930Y_XfHj9X35i0eI1WWPeYk5W7tuCg/exec",
 
     // GitHub Configuration is now securely stored out of sight in the Google Apps Script backend (code.gs).
 
