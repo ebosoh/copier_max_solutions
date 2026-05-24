@@ -6,10 +6,10 @@
 // Configuration
 // In production, this should not be hardcoded in public code without restrictions.
 // For a personal admin tool, it's acceptable if the admin keeps the token safe.
-const GITHUB_USERNAME = 'YOUR_GITHUB_USERNAME';
+const GITHUB_USERNAME = 'ebosoh';
 const GITHUB_REPO = 'copiermaxsolutions'; // Repository name
 const GITHUB_BRANCH = 'main'; // or master
-const GITHUB_TOKEN = 'YOUR_GITHUB_PAT_HERE'; // Personal Access Token with 'repo' scope
+const GITHUB_TOKEN = 'YOUR_GITHUB_TOKEN'; // Personal Access Token with 'repo' scope
 
 export class GitHubAdapter {
     constructor() {
