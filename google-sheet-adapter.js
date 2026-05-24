@@ -1,93 +1,50 @@
 /**
  * Google Sheets Adapter for CopierMax Solutions
- * Fetches product data from a public Google Sheet CSV feed.
+ * Fetches product data via the deployed Google Apps Script Web App (doGet).
+ * This approach does NOT require the sheet to be "Published to the web",
+ * and correctly preserves rowIds and handles commas inside image URL lists.
  */
 
-// Configuration - User will need to replace this with their published sheet ID
-const SHEET_ID = 'YOUR_GOOGLE_SHEET_ID_HERE'; 
-const SHEET_TAB_GID = '0'; // Default is usually 0
-const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_TAB_GID}`;
-
 export class GoogleSheetAdapter {
-    constructor(sheetId) {
-        this.sheetId = sheetId || SHEET_ID;
-        this.csvUrl = `https://docs.google.com/spreadsheets/d/${this.sheetId}/export?format=csv&gid=${SHEET_TAB_GID}`;
+    constructor(sheetId, scriptUrl) {
+        // scriptUrl is the deployed Apps Script URL (used as the data API)
+        this.scriptUrl = scriptUrl || (typeof CONFIG !== 'undefined' ? CONFIG.googleScriptUrl : null);
     }
 
     /**
-     * Fetches data and updates the local store
-     * @returns {Promise<Array>} List of product objects
+     * Fetches all products from the Apps Script doGet endpoint.
+     * Returns an array of product objects, each with a `rowId` property.
+     * @returns {Promise<Array>}
      */
     async fetchProducts() {
+        if (!this.scriptUrl || this.scriptUrl.includes('YOUR_')) {
+            console.warn('GoogleSheetAdapter: googleScriptUrl is not configured in config.js');
+            return [];
+        }
+
         try {
-            console.log("Fetching products from Google Sheets...");
-            const response = await fetch(this.csvUrl);
-            
+            console.log('Fetching products from Apps Script API...');
+            const response = await fetch(this.scriptUrl, {
+                method: 'GET',
+                redirect: 'follow'
+            });
+
             if (!response.ok) {
-                // Determine if it's a 404 (Sheet not published/found)
-                if(response.status === 404) {
-                    throw new Error("Sheet not found. Please check the Sheet ID and ensure it is 'Published to the Web'.");
-                }
-                throw new Error(`Failed to fetch data: ${response.statusText}`);
+                throw new Error(`API error ${response.status}: ${response.statusText}`);
             }
-            
-            const csvText = await response.text();
-            return this.parseCSV(csvText);
+
+            const products = await response.json();
+
+            if (!Array.isArray(products)) {
+                throw new Error('Unexpected response format from Apps Script.');
+            }
+
+            console.log(`Loaded ${products.length} products.`);
+            return products;
+
         } catch (error) {
-            console.error("GoogleSheetAdapter Error:", error);
-            return []; // Return empty on error to prevent crash
+            console.error('GoogleSheetAdapter Error:', error);
+            return [];
         }
-    }
-
-    /**
-     * Parses CSV text into JSON objects
-     * Assumes first row is header
-     */
-    parseCSV(csvText) {
-        const lines = csvText.split('\n');
-        const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, '')); // basics
-        
-        const products = [];
-        
-        for (let i = 1; i < lines.length; i++) {
-            if (!lines[i].trim()) continue;
-            
-            // Handle commas inside quotes logic would go here, 
-            // for now, we do a simple split and assume clean data
-            // (A robust CSV parser library is recommended for production)
-            const currentLine = this.parseCSVLine(lines[i]);
-            
-            if (currentLine.length === headers.length) {
-                const product = {};
-                headers.forEach((header, index) => {
-                    product[header] = currentLine[index];
-                });
-                products.push(product);
-            }
-        }
-        
-        return products;
-    }
-
-    // Helper to handle simple CSV parsing with quotes
-    parseCSVLine(text) {
-        const result = [];
-        let cell = '';
-        let inQuotes = false;
-        
-        for (let i = 0; i < text.length; i++) {
-            const char = text[i];
-            
-            if (char === '"') {
-                inQuotes = !inQuotes;
-            } else if (char === ',' && !inQuotes) {
-                result.push(cell.trim());
-                cell = '';
-            } else {
-                cell += char;
-            }
-        }
-        result.push(cell.trim());
-        return result;
     }
 }

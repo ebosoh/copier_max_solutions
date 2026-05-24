@@ -5,7 +5,7 @@ class AdminApplication {
         this.isAuthenticated = false;
         this.adminToken = null; // Memory-held password
         this.selectedFiles = [];
-        this.sheetDb = new GoogleSheetAdapter(CONFIG.sheetID);
+        this.sheetDb = new GoogleSheetAdapter(CONFIG.sheetID, CONFIG.googleScriptUrl);
         this.inventoryProducts = [];
 
         // Bind Events
@@ -98,10 +98,8 @@ class AdminApplication {
                 tr.style.borderBottom = "1px solid var(--border)";
                 let imgSrc = p.images ? p.images.split(',')[0] : 'https://via.placeholder.com/50';
 
-                // Using implicit rowId mapping based on length + 1. If code.gs sends rowId, use that.
-                // Assuming GoogleSheetAdapter parses CSV, which doesn't know rowId natively.
-                // We'll compute it: Header is row 1. First product is row 2. Thus rowId = index + 2.
-                const computedRowId = index + 2;
+                // rowId is returned directly by the Apps Script doGet endpoint
+                const rowId = p.rowId || (index + 2);
 
                 tr.innerHTML = `
                     <td style="padding: 1rem;"><img src="${imgSrc}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"></td>
@@ -109,8 +107,8 @@ class AdminApplication {
                     <td style="padding: 1rem;">${p.category || 'N/A'}</td>
                     <td style="padding: 1rem; font-weight: bold; color: var(--accent);">KES ${parseFloat(p.price || 0).toLocaleString()}</td>
                     <td style="padding: 1rem;">
-                        <button class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;" onclick="AdminApp.editProduct(${computedRowId}, ${index})"><i class="fas fa-edit"></i> Edit</button>
-                        <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--danger); color: white;" onclick="AdminApp.deleteProduct(${computedRowId})"><i class="fas fa-trash"></i> Delete</button>
+                        <button class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;" onclick="AdminApp.editProduct(${rowId}, ${index})"><i class="fas fa-edit"></i> Edit</button>
+                        <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--danger); color: white;" onclick="AdminApp.deleteProduct(${rowId})"><i class="fas fa-trash"></i> Delete</button>
                     </td>
                 `;
                 tbody.appendChild(tr);

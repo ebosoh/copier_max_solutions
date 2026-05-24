@@ -3,7 +3,7 @@ import { GoogleSheetAdapter } from './google-sheet-adapter.js';
 // Main Application Logic
 class App {
     constructor() {
-        this.db = new GoogleSheetAdapter(CONFIG.sheetID);
+        this.db = new GoogleSheetAdapter(CONFIG.sheetID, CONFIG.googleScriptUrl);
         this.products = [];
         this.cart = JSON.parse(localStorage.getItem('copier_maximum_cart')) || [];
 
