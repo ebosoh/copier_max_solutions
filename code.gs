@@ -10,8 +10,9 @@ var GITHUB_REPO = "copiermaxsolutions";
 var GITHUB_BRANCH = "main";
 
 function uploadToGitHub(fileName, base64Content) {
+  var name = fileName || "unnamed-image.png";
   var timestamp = new Date().getTime();
-  var safeName = fileName.replace(/[^a-zA-Z0-9.]/g, '-').toLowerCase();
+  var safeName = name.replace(/[^a-zA-Z0-9.]/g, '-').toLowerCase();
   var path = timestamp + "-" + safeName;
   var url = "https://api.github.com/repos/" + GITHUB_USERNAME + "/" + GITHUB_REPO + "/contents/" + path;
 
@@ -39,7 +40,7 @@ function uploadToGitHub(fileName, base64Content) {
     throw new Error("GitHub Upload Error: " + (json.message || "Unknown error"));
   }
   
-  return "https://" + GITHUB_USERNAME + ".github.io/" + GITHUB_REPO + "/" + path;
+  return "https://raw.githubusercontent.com/" + GITHUB_USERNAME + "/" + GITHUB_REPO + "/" + GITHUB_BRANCH + "/" + path;
 }
 
 // 1. Handle Writes (Add/Edit/Delete Product)
@@ -72,7 +73,8 @@ function doPost(e) {
       var newImageUrls = [];
       for (var k = 0; k < data.imageFiles.length; k++) {
         var fileObj = data.imageFiles[k];
-        var url = uploadToGitHub(fileObj.name, fileObj.content);
+        var fileName = fileObj.name || fileObj.fileName || fileObj.filename || ("image-" + k + ".png");
+        var url = uploadToGitHub(fileName, fileObj.content);
         newImageUrls.push(url);
       }
       

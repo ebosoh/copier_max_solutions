@@ -24,7 +24,8 @@ export class GoogleSheetAdapter {
 
         try {
             console.log('Fetching products from Apps Script API...');
-            const response = await fetch(this.scriptUrl, {
+            const cacheBusterUrl = this.scriptUrl + (this.scriptUrl.includes('?') ? '&' : '?') + '_t=' + Date.now();
+            const response = await fetch(cacheBusterUrl, {
                 method: 'GET',
                 redirect: 'follow'
             });
