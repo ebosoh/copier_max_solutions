@@ -7,7 +7,7 @@
 // In production, this should not be hardcoded in public code without restrictions.
 // For a personal admin tool, it's acceptable if the admin keeps the token safe.
 const GITHUB_USERNAME = 'ebosoh';
-const GITHUB_REPO = 'copiermaxsolutions'; // Repository name
+const GITHUB_REPO = 'copier_max_solutions'; // Repository name
 const GITHUB_BRANCH = 'main'; // or master
 const GITHUB_TOKEN = 'YOUR_GITHUB_TOKEN'; // Personal Access Token with 'repo' scope
 
