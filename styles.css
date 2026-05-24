@@ -260,6 +260,30 @@ h3 {
     box-shadow: var(--shadow-sm);
 }
 
+/* Login Button */
+.btn-login {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 1.2rem;
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+    color: white;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: var(--transition-smooth);
+    box-shadow: var(--shadow-sm);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.btn-login:hover {
+    background: linear-gradient(135deg, var(--accent-hover), #1d4ed8);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+    color: white;
+}
+
 .icon-btn {
     background: transparent;
     font-size: 1.1rem;
