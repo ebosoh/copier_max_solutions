@@ -53,7 +53,6 @@ class AdminApplication {
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('admin-dashboard').classList.remove('hidden');
     }
-
     switchTab(tabId) {
         // Hide all views
         document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
@@ -68,10 +67,15 @@ class AdminApplication {
         const view = document.getElementById(`view-${tabId}`);
         if (view) view.classList.remove('hidden');
 
+        // Add active class to corresponding nav-item
+        const navItem = document.querySelector(`.nav-item[onclick*="'${tabId}'"]`);
+        if (navItem) navItem.classList.add('active');
+
         if (tabId === 'list') {
             this.loadInventory();
         }
     }
+
 
     resetForm() {
         document.getElementById('product-form').reset();
@@ -260,7 +264,7 @@ class AdminApplication {
 
             alert(rowId ? 'Product Updated Successfully!' : 'Product Saved Successfully!');
             this.resetForm();
-            if (rowId) this.switchTab('list');
+            this.switchTab('list');
 
         } catch (error) {
             console.error(error);
