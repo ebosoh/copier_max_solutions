@@ -192,7 +192,7 @@
     <!-- Featured Products -->
     <section id="shop" class="products-section section-padding bg-white">
         <div class="container">
-            <div class="flex justify-between items-end mb-8">
+            <div class="flex justify-between items-center mb-8">
                 <h2>Latest Arrivals</h2>
                 <a href="#all-products" class="view-all-link">View All <i class="fas fa-arrow-right"></i></a>
             </div>
@@ -220,6 +220,106 @@
                     <i class="fas fa-truck-fast fa-3x" style="color:var(--accent-color)"></i>
                     <h3>Quick Delivery</h3>
                     <p>Same-day delivery for toners and spare parts within Nairobi and environs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Brands Section -->
+    <section class="brands-section section-padding">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>Trusted Global Brands</h2>
+                <p>We stock premium office automation products from industry-leading manufacturers.</p>
+            </div>
+            <div class="brands-grid">
+                <div class="brand-item">
+                    <span class="brand-logo-text hp">HP</span>
+                </div>
+                <div class="brand-item">
+                    <span class="brand-logo-text ricoh">Ricoh</span>
+                </div>
+                <div class="brand-item">
+                    <span class="brand-logo-text bizhub">Bizhub</span>
+                </div>
+                <div class="brand-item">
+                    <span class="brand-logo-text dell">DELL</span>
+                </div>
+                <div class="brand-item">
+                    <span class="brand-logo-text kyocera">Kyocera</span>
+                </div>
+                <div class="brand-item">
+                    <span class="brand-logo-text canon">Canon</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Happy Customers Section -->
+    <section class="testimonials-section section-padding bg-slate">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>Our Happy Customers</h2>
+                <p>Here is what our clients have to say about our premium products and support.</p>
+            </div>
+            
+            <div class="testimonials-carousel-wrapper">
+                <div class="testimonials-carousel">
+                    <!-- Slide 1 -->
+                    <div class="testimonial-slide active">
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <p class="testimonial-text">Copier Maximum Solutions completely transformed our legal firm's workflow. The refurbished Kyocera TASKalfa printer we purchased is blazing fast, cost-effective, and their same-day toner delivery service is unmatched in Nairobi!</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar"><i class="fas fa-user-tie"></i></div>
+                            <div class="author-info">
+                                <h4>David Mutua</h4>
+                                <span>Managing Partner, Mutua & Partners Legal</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 2 -->
+                    <div class="testimonial-slide">
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <p class="testimonial-text">We got 5 high-performance HP laptops and a commercial printer for our startup showroom. Their customer service team went above and beyond to set everything up and configure our network. Superb support!</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar"><i class="fas fa-user-astronaut"></i></div>
+                            <div class="author-info">
+                                <h4>Sarah J. Omondi</h4>
+                                <span>Co-Founder, TechFlow Studios</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3 -->
+                    <div class="testimonial-slide">
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <p class="testimonial-text">Outstanding service! We ordered spare parts for our Ricoh MP C3004. They arrived within 2 hours in Nairobi CBD. The technician they recommended was highly professional and fixed our machine in minutes.</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar"><i class="fas fa-user-gear"></i></div>
+                            <div class="author-info">
+                                <h4>John Ndwiga</h4>
+                                <span>Operations Manager, Grogan Spares Zone</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Controls -->
+                <button class="carousel-control prev" onclick="window.App.prevTestimonial()"><i class="fas fa-chevron-left"></i></button>
+                <button class="carousel-control next" onclick="window.App.nextTestimonial()"><i class="fas fa-chevron-right"></i></button>
+                
+                <!-- Dots -->
+                <div class="testimonials-indicators">
+                    <button class="active" onclick="window.App.goToTestimonial(0)"></button>
+                    <button onclick="window.App.goToTestimonial(1)"></button>
+                    <button onclick="window.App.goToTestimonial(2)"></button>
                 </div>
             </div>
         </div>

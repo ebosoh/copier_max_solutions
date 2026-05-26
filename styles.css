@@ -132,6 +132,58 @@ h3 {
     display: none;
 }
 
+/* Flexbox & Margin Utilities */
+.justify-between {
+    justify-content: space-between;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.items-end {
+    align-items: flex-end;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.mb-8 {
+    margin-bottom: 2rem;
+}
+
+.gap-4 {
+    gap: 1rem;
+}
+
+.gap-12 {
+    gap: 3rem;
+}
+
+/* View All Link Branding */
+.view-all-link {
+    color: var(--accent-color);
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition-smooth);
+}
+
+.view-all-link:hover {
+    color: var(--accent-hover);
+}
+
+.view-all-link i {
+    transition: transform var(--transition-fast);
+}
+
+.view-all-link:hover i {
+    transform: translateX(3px);
+}
+
 .btn {
     display: inline-flex;
     align-items: center;
@@ -589,22 +641,82 @@ h3 {
 
 .category-card {
     background: var(--bg-white);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-lg);
     overflow: hidden;
     box-shadow: var(--shadow-sm);
     transition: var(--transition-smooth);
-    position: relative;
-    height: 200px;
+    border: 1px solid rgba(15, 23, 42, 0.05);
     display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    border: 1px solid rgba(0, 0, 0, 0.03);
+    flex-direction: column;
+    height: 300px;
+    position: relative;
 }
 
 .category-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px);
     box-shadow: var(--shadow-hover);
+    border-color: rgba(59, 130, 246, 0.2);
+}
+
+.category-image-wrapper {
+    flex: 1;
+    width: 100%;
+    overflow: hidden;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    position: relative;
+}
+
+.category-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform var(--transition-smooth);
+}
+
+.category-card:hover .category-img {
+    transform: scale(1.08);
+}
+
+.category-info-overlay {
+    padding: 1.25rem 1.5rem;
+    background: linear-gradient(to top, rgba(15, 23, 42, 0.03), transparent);
+    border-top: 1px solid rgba(15, 23, 42, 0.03);
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.category-info-overlay h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.explore-btn {
+    font-size: 0.85rem;
+    color: var(--accent-color);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: var(--transition-smooth);
+}
+
+.category-card:hover .explore-btn {
+    color: var(--accent-hover);
+}
+
+.category-card:hover .explore-btn i {
+    transform: translateX(4px);
+}
+
+.explore-btn i {
+    transition: transform var(--transition-fast);
 }
 
 /* Product Card */
@@ -1052,4 +1164,290 @@ h3 {
 
 .modal-actions {
     margin-top: auto;
+}
+
+/* --- Brands Section --- */
+.brands-section {
+    background-color: var(--bg-body);
+    border-top: 1px solid rgba(15, 23, 42, 0.05);
+    border-bottom: 1px solid rgba(15, 23, 42, 0.05);
+}
+
+.brands-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 2rem;
+    align-items: center;
+    justify-items: center;
+}
+
+.brand-item {
+    background: var(--bg-white);
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    width: 100%;
+    max-width: 180px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(15, 23, 42, 0.03);
+    transition: var(--transition-smooth);
+    filter: grayscale(100%);
+    opacity: 0.6;
+}
+
+.brand-item:hover {
+    filter: grayscale(0%);
+    opacity: 1;
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: rgba(59, 130, 246, 0.2);
+}
+
+.brand-logo-text {
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: var(--primary-light);
+    text-transform: uppercase;
+}
+
+/* Custom stylized text logos */
+.brand-logo-text.hp {
+    font-style: italic;
+    border: 2px solid var(--accent-color);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-color);
+}
+
+.brand-logo-text.ricoh {
+    color: #E60012; /* Ricoh Red */
+    font-family: 'Outfit', sans-serif;
+    font-weight: 900;
+}
+
+.brand-logo-text.bizhub {
+    color: #005A9C; /* Konica Minolta Blue */
+    font-size: 1.1rem;
+    border-bottom: 2px dashed #005A9C;
+    padding-bottom: 2px;
+}
+
+.brand-logo-text.dell {
+    border: 2px solid #007DB8; /* Dell Blue */
+    border-radius: 4px;
+    padding: 2px 8px;
+    color: #007DB8;
+}
+
+.brand-logo-text.kyocera {
+    color: #E60012; /* Kyocera Red */
+    letter-spacing: 0.15em;
+}
+
+.brand-logo-text.canon {
+    color: #CC0000; /* Canon Red */
+    font-style: italic;
+    font-weight: 900;
+    letter-spacing: -0.05em;
+}
+
+/* --- Testimonials Section (Our Happy Customers) --- */
+.testimonials-section {
+    background-color: #FFFFFF;
+}
+
+.bg-slate {
+    background-color: #F8FAFC !important;
+}
+
+.testimonials-carousel-wrapper {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 3rem;
+}
+
+.testimonials-carousel {
+    position: relative;
+    height: 320px; /* Base height on desktop */
+    overflow: hidden;
+}
+
+.testimonial-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    z-index: 1;
+}
+
+.testimonial-slide.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 2;
+}
+
+.testimonial-rating {
+    color: #FFB800; /* Rich gold stars */
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 0.25rem;
+}
+
+.testimonial-text {
+    font-size: 1.25rem;
+    line-height: 1.8;
+    color: var(--text-body);
+    font-weight: 500;
+    font-style: italic;
+    margin-bottom: 2rem;
+    max-width: 700px;
+}
+
+.testimonial-text::before {
+    content: '“';
+    font-size: 3rem;
+    color: var(--accent-color);
+    font-family: serif;
+    line-height: 0;
+    vertical-align: -0.4em;
+    margin-right: 0.1em;
+}
+
+.testimonial-text::after {
+    content: '”';
+    font-size: 3rem;
+    color: var(--accent-color);
+    font-family: serif;
+    line-height: 0;
+    vertical-align: -0.4em;
+    margin-left: 0.1em;
+}
+
+.testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-align: left;
+}
+
+.author-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: rgba(59, 130, 246, 0.1);
+    color: var(--accent-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.author-info h4 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.1rem;
+}
+
+.author-info span {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+/* Testimonial Controls */
+.carousel-control {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: var(--bg-white);
+    color: var(--text-body);
+    box-shadow: var(--shadow-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: var(--transition-smooth);
+    border: 1px solid rgba(15, 23, 42, 0.05);
+    z-index: 10;
+}
+
+.carousel-control:hover {
+    background-color: var(--accent-color);
+    color: white;
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-50%) scale(1.05);
+}
+
+.carousel-control.prev {
+    left: -10px;
+}
+
+.carousel-control.next {
+    right: -10px;
+}
+
+/* Indicators */
+.testimonials-indicators {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.testimonials-indicators button {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #E2E8F0;
+    transition: var(--transition-smooth);
+}
+
+.testimonials-indicators button.active {
+    background-color: var(--accent-color);
+    width: 24px;
+    border-radius: 9999px;
+}
+
+/* Responsive testimonial heights */
+@media (max-width: 768px) {
+    .testimonials-carousel {
+        height: 420px; /* Allow more space for wrapped text on smaller screens */
+    }
+
+    .testimonials-carousel-wrapper {
+        padding: 2rem 1rem;
+    }
+
+    .carousel-control {
+        display: none; /* Hide arrows on mobile for better touch swipe feel / space savings */
+    }
+
+    .testimonial-text {
+        font-size: 1.05rem;
+        line-height: 1.6;
+    }
 }

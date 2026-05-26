@@ -64,6 +64,7 @@ class App {
         window.addEventListener('scroll', () => this.handleScrollSpy());
         this.highlightMenu(); // Run on load
         this.initHeroCarousel(); // Start Hero Carousel
+        this.initTestimonialsCarousel(); // Start Testimonials Carousel
     }
 
     /* --- Hero Carousel Logic --- */
@@ -119,6 +120,62 @@ class App {
     nextHeroSlide() {
         let nextIndex = (this.currentHeroSlide + 1) % this.heroSlides.length;
         this.goToHeroSlide(nextIndex);
+    }
+
+    /* --- Testimonials Carousel Logic --- */
+    initTestimonialsCarousel() {
+        this.currentTestimonial = 0;
+        this.testimonialSlides = document.querySelectorAll('.testimonial-slide');
+        this.testimonialIndicators = document.querySelectorAll('.testimonials-indicators button');
+
+        if (this.testimonialSlides.length === 0) return;
+        if (this.testimonialSlides.length === 1) return; // Don't autoplay if only 1 slide
+
+        // Autoplay
+        this.startTestimonialsCarousel();
+    }
+
+    startTestimonialsCarousel() {
+        if (this.testimonialInterval) clearInterval(this.testimonialInterval);
+        this.testimonialInterval = setInterval(() => this.nextTestimonial(), 7000);
+    }
+
+    goToTestimonial(index) {
+        if (!this.testimonialSlides || this.testimonialSlides.length === 0) return;
+
+        // Reset Interval on manual interaction
+        this.startTestimonialsCarousel();
+
+        // Update classes for current slide (Hide)
+        const current = this.testimonialSlides[this.currentTestimonial];
+        current.classList.remove('active');
+
+        if (this.testimonialIndicators[this.currentTestimonial]) {
+            this.testimonialIndicators[this.currentTestimonial].classList.remove('active');
+        }
+
+        // Update Index
+        this.currentTestimonial = index;
+
+        // Update classes for new slide (Show)
+        const next = this.testimonialSlides[this.currentTestimonial];
+        next.classList.add('active');
+
+        if (this.testimonialIndicators[this.currentTestimonial]) {
+            this.testimonialIndicators[this.currentTestimonial].classList.add('active');
+        }
+    }
+
+    nextTestimonial() {
+        if (!this.testimonialSlides || this.testimonialSlides.length === 0) return;
+        let nextIndex = (this.currentTestimonial + 1) % this.testimonialSlides.length;
+        this.goToTestimonial(nextIndex);
+    }
+
+    prevTestimonial() {
+        if (!this.testimonialSlides || this.testimonialSlides.length === 0) return;
+        let prevIndex = (this.currentTestimonial - 1 + this.testimonialSlides.length) % this.testimonialSlides.length;
+        this.goToTestimonial(prevIndex);
     }
 
     handleScrollSpy() {
