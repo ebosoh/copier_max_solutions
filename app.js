@@ -447,7 +447,8 @@ class App {
             { name: "Accessories", defaultImage: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=300&auto=format&fit=crop&q=60" },
             { name: "Brand New Copiers", defaultImage: "kyocera-new.png" },
             { name: "Laptops & Computers", defaultImage: "https://images.unsplash.com/photo-1496181130204-755241544e35?w=300&auto=format&fit=crop&q=60" },
-            { name: "Spare Parts", defaultImage: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=300&auto=format&fit=crop&q=60" }
+            { name: "Spare Parts", defaultImage: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=300&auto=format&fit=crop&q=60" },
+            { name: "Office Printers", defaultImage: "https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=300&auto=format&fit=crop&q=60" }
         ];
 
         this.currentCategoryPage = page;
