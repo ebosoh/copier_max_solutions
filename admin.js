@@ -21,6 +21,11 @@ class AdminApplication {
             });
         }
 
+        const loginBtn = document.getElementById('login-btn');
+        if (loginBtn) {
+            loginBtn.addEventListener('click', () => this.login());
+        }
+
         // File Input
         const dropzone = document.getElementById('dropzone');
         const fileInput = document.getElementById('file-input');
@@ -126,8 +131,8 @@ class AdminApplication {
                     <td style="padding: 1rem;">${p.category || 'N/A'}</td>
                     <td style="padding: 1rem; font-weight: bold; color: var(--accent);">KES ${parseFloat(p.price || 0).toLocaleString()}</td>
                     <td style="padding: 1rem;">
-                        <button class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;" onclick="AdminApp.editProduct(${rowId}, ${index})"><i class="fas fa-edit"></i> Edit</button>
-                        <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--danger); color: white;" onclick="AdminApp.deleteProduct(${rowId})"><i class="fas fa-trash"></i> Delete</button>
+                        <button class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;" onclick="window.AdminApp.editProduct(${rowId}, ${index})"><i class="fas fa-edit"></i> Edit</button>
+                        <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--danger); color: white;" onclick="window.AdminApp.deleteProduct(${rowId})"><i class="fas fa-trash"></i> Delete</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -356,8 +361,8 @@ class AdminApplication {
                             <td style="padding: 1rem;">${img}</td>
                             <td style="padding: 1rem; font-weight: 500;">${b.name}</td>
                             <td style="padding: 1rem; white-space:nowrap;">
-                                <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--accent-color); color: white; margin-right:0.4rem;" onclick="AdminApp.editBrand(${b.rowId}, '${b.name.replace(/'/g, "\\'") }', '${(b.logo_url || '').replace(/'/g, "\\'")}')"><i class="fas fa-edit"></i> Edit</button>
-                                <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--danger); color: white;" onclick="AdminApp.deleteBrand(${b.rowId})"><i class="fas fa-trash"></i> Delete</button>
+                                <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--accent-color); color: white; margin-right:0.4rem;" onclick="window.AdminApp.editBrand(${b.rowId}, '${b.name.replace(/'/g, "\\'") }', '${(b.logo_url || '').replace(/'/g, "\\'")}')"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--danger); color: white;" onclick="window.AdminApp.deleteBrand(${b.rowId})"><i class="fas fa-trash"></i> Delete</button>
                             </td>
                         `;
                         brandBody.appendChild(tr);
@@ -387,8 +392,8 @@ class AdminApplication {
                             <td style="padding: 1rem; font-size: 0.9rem; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${t.text}</td>
                             <td style="padding: 1rem;">${stars}</td>
                             <td style="padding: 1rem; white-space:nowrap;">
-                                <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--accent-color); color: white; margin-right:0.4rem;" onclick="AdminApp.editTestimonial(${t.rowId}, '${(t.name||'').replace(/'/g,\"\\\\'\")  }', '${(t.role||'').replace(/'/g,\"\\\\'\")  }', '${t.rating||5}', '${escapedText}', '${(t.photo_url||'').replace(/'/g,\"\\\\'\") }')"><i class="fas fa-edit"></i> Edit</button>
-                                <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--danger); color: white;" onclick="AdminApp.deleteTestimonial(${t.rowId})"><i class="fas fa-trash"></i> Delete</button>
+                                <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--accent-color); color: white; margin-right:0.4rem;" onclick="window.AdminApp.editTestimonial(${t.rowId}, '${(t.name||'').replace(/'/g,\"\\\\'\")  }', '${(t.role||'').replace(/'/g,\"\\\\'\")  }', '${t.rating||5}', '${escapedText}', '${(t.photo_url||'').replace(/'/g,\"\\\\'\") }')"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--danger); color: white;" onclick="window.AdminApp.deleteTestimonial(${t.rowId})"><i class="fas fa-trash"></i> Delete</button>
                             </td>
                         `;
                         testBody.appendChild(tr);

@@ -201,7 +201,7 @@
                 <label>Access Code</label>
                 <input type="password" id="access-code" placeholder="Enter admin code">
             </div>
-            <button class="btn btn-primary" style="width:100%" onclick="AdminApp.login()">Login</button>
+            <button id="login-btn" class="btn btn-primary" style="width:100%">Login</button>
         </div>
     </div>
 
@@ -209,10 +209,10 @@
     <div id="admin-dashboard" class="admin-layout hidden">
         <aside class="sidebar">
             <div class="sidebar-brand">Copier Maximum Solutions</div>
-            <div class="nav-item active" onclick="AdminApp.switchTab('add')"><i class="fas fa-plus-circle"></i> Add
+            <div class="nav-item active" onclick="window.AdminApp.switchTab('add')"><i class="fas fa-plus-circle"></i> Add
                 Product</div>
-            <div class="nav-item" onclick="AdminApp.switchTab('list')"><i class="fas fa-list"></i> Product List</div>
-            <div class="nav-item" onclick="AdminApp.switchTab('settings')"><i class="fas fa-cog"></i> Settings</div>
+            <div class="nav-item" onclick="window.AdminApp.switchTab('list')"><i class="fas fa-list"></i> Product List</div>
+            <div class="nav-item" onclick="window.AdminApp.switchTab('settings')"><i class="fas fa-cog"></i> Settings</div>
             <div style="margin-top: auto;">
                 <div class="nav-item" onclick="location.reload()"><i class="fas fa-sign-out-alt"></i> Logout</div>
                 <div style="margin-top: 1rem; text-align: center; color: #A8293B; font-size: 0.85rem;">
@@ -296,7 +296,7 @@
             <div id="view-list" class="view-section hidden">
                 <div class="header">
                     <h1>Product Inventory</h1>
-                    <button class="btn btn-primary" onclick="AdminApp.switchTab('add')"><i class="fas fa-plus"></i> Add New</button>
+                    <button class="btn btn-primary" onclick="window.AdminApp.switchTab('add')"><i class="fas fa-plus"></i> Add New</button>
                 </div>
                 <div class="card">
                     <div id="inventory-loading">Fetching current inventory...</div>
@@ -345,7 +345,7 @@
                             </div>
                         </div>
                         <div style="text-align: right; margin-top: 1rem; display:flex; gap:0.75rem; justify-content:flex-end;">
-                            <button type="button" id="brand-cancel-edit" class="btn" style="display:none; background:var(--border); color:var(--text);" onclick="AdminApp.cancelBrandEdit()">
+                            <button type="button" id="brand-cancel-edit" class="btn" style="display:none; background:var(--border); color:var(--text);" onclick="window.AdminApp.cancelBrandEdit()">
                                 <i class="fas fa-times"></i> Cancel Edit
                             </button>
                             <button type="submit" id="brand-submit-btn" class="btn btn-primary">
@@ -409,7 +409,7 @@
                             </div>
                         </div>
                         <div style="text-align: right; margin-top: 1rem; display:flex; gap:0.75rem; justify-content:flex-end;">
-                            <button type="button" id="testimonial-cancel-edit" class="btn" style="display:none; background:var(--border); color:var(--text);" onclick="AdminApp.cancelTestimonialEdit()">
+                            <button type="button" id="testimonial-cancel-edit" class="btn" style="display:none; background:var(--border); color:var(--text);" onclick="window.AdminApp.cancelTestimonialEdit()">
                                 <i class="fas fa-times"></i> Cancel Edit
                             </button>
                             <button type="submit" id="testimonial-submit-btn" class="btn btn-primary">
