@@ -7,6 +7,7 @@ class AdminApplication {
         this.selectedFiles = [];
         this.sheetDb = new GoogleSheetAdapter(CONFIG.sheetID, CONFIG.googleScriptUrl);
         this.inventoryProducts = [];
+        this.currentProductPage = 1;
 
         // Bind Events
         this.initEvents();
@@ -114,40 +115,110 @@ class AdminApplication {
     }
 
     async loadInventory() {
-        const tbody = document.getElementById('inventory-table-body');
         const loading = document.getElementById('inventory-loading');
-        loading.classList.remove('hidden');
-        tbody.innerHTML = '';
+        if (loading) loading.classList.remove('hidden');
 
         try {
             this.inventoryProducts = await this.sheetDb.fetchProducts();
 
-            this.inventoryProducts.forEach((p, index) => {
-                const tr = document.createElement('tr');
-                tr.style.borderBottom = "1px solid var(--border)";
-                let imgSrc = p.images ? p.images.split(',')[0] : 'https://via.placeholder.com/50';
+            // Update counter
+            const counter = document.getElementById('inventory-counter');
+            if (counter) {
+                counter.innerText = `(Total: ${this.inventoryProducts.length})`;
+            }
 
-                // rowId is returned directly by the Apps Script doGet endpoint
-                const rowId = p.rowId || (index + 2);
+            // Render current page
+            this.renderInventoryPage(this.currentProductPage);
 
-                tr.innerHTML = `
-                    <td style="padding: 1rem;"><img src="${imgSrc}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"></td>
-                    <td style="padding: 1rem; font-weight: 500;">${p.name}</td>
-                    <td style="padding: 1rem;">${p.category || 'N/A'}</td>
-                    <td style="padding: 1rem; font-weight: bold; color: var(--accent);">KES ${parseFloat(p.price || 0).toLocaleString()}</td>
-                    <td style="padding: 1rem;">
-                        <button class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;" onclick="window.AdminApp.editProduct(${rowId}, ${index})"><i class="fas fa-edit"></i> Edit</button>
-                        <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--danger); color: white;" onclick="window.AdminApp.deleteProduct(${rowId})"><i class="fas fa-trash"></i> Delete</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
         } catch (e) {
             console.error(e);
             alert("Error loading inventory");
         } finally {
-            loading.classList.add('hidden');
+            if (loading) loading.classList.add('hidden');
         }
+    }
+
+    renderInventoryPage(page) {
+        const tbody = document.getElementById('inventory-table-body');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        
+        this.currentProductPage = page;
+        const limit = 10;
+        const totalItems = this.inventoryProducts.length;
+        const totalPages = Math.ceil(totalItems / limit);
+
+        if (page < 1) page = 1;
+        if (page > totalPages && totalPages > 0) page = totalPages;
+        this.currentProductPage = page;
+
+        const startIndex = (page - 1) * limit;
+        const endIndex = startIndex + limit;
+        const displayItems = this.inventoryProducts.slice(startIndex, endIndex);
+
+        if (displayItems.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="padding: 2rem; text-align: center; color: var(--text); opacity: 0.6;">No products found in inventory.</td></tr>';
+            this.renderPaginationControls(totalPages, page);
+            return;
+        }
+
+        displayItems.forEach((p, displayIndex) => {
+            const tr = document.createElement('tr');
+            tr.style.borderBottom = "1px solid var(--border)";
+            let imgSrc = p.images ? p.images.split(',')[0] : 'https://via.placeholder.com/50';
+
+            const actualIndex = startIndex + displayIndex;
+            const rowId = p.rowId || (actualIndex + 2);
+
+            tr.innerHTML = `
+                <td style="padding: 1rem;"><img src="${imgSrc}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"></td>
+                <td style="padding: 1rem; font-weight: 500;">${p.name}</td>
+                <td style="padding: 1rem;">${p.category || 'N/A'}</td>
+                <td style="padding: 1rem; font-weight: bold; color: var(--accent);">KES ${parseFloat(p.price || 0).toLocaleString()}</td>
+                <td style="padding: 1rem; white-space: nowrap;">
+                    <button class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;" onclick="window.AdminApp.editProduct(${rowId}, ${actualIndex})"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--danger); color: white;" onclick="window.AdminApp.deleteProduct(${rowId})"><i class="fas fa-trash"></i> Delete</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        this.renderPaginationControls(totalPages, page);
+    }
+
+    renderPaginationControls(totalPages, currentPage) {
+        const paginationContainer = document.getElementById('inventory-pagination');
+        if (!paginationContainer) return;
+
+        if (totalPages <= 1) {
+            paginationContainer.innerHTML = '';
+            return;
+        }
+
+        let html = '';
+        
+        // Prev button
+        html += `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} data-page="${currentPage - 1}"><i class="fas fa-chevron-left"></i></button>`;
+
+        // Page buttons
+        for (let i = 1; i <= totalPages; i++) {
+            html += `<button class="page-btn ${currentPage === i ? 'active' : ''}" data-page="${i}">${i}</button>`;
+        }
+
+        // Next button
+        html += `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} data-page="${currentPage + 1}"><i class="fas fa-chevron-right"></i></button>`;
+
+        paginationContainer.innerHTML = html;
+
+        // Bind events
+        paginationContainer.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const targetBtn = e.currentTarget;
+                if (targetBtn.disabled) return;
+                const page = parseInt(targetBtn.getAttribute('data-page'), 10);
+                this.renderInventoryPage(page);
+            });
+        });
     }
 
     editProduct(rowId, arrayIndex) {

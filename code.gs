@@ -1,131 +1,262 @@
 /**
  * Copier Maximum Solutions - Backend Script
- * Deploy this as a Web App to serve as your API.
+ * Deploy as Web App: Execute as "Me", Access "Anyone"
  */
 
-var ADMIN_PASSWORD = "YOUR_ADMIN_PASSWORD"; // Protects your database!
-var GITHUB_TOKEN = "YOUR_GITHUB_TOKEN"; // Store your token securely here
-var GITHUB_USERNAME = "ebosoh";
-var GITHUB_REPO = "copiermaxsolutions";
-var GITHUB_BRANCH = "main";
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function uploadToGitHub(fileName, base64Content) {
-  var name = fileName || "unnamed-image.png";
-  var timestamp = new Date().getTime();
-  var safeName = name.replace(/[^a-zA-Z0-9.]/g, '-').toLowerCase();
-  var path = timestamp + "-" + safeName;
-  var url = "https://api.github.com/repos/" + GITHUB_USERNAME + "/" + GITHUB_REPO + "/contents/" + path;
-
-  var payload = {
-    message: "Upload product image: " + safeName,
-    content: base64Content,
-    branch: GITHUB_BRANCH
+function getConfig() {
+  var props = PropertiesService.getScriptProperties();
+  return {
+    adminPassword: (
+      props.getProperty("ADMIN_PASSWORD") ||
+      props.getProperty("admin_password") ||
+      props.getProperty("PASSWORD") ||
+      props.getProperty("password") ||
+      props.getProperty("ACCESS_CODE") ||
+      props.getProperty("access_code") ||
+      "YOUR_ADMIN_PASSWORD"
+    ).toString().trim(),
+    githubToken:    (props.getProperty("GITHUB_TOKEN")    || "YOUR_GITHUB_TOKEN").toString().trim(),
+    githubUsername: (props.getProperty("GITHUB_USERNAME") || "ebosoh").toString().trim(),
+    githubRepo:     (props.getProperty("GITHUB_REPO")     || "copiermaxsolutions").toString().trim(),
+    githubBranch:   (props.getProperty("GITHUB_BRANCH")   || "main").toString().trim()
   };
-
-  var options = {
-    method: "put",
-    headers: {
-      "Authorization": "token " + GITHUB_TOKEN,
-      "Accept": "application/vnd.github.v3+json"
-    },
-    payload: JSON.stringify(payload),
-    contentType: "application/json",
-    muteHttpExceptions: true
-  };
-
-  var response = UrlFetchApp.fetch(url, options);
-  var json = JSON.parse(response.getContentText());
-  
-  if (response.getResponseCode() !== 201 && response.getResponseCode() !== 200) {
-    throw new Error("GitHub Upload Error: " + (json.message || "Unknown error"));
-  }
-  
-  return "https://raw.githubusercontent.com/" + GITHUB_USERNAME + "/" + GITHUB_REPO + "/" + GITHUB_BRANCH + "/" + path;
 }
 
-// 1. Handle Writes (Add/Edit/Delete Product)
+function getOrCreateSheet(name, headers) {
+  var ss    = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(name);
+  if (!sheet) {
+    sheet = ss.insertSheet(name);
+    sheet.appendRow(headers);
+  }
+  return sheet;
+}
+
+function uploadToGitHub(fileName, base64Content, cfg) {
+  if (!cfg.githubToken || cfg.githubToken === "YOUR_GITHUB_TOKEN") {
+    throw new Error("GitHub token not configured in Script Properties.");
+  }
+  var safeName = (fileName || "image.png").replace(/[^a-zA-Z0-9.]/g, '-').toLowerCase();
+  var path     = new Date().getTime() + "-" + safeName;
+  var apiUrl   = "https://api.github.com/repos/" + cfg.githubUsername + "/" + cfg.githubRepo + "/contents/" + path;
+
+  // Try 'Bearer' which works for both classic (ghp_) and fine-grained (github_pat_) tokens
+  var response = UrlFetchApp.fetch(apiUrl, {
+    method: "put",
+    headers: {
+      "Authorization": "Bearer " + cfg.githubToken,
+      "Accept": "application/vnd.github.v3+json"
+    },
+    payload: JSON.stringify({
+      message: "Upload: " + safeName,
+      content: base64Content,
+      branch: cfg.githubBranch
+    }),
+    contentType: "application/json",
+    muteHttpExceptions: true
+  });
+
+  var code = response.getResponseCode();
+  var json = JSON.parse(response.getContentText());
+  if (code !== 200 && code !== 201) {
+    throw new Error("GitHub API " + code + ": " + (json.message || "Unknown error") + " (repo: " + cfg.githubRepo + ", branch: " + cfg.githubBranch + ")");
+  }
+  return "https://raw.githubusercontent.com/" + cfg.githubUsername + "/" + cfg.githubRepo + "/" + cfg.githubBranch + "/" + path;
+}
+
+function jsonOut(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}
+
+// ─── doPost ───────────────────────────────────────────────────────────────────
+
 function doPost(e) {
   var lock = LockService.getScriptLock();
   lock.tryLock(10000);
 
   try {
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+    var cfg  = getConfig();
     var data = JSON.parse(e.postData.contents);
-    
-    // --- Security Enforcement ---
-    if (data.password !== ADMIN_PASSWORD) {
-       return ContentService.createTextOutput(JSON.stringify({ "result": "error", "error": "Unauthorized Access" })).setMimeType(ContentService.MimeType.JSON);
+
+    var incoming = (data.password || "").toString().trim();
+    if (incoming !== cfg.adminPassword) {
+      return jsonOut({ result: "error", error: "Unauthorized Access" });
     }
-    // ----------------------------
 
-    var action = data.action || 'add';
+    var action = data.action || "add";
+    var sheet;
+    var rowIndex;
+    var uploadWarning = "";
 
-    if (action === 'delete') {
-      var rowIndex = parseInt(data.rowId, 10);
+    // ── Brands ──────────────────────────────────────────────────────────────
+    if (action === "add_brand") {
+      sheet = getOrCreateSheet("brands", ["name", "logo_url", "date_added"]);
+      var logoUrl = "";
+      if (data.imageFile) {
+        try   { logoUrl = uploadToGitHub(data.imageFile.name, data.imageFile.content, cfg); }
+        catch (err) {
+          console.error("Brand logo upload: " + err);
+          uploadWarning = err.toString();
+        }
+      }
+      sheet.appendRow([data.name, logoUrl, new Date()]);
+      return jsonOut({ result: "success", message: "Brand Added", upload_warning: uploadWarning });
+    }
+
+    if (action === "delete_brand") {
+      sheet    = getOrCreateSheet("brands", ["name", "logo_url", "date_added"]);
+      rowIndex = parseInt(data.rowId, 10);
       sheet.deleteRow(rowIndex);
-      return ContentService.createTextOutput(JSON.stringify({ "result": "success", "message": "Product Deleted" })).setMimeType(ContentService.MimeType.JSON);
-    } 
-    
-    // For Add or Edit, we might have new images to upload first.
-    let finalImagesStr = data.images || ""; // Contains existing imagesCSV
-    
+      return jsonOut({ result: "success", message: "Brand Deleted" });
+    }
+
+    if (action === "edit_brand") {
+      sheet    = getOrCreateSheet("brands", ["name", "logo_url", "date_added"]);
+      rowIndex = parseInt(data.rowId, 10);
+      var logoUrl = data.existingLogoUrl || "";
+      if (data.imageFile) {
+        try   { logoUrl = uploadToGitHub(data.imageFile.name, data.imageFile.content, cfg); }
+        catch (err) {
+          console.error("Brand logo upload (edit): " + err);
+          uploadWarning = err.toString();
+        }
+      }
+      sheet.getRange(rowIndex, 1, 1, 3).setValues([[data.name, logoUrl, new Date()]]);
+      return jsonOut({ result: "success", message: "Brand Updated", upload_warning: uploadWarning });
+    }
+
+    // ── Testimonials ────────────────────────────────────────────────────────
+    if (action === "add_testimonial") {
+      sheet = getOrCreateSheet("testimonials", ["name", "role", "text", "rating", "photo_url", "date_added"]);
+      var photoUrl = "";
+      if (data.imageFile) {
+        try   { photoUrl = uploadToGitHub(data.imageFile.name, data.imageFile.content, cfg); }
+        catch (err) {
+          console.error("Client photo upload: " + err);
+          uploadWarning = err.toString();
+        }
+      }
+      sheet.appendRow([data.name, data.role, data.text, data.rating, photoUrl, new Date()]);
+      return jsonOut({ result: "success", message: "Testimonial Added", upload_warning: uploadWarning });
+    }
+
+    if (action === "delete_testimonial") {
+      sheet    = getOrCreateSheet("testimonials", ["name", "role", "text", "rating", "photo_url", "date_added"]);
+      rowIndex = parseInt(data.rowId, 10);
+      sheet.deleteRow(rowIndex);
+      return jsonOut({ result: "success", message: "Testimonial Deleted" });
+    }
+
+    if (action === "edit_testimonial") {
+      sheet    = getOrCreateSheet("testimonials", ["name", "role", "text", "rating", "photo_url", "date_added"]);
+      rowIndex = parseInt(data.rowId, 10);
+      var photoUrl = data.existingPhotoUrl || "";
+      if (data.imageFile) {
+        try   { photoUrl = uploadToGitHub(data.imageFile.name, data.imageFile.content, cfg); }
+        catch (err) {
+          console.error("Client photo upload (edit): " + err);
+          uploadWarning = err.toString();
+        }
+      }
+      sheet.getRange(rowIndex, 1, 1, 6).setValues([[data.name, data.role, data.text, data.rating, photoUrl, new Date()]]);
+      return jsonOut({ result: "success", message: "Testimonial Updated", upload_warning: uploadWarning });
+    }
+
+    // ── Products ────────────────────────────────────────────────────────────
+    sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+
+    if (action === "delete") {
+      rowIndex = parseInt(data.rowId, 10);
+      sheet.deleteRow(rowIndex);
+      return jsonOut({ result: "success", message: "Product Deleted" });
+    }
+
+    var finalImagesStr = data.images || "";
     if (data.imageFiles && data.imageFiles.length > 0) {
-      var newImageUrls = [];
+      var newUrls = [];
       for (var k = 0; k < data.imageFiles.length; k++) {
         var fileObj = data.imageFiles[k];
-        var fileName = fileObj.name || fileObj.fileName || fileObj.filename || ("image-" + k + ".png");
-        var url = uploadToGitHub(fileName, fileObj.content);
-        newImageUrls.push(url);
+        var fname   = fileObj.name || fileObj.fileName || fileObj.filename || ("image-" + k + ".png");
+        try {
+          newUrls.push(uploadToGitHub(fname, fileObj.content, cfg));
+        } catch (err) {
+          console.error("Product image upload: " + err);
+          uploadWarning = err.toString();
+        }
       }
-      
-      if (finalImagesStr) {
-        finalImagesStr += "," + newImageUrls.join(',');
-      } else {
-        finalImagesStr = newImageUrls.join(',');
+      var validUrls = newUrls.filter(function(u) { return u && u.length > 0; });
+      if (validUrls.length > 0) {
+        finalImagesStr = finalImagesStr ? finalImagesStr + "," + validUrls.join(",") : validUrls.join(",");
       }
     }
 
-    if (action === 'edit') {
-      var rowIndex = parseInt(data.rowId, 10);
-      sheet.getRange(rowIndex, 1, 1, 7).setValues([[ data.name, data.category, data.price, data.old_price, data.description, finalImagesStr, new Date() ]]);
-      return ContentService.createTextOutput(JSON.stringify({ "result": "success", "message": "Product Updated" })).setMimeType(ContentService.MimeType.JSON);
-    } else {
-      sheet.appendRow([ data.name, data.category, data.price, data.old_price, data.description, finalImagesStr, new Date() ]);
-      return ContentService.createTextOutput(JSON.stringify({ "result": "success", "message": "Product Added" })).setMimeType(ContentService.MimeType.JSON);
+    if (action === "edit") {
+      rowIndex = parseInt(data.rowId, 10);
+      sheet.getRange(rowIndex, 1, 1, 7).setValues([[
+        data.name, data.category, data.price, data.old_price,
+        data.description, finalImagesStr, new Date()
+      ]]);
+      return jsonOut({ result: "success", message: "Product Updated", upload_warning: uploadWarning });
     }
+
+    sheet.appendRow([data.name, data.category, data.price, data.old_price, data.description, finalImagesStr, new Date()]);
+    return jsonOut({ result: "success", message: "Product Added", upload_warning: uploadWarning });
+
   } catch (err) {
-    return ContentService.createTextOutput(JSON.stringify({ "result": "error", "error": err.toString() })).setMimeType(ContentService.MimeType.JSON);
+    return jsonOut({ result: "error", error: err.toString() });
   } finally {
     lock.releaseLock();
   }
 }
 
-// 2. Handle Reads (Get Products) - JSON API used by the website & admin
+// ─── doGet ────────────────────────────────────────────────────────────────────
+
 function doGet(e) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
-  var rows = sheet.getDataRange().getValues();
+  var type = e && e.parameter && e.parameter.type;
+
+  // Diagnostic endpoint — confirms Script Properties keys are visible
+  if (type === "diagnose") {
+    var cfg  = getConfig();
+    var keys = PropertiesService.getScriptProperties().getKeys();
+    return jsonOut({
+      keys_detected: keys,
+      has_admin_password: cfg.adminPassword !== "YOUR_ADMIN_PASSWORD",
+      has_github_token:   cfg.githubToken   !== "YOUR_GITHUB_TOKEN"
+    });
+  }
+
+  var sheet;
+  if (type === "brands") {
+    sheet = getOrCreateSheet("brands", ["name", "logo_url", "date_added"]);
+  } else if (type === "testimonials") {
+    sheet = getOrCreateSheet("testimonials", ["name", "role", "text", "rating", "photo_url", "date_added"]);
+  } else {
+    sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+  }
+
+  var rows    = sheet.getDataRange().getValues();
   var headers = rows[0];
-  var products = [];
+  var list    = [];
 
   for (var i = 1; i < rows.length; i++) {
     var row = rows[i];
-    // Skip empty rows (e.g. trailing blank rows in the sheet)
-    if (!row[0] || row[0].toString().trim() === '') continue;
-
-    var product = { rowId: i + 1 }; // rowId is 1-indexed sheet row number
+    if (!row[0] || row[0].toString().trim() === "") continue;
+    var item = { rowId: i + 1 };
     for (var j = 0; j < headers.length; j++) {
-      product[headers[j]] = row[j];
+      item[headers[j]] = row[j];
     }
-    products.push(product);
+    list.push(item);
   }
 
-  return ContentService.createTextOutput(JSON.stringify(products)).setMimeType(ContentService.MimeType.JSON);
+  return jsonOut(list);
 }
 
-// 3. Setup Helper
+// ─── Setup ────────────────────────────────────────────────────────────────────
+
 function setupSheet() {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
-  if (sheet.getLastRow() === 0) {
-    sheet.appendRow(["name", "category", "price", "old_price", "description", "images", "date_added"]);
-  }
+  getOrCreateSheet("products",     ["name", "category", "price", "old_price", "description", "images", "date_added"]);
+  getOrCreateSheet("brands",       ["name", "logo_url", "date_added"]);
+  getOrCreateSheet("testimonials", ["name", "role", "text", "rating", "photo_url", "date_added"]);
 }
