@@ -69,16 +69,17 @@
                 <i class="fas fa-sign-in-alt"></i> <span>Login</span>
             </a>
 
-            <!-- Header Actions Removed as per user request -->
-            <!-- <div class="header-actions flex items-center gap-4"> ... </div> -->
+            <button class="mobile-menu-toggle hidden-desktop" aria-label="Toggle navigation menu">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
     </header>
 
     <!-- Main Search Toolbar -->
-    <div class="main-search-toolbar hidden-mobile">
+    <div class="main-search-toolbar">
         <div class="container flex items-center gap-4">
             <!-- Department Label (Aligns with sidebar below) -->
-            <div class="dept-header-label">
+            <div class="dept-header-label hidden-mobile">
                 Shop By Department <i class="fas fa-chevron-down ml-2 text-sm"></i>
             </div>
 
@@ -112,7 +113,7 @@
             </div>
 
             <!-- Toolbar Icons -->
-            <div class="toolbar-icons flex items-center gap-4 text-xl text-gray-800">
+            <div class="toolbar-icons hidden-mobile flex items-center gap-4 text-xl text-gray-800">
                 <a href="#" class="hover:text-white transition" title="Refresh"><i class="fas fa-sync-alt"></i></a>
                 <a href="#" class="hover:text-white transition" title="Wishlist"><i class="far fa-heart"></i></a>
                 <button class="cart-toggle relative hover:text-white transition icon-btn" title="Cart">
@@ -449,6 +450,11 @@
             </div>
         </div>
     </div>
+
+    <!-- Floating WhatsApp Button for Mobile -->
+    <a href="https://wa.me/254717520268" target="_blank" class="mobile-whatsapp-floating" title="Chat on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
 
     <!-- Scripts -->
     <script src="config.js"></script> <!-- Config for URLs/Keys -->

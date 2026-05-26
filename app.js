@@ -27,10 +27,20 @@ class App {
         // Mobile Menu
         const menuBtn = document.querySelector('.mobile-menu-toggle');
         const nav = document.querySelector('.desktop-nav');
-        if (menuBtn) {
+        if (menuBtn && nav) {
             menuBtn.addEventListener('click', () => {
                 nav.classList.toggle('hidden-mobile');
                 nav.classList.toggle('mobile-active');
+            });
+
+            // Close mobile menu when links are clicked
+            nav.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (nav.classList.contains('mobile-active')) {
+                        nav.classList.add('hidden-mobile');
+                        nav.classList.remove('mobile-active');
+                    }
+                });
             });
         }
 
@@ -644,6 +654,16 @@ class App {
         }
 
         alert(`${productName} added to cart!`);
+    }
+
+    addToCartWithQty() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const name = urlParams.get('product');
+        if (name) {
+            this.addToCart(name);
+        } else {
+            alert("Product name not found in the URL.");
+        }
     }
 
     getMockData() {
