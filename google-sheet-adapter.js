@@ -36,7 +36,7 @@ export class GoogleSheetAdapter {
             }
 
             console.log(`Loaded ${data.length} items for ${type}.`);
-            return data;
+            return data.reverse();
 
         } catch (error) {
             console.error(`GoogleSheetAdapter Error fetching ${type}:`, error);
