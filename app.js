@@ -6,6 +6,8 @@ class App {
         this.db = new GoogleSheetAdapter(CONFIG.sheetID, CONFIG.googleScriptUrl);
         this.products = [];
         this.cart = JSON.parse(localStorage.getItem('copier_maximum_cart')) || [];
+        this.currentProductPage = 1;
+        this.currentCategoryPage = 1;
 
         this.init();
     }
@@ -432,7 +434,7 @@ class App {
         this.initTestimonialsCarousel();
     }
 
-    renderCategories() {
+    renderCategories(page = 1) {
         const grid = document.getElementById('categories-grid');
         if (!grid) return;
 
@@ -448,7 +450,20 @@ class App {
             { name: "Spare Parts", defaultImage: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=300&auto=format&fit=crop&q=60" }
         ];
 
-        grid.innerHTML = categories.map(cat => {
+        this.currentCategoryPage = page;
+        const limit = 10;
+        const totalItems = categories.length;
+        const totalPages = Math.ceil(totalItems / limit);
+
+        if (page < 1) page = 1;
+        if (page > totalPages && totalPages > 0) page = totalPages;
+        this.currentCategoryPage = page;
+
+        const startIndex = (page - 1) * limit;
+        const endIndex = startIndex + limit;
+        const displayCategories = categories.slice(startIndex, endIndex);
+
+        grid.innerHTML = displayCategories.map(cat => {
             // Find a product in this category to get a real image from the Google Sheet
             const productInCat = this.products.find(p => p.category === cat.name);
             let img = cat.defaultImage;
@@ -471,14 +486,113 @@ class App {
                 </div>
             `;
         }).join('');
+
+        this.renderCategoriesPagination(categories, totalPages, page);
     }
 
-    renderProducts(products) {
+    renderCategoriesPagination(categories, totalPages, currentPage) {
+        const paginationContainer = document.getElementById('categories-pagination');
+        if (!paginationContainer) return;
+
+        if (totalPages <= 1) {
+            paginationContainer.innerHTML = '';
+            return;
+        }
+
+        let html = '';
+        
+        // Prev button
+        html += `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} data-page="${currentPage - 1}"><i class="fas fa-chevron-left"></i></button>`;
+
+        // Page buttons
+        for (let i = 1; i <= totalPages; i++) {
+            html += `<button class="page-btn ${currentPage === i ? 'active' : ''}" data-page="${i}">${i}</button>`;
+        }
+
+        // Next button
+        html += `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} data-page="${currentPage + 1}"><i class="fas fa-chevron-right"></i></button>`;
+
+        paginationContainer.innerHTML = html;
+
+        // Bind events
+        paginationContainer.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const targetBtn = e.currentTarget;
+                if (targetBtn.disabled) return;
+                const page = parseInt(targetBtn.getAttribute('data-page'), 10);
+                this.renderCategories(page);
+                
+                // Scroll to categories section
+                const categoriesSec = document.querySelector('.categories-section');
+                if (categoriesSec) categoriesSec.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    }
+
+    renderProducts(products, page = 1) {
         const container = document.getElementById('products-container');
         if (!container) return;
 
-        // Show all products on home
-        container.innerHTML = products.map(p => this.createProductCard(p)).join('');
+        this.currentProductPage = page;
+        const limit = 10;
+        const totalItems = products.length;
+        const totalPages = Math.ceil(totalItems / limit);
+
+        if (page < 1) page = 1;
+        if (page > totalPages && totalPages > 0) page = totalPages;
+        this.currentProductPage = page;
+
+        const startIndex = (page - 1) * limit;
+        const endIndex = startIndex + limit;
+        const displayItems = products.slice(startIndex, endIndex);
+
+        if (displayItems.length === 0) {
+            container.innerHTML = '<p class="text-center py-8 w-full" style="grid-column: 1/-1;">No products found.</p>';
+            this.renderProductsPagination(products, totalPages, page);
+            return;
+        }
+
+        container.innerHTML = displayItems.map(p => this.createProductCard(p)).join('');
+        this.renderProductsPagination(products, totalPages, page);
+    }
+
+    renderProductsPagination(products, totalPages, currentPage) {
+        const paginationContainer = document.getElementById('products-pagination');
+        if (!paginationContainer) return;
+
+        if (totalPages <= 1) {
+            paginationContainer.innerHTML = '';
+            return;
+        }
+
+        let html = '';
+        
+        // Prev button
+        html += `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} data-page="${currentPage - 1}"><i class="fas fa-chevron-left"></i></button>`;
+
+        // Page buttons
+        for (let i = 1; i <= totalPages; i++) {
+            html += `<button class="page-btn ${currentPage === i ? 'active' : ''}" data-page="${i}">${i}</button>`;
+        }
+
+        // Next button
+        html += `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} data-page="${currentPage + 1}"><i class="fas fa-chevron-right"></i></button>`;
+
+        paginationContainer.innerHTML = html;
+
+        // Bind events
+        paginationContainer.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const targetBtn = e.currentTarget;
+                if (targetBtn.disabled) return;
+                const page = parseInt(targetBtn.getAttribute('data-page'), 10);
+                this.renderProducts(products, page);
+                
+                // Scroll to shop section
+                const shop = document.getElementById('shop');
+                if (shop) shop.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
     }
 
     createProductCard(product) {
