@@ -477,10 +477,8 @@ class App {
         const container = document.getElementById('products-container');
         if (!container) return;
 
-        // Show max 8 items on home
-        const displayItems = products.slice(0, 8);
-
-        container.innerHTML = displayItems.map(p => this.createProductCard(p)).join('');
+        // Show all products on home
+        container.innerHTML = products.map(p => this.createProductCard(p)).join('');
     }
 
     createProductCard(product) {
