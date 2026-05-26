@@ -290,6 +290,7 @@ class App {
 
             this.renderProducts(this.products);
             this.updateHero(this.products);
+            this.renderCategories(); // Re-render categories to use real product images once fetched
 
         } catch (error) {
             console.error("Failed to load products", error);
@@ -302,25 +303,40 @@ class App {
         if (!grid) return;
 
         const categories = [
-            { name: "Refurbished Copiers", icon: "fa-copy" },
-            { name: "Drum units", icon: "fa-circle-notch" },
-            { name: "Kyocera B/W A4 Printers", icon: "fa-print" },
-            { name: "Toner Refills", icon: "fa-fill-drip" },
-            { name: "Toners", icon: "fa-tint" },
-            { name: "Accessories", icon: "fa-mouse" },
-            { name: "Brand New Copiers", icon: "fa-star" },
-            { name: "Laptops & Computers", icon: "fa-laptop" },
-            { name: "Spare Parts", icon: "fa-cogs" }
+            { name: "Refurbished Copiers", defaultImage: "commercial-copier.png" },
+            { name: "Drum units", defaultImage: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300&auto=format&fit=crop&q=60" },
+            { name: "Kyocera B/W A4 Printers", defaultImage: "kyocera-new.png" },
+            { name: "Toner Refills", defaultImage: "https://images.unsplash.com/photo-1558655146-d09347e92766?w=300&auto=format&fit=crop&q=60" },
+            { name: "Toners", defaultImage: "https://images.unsplash.com/photo-1544256718-3bcf237f3974?w=300&auto=format&fit=crop&q=60" },
+            { name: "Accessories", defaultImage: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=300&auto=format&fit=crop&q=60" },
+            { name: "Brand New Copiers", defaultImage: "kyocera-new.png" },
+            { name: "Laptops & Computers", defaultImage: "https://images.unsplash.com/photo-1496181130204-755241544e35?w=300&auto=format&fit=crop&q=60" },
+            { name: "Spare Parts", defaultImage: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=300&auto=format&fit=crop&q=60" }
         ];
 
-        grid.innerHTML = categories.map(cat => `
-            <div class="category-card">
-                <div>
-                    <i class="fas ${cat.icon} fa-3x" style="color:var(--primary-light); margin-bottom:1rem"></i>
-                    <h3>${cat.name}</h3>
+        grid.innerHTML = categories.map(cat => {
+            // Find a product in this category to get a real image from the Google Sheet
+            const productInCat = this.products.find(p => p.category === cat.name);
+            let img = cat.defaultImage;
+            if (productInCat && productInCat.images) {
+                const firstImg = productInCat.images.split(',')[0];
+                if (firstImg && firstImg.length > 5) {
+                    img = firstImg;
+                }
+            }
+
+            return `
+                <div class="category-card" onclick="window.App.handleSearch('${cat.name}'); document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });" style="cursor:pointer;">
+                    <div class="category-image-wrapper">
+                        <img src="${img}" alt="${cat.name}" class="category-img">
+                    </div>
+                    <div class="category-info-overlay">
+                        <h3>${cat.name}</h3>
+                        <span class="explore-btn">Explore <i class="fas fa-arrow-right"></i></span>
+                    </div>
                 </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     }
 
     renderProducts(products) {
