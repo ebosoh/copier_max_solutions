@@ -40,6 +40,17 @@ class AdminApplication {
 
         // Form Submit
         document.getElementById('product-form').addEventListener('submit', (e) => this.handleSubmit(e));
+
+        // Settings Forms
+        const brandForm = document.getElementById('brand-form');
+        if (brandForm) {
+            brandForm.addEventListener('submit', (e) => this.handleBrandSubmit(e));
+        }
+
+        const testForm = document.getElementById('testimonial-form');
+        if (testForm) {
+            testForm.addEventListener('submit', (e) => this.handleTestimonialSubmit(e));
+        }
     }
 
     login() {
@@ -73,6 +84,10 @@ class AdminApplication {
 
         if (tabId === 'list') {
             this.loadInventory();
+        }
+
+        if (tabId === 'settings') {
+            this.loadSettings();
         }
     }
 
@@ -310,6 +325,176 @@ class AdminApplication {
         }
 
         return true;
+    }
+
+    /* --- Settings Management (Brands & Testimonials) --- */
+    async loadSettings() {
+        const brandBody = document.getElementById('brands-table-body');
+        const testBody = document.getElementById('testimonials-table-body');
+
+        if (brandBody) brandBody.innerHTML = '<tr><td colspan="3" style="padding: 1rem; text-align: center;"><i class="fas fa-spinner fa-spin"></i> Fetching brands...</td></tr>';
+        if (testBody) testBody.innerHTML = '<tr><td colspan="5" style="padding: 1rem; text-align: center;"><i class="fas fa-spinner fa-spin"></i> Fetching testimonials...</td></tr>';
+
+        try {
+            // 1. Load Brands
+            const brands = await this.sheetDb.fetchBrands();
+            if (brandBody) {
+                brandBody.innerHTML = '';
+                if (brands.length === 0) {
+                    brandBody.innerHTML = '<tr><td colspan="3" style="padding: 1rem; text-align: center; color: var(--text); opacity: 0.6;">No brands added yet. Stock brand templates will be used.</td></tr>';
+                } else {
+                    brands.forEach(b => {
+                        const tr = document.createElement('tr');
+                        tr.style.borderBottom = "1px solid var(--border)";
+                        const img = b.logo_url ? `<img src="${b.logo_url}" style="height: 40px; max-width: 100px; object-fit: contain;">` : '<span style="color:var(--text); opacity:0.6;">None</span>';
+                        tr.innerHTML = `
+                            <td style="padding: 1rem;">${img}</td>
+                            <td style="padding: 1rem; font-weight: 500;">${b.name}</td>
+                            <td style="padding: 1rem;">
+                                <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--danger); color: white;" onclick="AdminApp.deleteBrand(${b.rowId})"><i class="fas fa-trash"></i> Delete</button>
+                            </td>
+                        `;
+                        brandBody.appendChild(tr);
+                    });
+                }
+            }
+
+            // 2. Load Testimonials
+            const testimonials = await this.sheetDb.fetchTestimonials();
+            if (testBody) {
+                testBody.innerHTML = '';
+                if (testimonials.length === 0) {
+                    testBody.innerHTML = '<tr><td colspan="5" style="padding: 1rem; text-align: center; color: var(--text); opacity: 0.6;">No testimonials added yet. Stock client reviews will be used.</td></tr>';
+                } else {
+                    testimonials.forEach(t => {
+                        const tr = document.createElement('tr');
+                        tr.style.borderBottom = "1px solid var(--border)";
+                        const img = t.photo_url ? `<img src="${t.photo_url}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%;">` : '<i class="fas fa-user-circle fa-2x" style="color:var(--border);"></i>';
+                        const stars = '<i class="fas fa-star" style="color:#FFB800;"></i> '.repeat(parseInt(t.rating || 5));
+                        tr.innerHTML = `
+                            <td style="padding: 1rem;">${img}</td>
+                            <td style="padding: 1rem;">
+                                <div style="font-weight:700;">${t.name}</div>
+                                <div style="font-size:0.8rem; color:var(--text); opacity:0.7;">${t.role || ''}</div>
+                            </td>
+                            <td style="padding: 1rem; font-size: 0.9rem; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${t.text}</td>
+                            <td style="padding: 1rem;">${stars}</td>
+                            <td style="padding: 1rem;">
+                                <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--danger); color: white;" onclick="AdminApp.deleteTestimonial(${t.rowId})"><i class="fas fa-trash"></i> Delete</button>
+                            </td>
+                        `;
+                        testBody.appendChild(tr);
+                    });
+                }
+            }
+        } catch (e) {
+            console.error(e);
+            alert("Error loading backend settings");
+        }
+    }
+
+    async handleBrandSubmit(e) {
+        e.preventDefault();
+        const btn = e.target.querySelector('button[type="submit"]');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        btn.disabled = true;
+
+        try {
+            const formData = new FormData(e.target);
+            const fileInput = document.getElementById('brand-logo-input');
+            const file = fileInput.files[0];
+
+            if (!file) throw new Error("Please select a brand logo file.");
+
+            const base64Content = await this.toBase64(file);
+            const brandCmd = {
+                action: "add_brand",
+                name: formData.get('brandName'),
+                imageFile: {
+                    name: file.name,
+                    content: base64Content
+                }
+            };
+
+            await this.sendToSheet(brandCmd);
+            alert("Brand added successfully!");
+            e.target.reset();
+            this.loadSettings();
+
+        } catch (err) {
+            console.error(err);
+            alert("Error adding brand: " + err.message);
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }
+
+    async deleteBrand(rowId) {
+        if (!confirm("Are you sure you want to permanently delete this brand partner?")) return;
+        try {
+            await this.sendToSheet({ action: "delete_brand", rowId: rowId });
+            alert("Brand Partner Deleted!");
+            this.loadSettings();
+        } catch (e) {
+            alert("Failed to delete brand.");
+        }
+    }
+
+    async handleTestimonialSubmit(e) {
+        e.preventDefault();
+        const btn = e.target.querySelector('button[type="submit"]');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        btn.disabled = true;
+
+        try {
+            const formData = new FormData(e.target);
+            const fileInput = document.getElementById('client-photo-input');
+            const file = fileInput.files[0];
+
+            let imageFileData = null;
+            if (file) {
+                const base64Content = await this.toBase64(file);
+                imageFileData = {
+                    name: file.name,
+                    content: base64Content
+                };
+            }
+
+            const testCmd = {
+                action: "add_testimonial",
+                name: formData.get('clientName'),
+                role: formData.get('clientRole'),
+                rating: formData.get('clientRating'),
+                text: formData.get('clientText'),
+                imageFile: imageFileData
+            };
+
+            await this.sendToSheet(testCmd);
+            alert("Testimonial added successfully!");
+            e.target.reset();
+            this.loadSettings();
+
+        } catch (err) {
+            console.error(err);
+            alert("Error adding testimonial: " + err.message);
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }
+
+    async deleteTestimonial(rowId) {
+        if (!confirm("Are you sure you want to permanently delete this testimonial?")) return;
+        try {
+            await this.sendToSheet({ action: "delete_testimonial", rowId: rowId });
+            alert("Testimonial Deleted!");
+            this.loadSettings();
+        } catch (e) {
+            alert("Failed to delete testimonial.");
+        }
     }
 
     toBase64(file) {

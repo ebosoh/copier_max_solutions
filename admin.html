@@ -319,6 +319,113 @@
                 </div>
             </div>
 
+            <!-- Settings View (Brands & Testimonials) -->
+            <div id="view-settings" class="view-section hidden">
+                <div class="header">
+                    <h1>Backend Content Settings</h1>
+                </div>
+
+                <!-- Brands Management -->
+                <div class="card" style="margin-bottom: 2rem;">
+                    <h2>Manage Global Brands</h2>
+                    <p style="margin-bottom: 1.5rem; color: var(--text); opacity: 0.8;">Upload corporate brand partner logos. Real logos will display in the brand slider.</p>
+                    
+                    <form id="brand-form" style="margin-bottom: 2rem;">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Brand Name</label>
+                                <input type="text" name="brandName" required placeholder="e.g. Kyocera, Ricoh">
+                            </div>
+                            <div class="form-group">
+                                <label>Brand Logo Image</label>
+                                <input type="file" id="brand-logo-input" accept="image/*" required>
+                            </div>
+                        </div>
+                        <div style="text-align: right; margin-top: 1rem;">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Add Brand Logo
+                            </button>
+                        </div>
+                    </form>
+
+                    <h3 style="border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; margin-top: 2rem;">Current Brands</h3>
+                    <div style="overflow-x: auto; margin-top: 1rem;">
+                        <table style="width: 100%; text-align: left; border-collapse: collapse;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid var(--border); color: var(--text);">
+                                    <th style="padding: 0.5rem 1rem;">Logo</th>
+                                    <th style="padding: 0.5rem 1rem;">Brand Name</th>
+                                    <th style="padding: 0.5rem 1rem;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="brands-table-body">
+                                <tr><td colspan="3" style="padding: 1rem; text-align: center;">Loading brand lists...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Testimonials Management -->
+                <div class="card">
+                    <h2>Manage Happy Customers Testimonials</h2>
+                    <p style="margin-bottom: 1.5rem; color: var(--text); opacity: 0.8;">Add customer reviews and ratings to show on the testimonials slider.</p>
+                    
+                    <form id="testimonial-form" style="margin-bottom: 2rem;">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Client Name</label>
+                                <input type="text" name="clientName" required placeholder="e.g. John Doe">
+                            </div>
+                            <div class="form-group">
+                                <label>Client Role / Company Name</label>
+                                <input type="text" name="clientRole" required placeholder="e.g. Director, Grogan Spares Zone">
+                            </div>
+                            <div class="form-group">
+                                <label>Star Rating</label>
+                                <select name="clientRating" required>
+                                    <option value="5">5 Stars</option>
+                                    <option value="4">4 Stars</option>
+                                    <option value="3">3 Stars</option>
+                                    <option value="2">2 Stars</option>
+                                    <option value="1">1 Star</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Client Photo (Optional)</label>
+                                <input type="file" id="client-photo-input" accept="image/*">
+                            </div>
+                            <div class="form-group full">
+                                <label>Testimonial Review Text</label>
+                                <textarea name="clientText" rows="3" required placeholder="Describe their premium experience..."></textarea>
+                            </div>
+                        </div>
+                        <div style="text-align: right; margin-top: 1rem;">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Add Testimonial
+                            </button>
+                        </div>
+                    </form>
+
+                    <h3 style="border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; margin-top: 2rem;">Current Testimonials</h3>
+                    <div style="overflow-x: auto; margin-top: 1rem;">
+                        <table style="width: 100%; text-align: left; border-collapse: collapse;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid var(--border); color: var(--text);">
+                                    <th style="padding: 0.5rem 1rem;">Photo</th>
+                                    <th style="padding: 0.5rem 1rem;">Name & Role</th>
+                                    <th style="padding: 0.5rem 1rem;">Review Text</th>
+                                    <th style="padding: 0.5rem 1rem;">Rating</th>
+                                    <th style="padding: 0.5rem 1rem;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="testimonials-table-body">
+                                <tr><td colspan="5" style="padding: 1rem; text-align: center;">Loading customer testimonials...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 

@@ -349,10 +349,87 @@ class App {
             this.updateHero(this.products);
             this.renderCategories(); // Re-render categories to use real product images once fetched
 
+            // Load brand and testimonial settings dynamically
+            await this.loadBrandsAndTestimonials();
+
         } catch (error) {
             console.error("Failed to load products", error);
             if (productContainer) productContainer.innerHTML = '<p class="error">Failed to load products. Please try again later.</p>';
         }
+    }
+
+    async loadBrandsAndTestimonials() {
+        try {
+            const brands = await this.db.fetchBrands();
+            if (brands && brands.length > 0) {
+                this.renderBrands(brands);
+            }
+
+            const testimonials = await this.db.fetchTestimonials();
+            if (testimonials && testimonials.length > 0) {
+                this.renderTestimonials(testimonials);
+            }
+        } catch (e) {
+            console.error("Failed to load brands or testimonials", e);
+        }
+    }
+
+    renderBrands(brands) {
+        const container = document.querySelector('.brands-grid');
+        if (!container) return;
+
+        container.innerHTML = brands.map(b => {
+            const nameLower = b.name.toLowerCase();
+            const content = b.logo_url && b.logo_url.length > 10
+                ? `<img src="${b.logo_url}" alt="${b.name}" style="max-width:100%; max-height:100%; object-fit:contain;">`
+                : `<span class="brand-logo-text ${nameLower}">${b.name}</span>`;
+
+            return `
+                <div class="brand-item">
+                    ${content}
+                </div>
+            `;
+        }).join('');
+    }
+
+    renderTestimonials(list) {
+        const carousel = document.querySelector('.testimonials-carousel');
+        const indicators = document.querySelector('.testimonials-indicators');
+        if (!carousel || !indicators) return;
+
+        carousel.innerHTML = list.map((t, index) => {
+            const activeClass = index === 0 ? 'active' : '';
+            const ratingStars = Array(5).fill(0).map((_, i) => 
+                `<i class="fas fa-star" style="${i < parseInt(t.rating || 5) ? 'color: #FFB800' : 'color: #E2E8F0'}"></i>`
+            ).join('');
+
+            const avatar = t.photo_url && t.photo_url.length > 10
+                ? `<img src="${t.photo_url}" alt="${t.name}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">`
+                : `<i class="fas fa-user"></i>`;
+
+            return `
+                <div class="testimonial-slide ${activeClass}">
+                    <div class="testimonial-rating">
+                        ${ratingStars}
+                    </div>
+                    <p class="testimonial-text">${t.text}</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">${avatar}</div>
+                        <div class="author-info">
+                            <h4>${t.name}</h4>
+                            <span>${t.role || 'Verified Customer'}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        indicators.innerHTML = list.map((_, index) => `
+            <button class="${index === 0 ? 'active' : ''}" onclick="window.App.goToTestimonial(${index})"></button>
+        `).join('');
+
+        // Re-initialize testimonial carousel variables
+        this.initTestimonialsCarousel();
     }
 
     renderCategories() {
