@@ -141,10 +141,11 @@
         loadProduct();
     </script>
 
-    <!-- Floating WhatsApp Button for Mobile -->
-    <a href="https://wa.me/254717520268" target="_blank" class="mobile-whatsapp-floating" title="Chat on WhatsApp">
-        <i class="fab fa-whatsapp"></i>
-    </a>
+    <!-- Floating Cart Button for Mobile -->
+    <button class="mobile-cart-floating" onclick="window.App.checkoutWhatsApp()" title="View Cart & Checkout">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="badge hidden">0</span>
+    </button>
 
     <!-- Link App.js for consistent cart & menu behavior across pages -->
     <script type="module" src="app.js"></script>

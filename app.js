@@ -15,6 +15,7 @@ class App {
     async init() {
         // UI Bindings
         this.bindEvents();
+        this.updateCartBadge(); // Initialize cart badges from local storage
 
         // Initial Render
         this.renderCategories(); // Static categories for now
@@ -387,10 +388,13 @@ class App {
     }
 
     renderBrands(brands) {
-        const container = document.querySelector('.brands-grid');
+        const container = document.querySelector('.brands-track');
         if (!container) return;
 
-        container.innerHTML = brands.map(b => {
+        // Duplicate the brands array to create a seamless infinite scrolling effect
+        const doubledBrands = [...brands, ...brands];
+
+        container.innerHTML = doubledBrands.map(b => {
             const nameLower = b.name.toLowerCase();
             const content = b.logo_url && b.logo_url.length > 10
                 ? `<img src="${b.logo_url}" alt="${b.name}" style="max-width:100%; max-height:100%; object-fit:contain;">`
@@ -645,14 +649,7 @@ class App {
     addToCart(productName) {
         this.cart.push(productName);
         localStorage.setItem('copier_maximum_cart', JSON.stringify(this.cart));
-
-        // Update Badge
-        const badge = document.querySelector('.badge');
-        if (badge) {
-            badge.textContent = this.cart.length;
-            badge.classList.remove('hidden');
-        }
-
+        this.updateCartBadge();
         alert(`${productName} added to cart!`);
     }
 
@@ -664,6 +661,18 @@ class App {
         } else {
             alert("Product name not found in the URL.");
         }
+    }
+
+    updateCartBadge() {
+        const badges = document.querySelectorAll('.badge');
+        badges.forEach(badge => {
+            badge.textContent = this.cart.length;
+            if (this.cart.length > 0) {
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        });
     }
 
     getMockData() {

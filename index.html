@@ -237,24 +237,45 @@
                 <h2>Trusted Global Brands</h2>
                 <p>We stock premium office automation products from industry-leading manufacturers.</p>
             </div>
-            <div class="brands-grid">
-                <div class="brand-item">
-                    <span class="brand-logo-text hp">HP</span>
-                </div>
-                <div class="brand-item">
-                    <span class="brand-logo-text ricoh">Ricoh</span>
-                </div>
-                <div class="brand-item">
-                    <span class="brand-logo-text bizhub">Bizhub</span>
-                </div>
-                <div class="brand-item">
-                    <span class="brand-logo-text dell">DELL</span>
-                </div>
-                <div class="brand-item">
-                    <span class="brand-logo-text kyocera">Kyocera</span>
-                </div>
-                <div class="brand-item">
-                    <span class="brand-logo-text canon">Canon</span>
+            <div class="brands-carousel-container">
+                <div class="brands-track">
+                    <div class="brand-item">
+                        <span class="brand-logo-text hp">HP</span>
+                    </div>
+                    <div class="brand-item">
+                        <span class="brand-logo-text ricoh">Ricoh</span>
+                    </div>
+                    <div class="brand-item">
+                        <span class="brand-logo-text bizhub">Bizhub</span>
+                    </div>
+                    <div class="brand-item">
+                        <span class="brand-logo-text dell">DELL</span>
+                    </div>
+                    <div class="brand-item">
+                        <span class="brand-logo-text kyocera">Kyocera</span>
+                    </div>
+                    <div class="brand-item">
+                        <span class="brand-logo-text canon">Canon</span>
+                    </div>
+                    <!-- Cloned items for seamless continuous marquee looping -->
+                    <div class="brand-item">
+                        <span class="brand-logo-text hp">HP</span>
+                    </div>
+                    <div class="brand-item">
+                        <span class="brand-logo-text ricoh">Ricoh</span>
+                    </div>
+                    <div class="brand-item">
+                        <span class="brand-logo-text bizhub">Bizhub</span>
+                    </div>
+                    <div class="brand-item">
+                        <span class="brand-logo-text dell">DELL</span>
+                    </div>
+                    <div class="brand-item">
+                        <span class="brand-logo-text kyocera">Kyocera</span>
+                    </div>
+                    <div class="brand-item">
+                        <span class="brand-logo-text canon">Canon</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -451,10 +472,11 @@
         </div>
     </div>
 
-    <!-- Floating WhatsApp Button for Mobile -->
-    <a href="https://wa.me/254717520268" target="_blank" class="mobile-whatsapp-floating" title="Chat on WhatsApp">
-        <i class="fab fa-whatsapp"></i>
-    </a>
+    <!-- Floating Cart Button for Mobile -->
+    <button class="mobile-cart-floating" onclick="window.App.checkoutWhatsApp()" title="View Cart & Checkout">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="badge hidden">0</span>
+    </button>
 
     <!-- Scripts -->
     <script src="config.js"></script> <!-- Config for URLs/Keys -->
