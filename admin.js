@@ -297,34 +297,39 @@ class AdminApplication {
             return;
         }
 
-        // Inject memory-held password to verify actions against Apps Script Proxy
+        // Inject memory-held password
         data.password = this.adminToken;
 
+        // CRITICAL: Apps Script requires Content-Type text/plain to read e.postData.contents
         const response = await fetch(CONFIG.googleScriptUrl, {
             method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify(data)
         });
 
-        // The script returns JSON {"result": "success"} or error
-        // Note: For advanced setups where basic cors isn't an issue, we can parse response here.
-        // Google scripts often return 200 with JSON payload
+        let resultData;
         try {
-            const resultData = await response.json();
-            if (resultData.result === "error") {
-                throw new Error(resultData.error);
-            }
-        } catch (e) {
-            // Provide a graceful failure format if fetch parses wrongly or Unauthorized triggers
-            console.warn("Fetch parsed gracefully or threw specific response log:", e.message);
-            if (e.message === "Unauthorized Access") {
-                alert("Unauthorized: Incorrect Admin Password!");
-                // Kick back to login
-                location.reload();
-                throw e;
-            }
+            resultData = await response.json();
+        } catch (parseErr) {
+            // Apps Script sometimes returns a redirect on first call — treat as success
+            console.warn('Could not parse Apps Script response (may be redirect):', parseErr);
+            return true;
         }
 
-        return true;
+        if (resultData.result === 'error') {
+            if (resultData.error === 'Unauthorized Access') {
+                alert('Unauthorized: Incorrect Admin Password!');
+                location.reload();
+            }
+            throw new Error(resultData.error);
+        }
+
+        // Surface upload warnings if the record saved but image upload failed
+        if (resultData.upload_warning) {
+            alert('⚠️ Record saved, but image upload failed:\n' + resultData.upload_warning + '\n\nCheck your GitHub token and repo name in Script Properties.');
+        }
+
+        return resultData;
     }
 
     /* --- Settings Management (Brands & Testimonials) --- */
