@@ -1194,13 +1194,9 @@ h3 {
     box-shadow: var(--shadow-sm);
     border: 1px solid rgba(15, 23, 42, 0.03);
     transition: var(--transition-smooth);
-    filter: grayscale(100%);
-    opacity: 0.6;
 }
 
 .brand-item:hover {
-    filter: grayscale(0%);
-    opacity: 1;
     transform: translateY(-3px);
     box-shadow: var(--shadow-md);
     border-color: rgba(59, 130, 246, 0.2);
