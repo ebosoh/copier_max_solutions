@@ -1,4 +1,4 @@
-const CONFIG = {
+window.CONFIG = {
     // Branding
     siteName: "Copier Maximum Solutions",
 
@@ -13,3 +13,6 @@ const CONFIG = {
     // Admin Security
     // Passwords are no longer stored here. The active script forces memory-injection of passwords.
 };
+
+// Export to local scope as well for legacy references
+const CONFIG = window.CONFIG;

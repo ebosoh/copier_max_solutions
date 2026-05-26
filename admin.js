@@ -30,21 +30,26 @@ class AdminApplication {
         const dropzone = document.getElementById('dropzone');
         const fileInput = document.getElementById('file-input');
 
-        dropzone.addEventListener('click', () => fileInput.click());
-        fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
+        if (dropzone && fileInput) {
+            dropzone.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
 
-        // Drag & Drop
-        dropzone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropzone.style.background = '#F8FAFC';
-        });
-        dropzone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            this.handleFiles(e.dataTransfer.files);
-        });
+            // Drag & Drop
+            dropzone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropzone.style.background = '#F8FAFC';
+            });
+            dropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                this.handleFiles(e.dataTransfer.files);
+            });
+        }
 
         // Form Submit
-        document.getElementById('product-form').addEventListener('submit', (e) => this.handleSubmit(e));
+        const productForm = document.getElementById('product-form');
+        if (productForm) {
+            productForm.addEventListener('submit', (e) => this.handleSubmit(e));
+        }
 
         // Settings Forms
         const brandForm = document.getElementById('brand-form');
@@ -574,4 +579,6 @@ class AdminApplication {
 
 // Start
 // Since we are using modules, we need to attach to window or init
-window.AdminApp = new AdminApplication();
+window.addEventListener('DOMContentLoaded', () => {
+    window.AdminApp = new AdminApplication();
+});
