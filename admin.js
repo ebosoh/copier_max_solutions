@@ -355,7 +355,8 @@ class AdminApplication {
                         tr.innerHTML = `
                             <td style="padding: 1rem;">${img}</td>
                             <td style="padding: 1rem; font-weight: 500;">${b.name}</td>
-                            <td style="padding: 1rem;">
+                            <td style="padding: 1rem; white-space:nowrap;">
+                                <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--accent-color); color: white; margin-right:0.4rem;" onclick="AdminApp.editBrand(${b.rowId}, '${b.name.replace(/'/g, "\\'") }', '${(b.logo_url || '').replace(/'/g, "\\'")}')"><i class="fas fa-edit"></i> Edit</button>
                                 <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--danger); color: white;" onclick="AdminApp.deleteBrand(${b.rowId})"><i class="fas fa-trash"></i> Delete</button>
                             </td>
                         `;
@@ -376,6 +377,7 @@ class AdminApplication {
                         tr.style.borderBottom = "1px solid var(--border)";
                         const img = t.photo_url ? `<img src="${t.photo_url}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%;">` : '<i class="fas fa-user-circle fa-2x" style="color:var(--border);"></i>';
                         const stars = '<i class="fas fa-star" style="color:#FFB800;"></i> '.repeat(parseInt(t.rating || 5));
+                        const escapedText = (t.text || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
                         tr.innerHTML = `
                             <td style="padding: 1rem;">${img}</td>
                             <td style="padding: 1rem;">
@@ -384,7 +386,8 @@ class AdminApplication {
                             </td>
                             <td style="padding: 1rem; font-size: 0.9rem; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${t.text}</td>
                             <td style="padding: 1rem;">${stars}</td>
-                            <td style="padding: 1rem;">
+                            <td style="padding: 1rem; white-space:nowrap;">
+                                <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--accent-color); color: white; margin-right:0.4rem;" onclick="AdminApp.editTestimonial(${t.rowId}, '${(t.name||'').replace(/'/g,\"\\\\'\")  }', '${(t.role||'').replace(/'/g,\"\\\\'\")  }', '${t.rating||5}', '${escapedText}', '${(t.photo_url||'').replace(/'/g,\"\\\\'\") }')"><i class="fas fa-edit"></i> Edit</button>
                                 <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--danger); color: white;" onclick="AdminApp.deleteTestimonial(${t.rowId})"><i class="fas fa-trash"></i> Delete</button>
                             </td>
                         `;
@@ -407,33 +410,58 @@ class AdminApplication {
 
         try {
             const formData = new FormData(e.target);
+            const rowId    = document.getElementById('brand-row-id').value;
             const fileInput = document.getElementById('brand-logo-input');
             const file = fileInput.files[0];
 
-            if (!file) throw new Error("Please select a brand logo file.");
+            // When adding, a file is required. When editing, it's optional.
+            if (!rowId && !file) throw new Error('Please select a brand logo file.');
 
-            const base64Content = await this.toBase64(file);
             const brandCmd = {
-                action: "add_brand",
+                action: rowId ? 'edit_brand' : 'add_brand',
+                rowId: rowId || null,
                 name: formData.get('brandName'),
-                imageFile: {
-                    name: file.name,
-                    content: base64Content
-                }
+                existingLogoUrl: document.getElementById('brand-existing-logo').value
             };
 
+            if (file) {
+                const base64Content = await this.toBase64(file);
+                brandCmd.imageFile = { name: file.name, content: base64Content };
+            }
+
             await this.sendToSheet(brandCmd);
-            alert("Brand added successfully!");
-            e.target.reset();
+            alert(rowId ? 'Brand updated successfully!' : 'Brand added successfully!');
+            this.cancelBrandEdit();
             this.loadSettings();
 
         } catch (err) {
             console.error(err);
-            alert("Error adding brand: " + err.message);
+            alert('Error saving brand: ' + err.message);
         } finally {
             btn.innerHTML = originalText;
             btn.disabled = false;
         }
+    }
+
+    editBrand(rowId, name, logoUrl) {
+        document.getElementById('brand-row-id').value        = rowId;
+        document.getElementById('brand-existing-logo').value = logoUrl;
+        document.getElementById('brand-name-input').value    = name;
+        document.getElementById('brand-form-title').textContent = '✏️ Editing Brand: ' + name;
+        document.getElementById('brand-logo-hint').textContent = logoUrl ? '(leave empty to keep current logo)' : '';
+        document.getElementById('brand-submit-btn').innerHTML  = '<i class="fas fa-save"></i> Update Brand';
+        document.getElementById('brand-cancel-edit').style.display = 'inline-flex';
+        document.getElementById('brand-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    cancelBrandEdit() {
+        document.getElementById('brand-form').reset();
+        document.getElementById('brand-row-id').value         = '';
+        document.getElementById('brand-existing-logo').value  = '';
+        document.getElementById('brand-form-title').textContent = 'Add New Brand';
+        document.getElementById('brand-logo-hint').textContent  = '';
+        document.getElementById('brand-submit-btn').innerHTML   = '<i class="fas fa-plus"></i> Add Brand Logo';
+        document.getElementById('brand-cancel-edit').style.display = 'none';
     }
 
     async deleteBrand(rowId) {
@@ -455,40 +483,63 @@ class AdminApplication {
         btn.disabled = true;
 
         try {
-            const formData = new FormData(e.target);
-            const fileInput = document.getElementById('client-photo-input');
-            const file = fileInput.files[0];
-
-            let imageFileData = null;
-            if (file) {
-                const base64Content = await this.toBase64(file);
-                imageFileData = {
-                    name: file.name,
-                    content: base64Content
-                };
-            }
+            const formData   = new FormData(e.target);
+            const rowId      = document.getElementById('testimonial-row-id').value;
+            const fileInput  = document.getElementById('client-photo-input');
+            const file       = fileInput.files[0];
 
             const testCmd = {
-                action: "add_testimonial",
-                name: formData.get('clientName'),
-                role: formData.get('clientRole'),
+                action: rowId ? 'edit_testimonial' : 'add_testimonial',
+                rowId: rowId || null,
+                name:   formData.get('clientName'),
+                role:   formData.get('clientRole'),
                 rating: formData.get('clientRating'),
-                text: formData.get('clientText'),
-                imageFile: imageFileData
+                text:   formData.get('clientText'),
+                existingPhotoUrl: document.getElementById('testimonial-existing-photo').value
             };
 
+            if (file) {
+                const base64Content = await this.toBase64(file);
+                testCmd.imageFile = { name: file.name, content: base64Content };
+            }
+
             await this.sendToSheet(testCmd);
-            alert("Testimonial added successfully!");
-            e.target.reset();
+            alert(rowId ? 'Testimonial updated successfully!' : 'Testimonial added successfully!');
+            this.cancelTestimonialEdit();
             this.loadSettings();
 
         } catch (err) {
             console.error(err);
-            alert("Error adding testimonial: " + err.message);
+            alert('Error saving testimonial: ' + err.message);
         } finally {
             btn.innerHTML = originalText;
             btn.disabled = false;
         }
+    }
+
+    editTestimonial(rowId, name, role, rating, text, photoUrl) {
+        document.getElementById('testimonial-row-id').value          = rowId;
+        document.getElementById('testimonial-existing-photo').value   = photoUrl;
+        document.getElementById('client-name-input').value           = name;
+        document.getElementById('client-role-input').value           = role;
+        document.getElementById('client-text-input').value           = text;
+        const ratingEl = document.getElementById('client-rating-input');
+        if (ratingEl) ratingEl.value = rating;
+        document.getElementById('testimonial-form-title').textContent = '✏️ Editing: ' + name;
+        document.getElementById('client-photo-hint').textContent = photoUrl ? '(leave empty to keep current photo)' : '';
+        document.getElementById('testimonial-submit-btn').innerHTML   = '<i class="fas fa-save"></i> Update Testimonial';
+        document.getElementById('testimonial-cancel-edit').style.display = 'inline-flex';
+        document.getElementById('testimonial-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    cancelTestimonialEdit() {
+        document.getElementById('testimonial-form').reset();
+        document.getElementById('testimonial-row-id').value           = '';
+        document.getElementById('testimonial-existing-photo').value    = '';
+        document.getElementById('testimonial-form-title').textContent  = 'Add New Testimonial';
+        document.getElementById('client-photo-hint').textContent        = '';
+        document.getElementById('testimonial-submit-btn').innerHTML    = '<i class="fas fa-plus"></i> Add Testimonial';
+        document.getElementById('testimonial-cancel-edit').style.display = 'none';
     }
 
     async deleteTestimonial(rowId) {

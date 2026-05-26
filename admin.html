@@ -331,18 +331,24 @@
                     <p style="margin-bottom: 1.5rem; color: var(--text); opacity: 0.8;">Upload corporate brand partner logos. Real logos will display in the brand slider.</p>
                     
                     <form id="brand-form" style="margin-bottom: 2rem;">
+                        <input type="hidden" id="brand-row-id" name="brandRowId" value="">
+                        <input type="hidden" id="brand-existing-logo" name="brandExistingLogo" value="">
+                        <div id="brand-form-title" style="font-weight:700; font-size:1rem; margin-bottom:1rem; color:var(--primary);">Add New Brand</div>
                         <div class="form-grid">
                             <div class="form-group">
                                 <label>Brand Name</label>
-                                <input type="text" name="brandName" required placeholder="e.g. Kyocera, Ricoh">
+                                <input type="text" name="brandName" id="brand-name-input" required placeholder="e.g. Kyocera, Ricoh">
                             </div>
                             <div class="form-group">
-                                <label>Brand Logo Image</label>
-                                <input type="file" id="brand-logo-input" accept="image/*" required>
+                                <label>Brand Logo Image <span id="brand-logo-hint" style="font-size:0.8rem;font-weight:400;color:var(--text);opacity:0.7;"></span></label>
+                                <input type="file" id="brand-logo-input" accept="image/*">
                             </div>
                         </div>
-                        <div style="text-align: right; margin-top: 1rem;">
-                            <button type="submit" class="btn btn-primary">
+                        <div style="text-align: right; margin-top: 1rem; display:flex; gap:0.75rem; justify-content:flex-end;">
+                            <button type="button" id="brand-cancel-edit" class="btn" style="display:none; background:var(--border); color:var(--text);" onclick="AdminApp.cancelBrandEdit()">
+                                <i class="fas fa-times"></i> Cancel Edit
+                            </button>
+                            <button type="submit" id="brand-submit-btn" class="btn btn-primary">
                                 <i class="fas fa-plus"></i> Add Brand Logo
                             </button>
                         </div>
@@ -371,18 +377,21 @@
                     <p style="margin-bottom: 1.5rem; color: var(--text); opacity: 0.8;">Add customer reviews and ratings to show on the testimonials slider.</p>
                     
                     <form id="testimonial-form" style="margin-bottom: 2rem;">
+                        <input type="hidden" id="testimonial-row-id" name="testimonialRowId" value="">
+                        <input type="hidden" id="testimonial-existing-photo" name="testimonialExistingPhoto" value="">
+                        <div id="testimonial-form-title" style="font-weight:700; font-size:1rem; margin-bottom:1rem; color:var(--primary);">Add New Testimonial</div>
                         <div class="form-grid">
                             <div class="form-group">
                                 <label>Client Name</label>
-                                <input type="text" name="clientName" required placeholder="e.g. John Doe">
+                                <input type="text" name="clientName" id="client-name-input" required placeholder="e.g. John Doe">
                             </div>
                             <div class="form-group">
                                 <label>Client Role / Company Name</label>
-                                <input type="text" name="clientRole" required placeholder="e.g. Director, Grogan Spares Zone">
+                                <input type="text" name="clientRole" id="client-role-input" required placeholder="e.g. Director, Grogan Spares Zone">
                             </div>
                             <div class="form-group">
                                 <label>Star Rating</label>
-                                <select name="clientRating" required>
+                                <select name="clientRating" id="client-rating-input" required>
                                     <option value="5">5 Stars</option>
                                     <option value="4">4 Stars</option>
                                     <option value="3">3 Stars</option>
@@ -391,16 +400,19 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Client Photo (Optional)</label>
+                                <label>Client Photo (Optional) <span id="client-photo-hint" style="font-size:0.8rem;font-weight:400;color:var(--text);opacity:0.7;"></span></label>
                                 <input type="file" id="client-photo-input" accept="image/*">
                             </div>
                             <div class="form-group full">
                                 <label>Testimonial Review Text</label>
-                                <textarea name="clientText" rows="3" required placeholder="Describe their premium experience..."></textarea>
+                                <textarea name="clientText" id="client-text-input" rows="3" required placeholder="Describe their premium experience..."></textarea>
                             </div>
                         </div>
-                        <div style="text-align: right; margin-top: 1rem;">
-                            <button type="submit" class="btn btn-primary">
+                        <div style="text-align: right; margin-top: 1rem; display:flex; gap:0.75rem; justify-content:flex-end;">
+                            <button type="button" id="testimonial-cancel-edit" class="btn" style="display:none; background:var(--border); color:var(--text);" onclick="AdminApp.cancelTestimonialEdit()">
+                                <i class="fas fa-times"></i> Cancel Edit
+                            </button>
+                            <button type="submit" id="testimonial-submit-btn" class="btn btn-primary">
                                 <i class="fas fa-plus"></i> Add Testimonial
                             </button>
                         </div>
