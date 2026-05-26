@@ -397,7 +397,7 @@ class AdminApplication {
                             <td style="padding: 1rem; font-size: 0.9rem; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${t.text}</td>
                             <td style="padding: 1rem;">${stars}</td>
                             <td style="padding: 1rem; white-space:nowrap;">
-                                <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--accent-color); color: white; margin-right:0.4rem;" onclick="window.AdminApp.editTestimonial(${t.rowId}, '${(t.name||'').replace(/'/g,\"\\\\'\")  }', '${(t.role||'').replace(/'/g,\"\\\\'\")  }', '${t.rating||5}', '${escapedText}', '${(t.photo_url||'').replace(/'/g,\"\\\\'\") }')"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--accent-color); color: white; margin-right:0.4rem;" onclick="window.AdminApp.editTestimonial(${t.rowId}, '${(t.name||'').replace(/'/g, "\\'")}', '${(t.role||'').replace(/'/g, "\\'")}', '${t.rating||5}', '${escapedText}', '${(t.photo_url||'').replace(/'/g, "\\'")}')"><i class="fas fa-edit"></i> Edit</button>
                                 <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--danger); color: white;" onclick="window.AdminApp.deleteTestimonial(${t.rowId})"><i class="fas fa-trash"></i> Delete</button>
                             </td>
                         `;
