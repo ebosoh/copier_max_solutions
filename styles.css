@@ -812,14 +812,18 @@ h3 {
     color: white;
 }
 
+.hidden-desktop {
+    display: none !important;
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
     .hidden-mobile {
-        display: none;
+        display: none !important;
     }
 
     .hidden-desktop {
-        display: block;
+        display: block !important;
     }
 
     .hero-content h1 {

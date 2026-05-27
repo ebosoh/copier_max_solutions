@@ -239,6 +239,166 @@
             cursor: not-allowed;
             background-color: #F1F5F9;
         }
+
+        /* --- Mobile Responsive Enhancements (max-width: 768px) --- */
+        
+        /* Mobile Top Bar Styles */
+        .mobile-admin-header {
+            display: none;
+            width: 100%;
+            height: 60px;
+            background: var(--primary);
+            color: white;
+            align-items: center;
+            padding: 0 1rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1050;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+        }
+
+        .mobile-nav-toggle {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 1.25rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            transition: background 0.2s;
+        }
+
+        .mobile-nav-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .mobile-brand {
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* Sidebar Backdrop Overlay */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 1090;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-admin-header {
+                display: flex;
+            }
+
+            .sidebar-overlay {
+                display: block;
+            }
+
+            .admin-layout {
+                flex-direction: column;
+                height: auto;
+                min-height: 100vh;
+            }
+
+            /* Turn sidebar into drawer */
+            .sidebar {
+                position: fixed;
+                left: -270px;
+                top: 0;
+                bottom: 0;
+                width: 260px;
+                z-index: 1100;
+                height: 100vh;
+                box-shadow: 5px 0 25px rgba(0, 0, 0, 0.15);
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .sidebar.open {
+                transform: translateX(270px);
+            }
+
+            /* Layout Main Content adjustments */
+            .main-content {
+                padding: 1.5rem 1rem;
+                margin-top: 60px; /* offset sticky mobile header */
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+                margin: 0;
+            }
+
+            .header .btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            /* Stack Form Grid */
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .form-group.full {
+                grid-column: span 1;
+            }
+
+            .card {
+                padding: 1.25rem;
+            }
+
+            /* Responsive Table wrappers */
+            table th, table td {
+                padding: 0.75rem 0.5rem !important;
+                font-size: 0.85rem;
+            }
+
+            .btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            /* Preview Grid optimization */
+            .preview-grid {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+                gap: 0.75rem;
+            }
+
+            /* Login Overlay container adjust */
+            .login-box {
+                margin: 0 1rem;
+                padding: 1.5rem;
+                max-width: 100%;
+            }
+        }
     </style>
 </head>
 
@@ -258,6 +418,17 @@
 
     <!-- Main Dashboard -->
     <div id="admin-dashboard" class="admin-layout hidden">
+        <!-- Sidebar Backdrop Overlay -->
+        <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+        <!-- Mobile Header Bar -->
+        <div class="mobile-admin-header">
+            <button class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Toggle Navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="mobile-brand">Copier Maximum Admin</div>
+        </div>
+
         <aside class="sidebar">
             <div class="sidebar-brand">Copier Maximum Solutions</div>
             <div class="nav-item active" onclick="window.AdminApp.switchTab('add')"><i class="fas fa-plus-circle"></i> Add
@@ -494,6 +665,32 @@
         </main>
     </div>
 
+    <script>
+        // Mobile Sidebar Drawer Toggle
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleBtn = document.getElementById('mobile-nav-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+
+            if (toggleBtn && sidebar && overlay) {
+                const toggleSidebar = () => {
+                    sidebar.classList.toggle('open');
+                    overlay.classList.toggle('active');
+                };
+
+                toggleBtn.addEventListener('click', toggleSidebar);
+                overlay.addEventListener('click', toggleSidebar);
+
+                // Auto-close sidebar drawer when navigating tabs
+                document.querySelectorAll('.sidebar .nav-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        sidebar.classList.remove('open');
+                        overlay.classList.remove('active');
+                    });
+                });
+            }
+        });
+    </script>
     <script src="config.js"></script>
     <script type="module" src="admin.js"></script>
 </body>
