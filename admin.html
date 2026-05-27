@@ -15,9 +15,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         :root {
             --primary: #0F172A;
             --accent: #3B82F6;
+            --accent-color: #3B82F6;
+            --accent-hover: #2563EB;
             --bg: #F1F5F9;
             --surface: #FFFFFF;
             --border: #E2E8F0;
@@ -306,97 +312,171 @@
 
         @media (max-width: 768px) {
             .mobile-admin-header {
-                display: flex;
+                display: flex !important;
+                background: rgba(15, 23, 42, 0.96);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+                height: 60px;
+                padding: 0 1.25rem;
+                justify-content: flex-start;
+            }
+
+            .mobile-brand {
+                font-weight: 700;
+                font-size: 1.15rem;
+                color: #FFFFFF;
+                letter-spacing: 0.5px;
+                margin-left: 0.25rem;
             }
 
             .sidebar-overlay {
-                display: block;
+                display: block !important;
+                background: rgba(15, 23, 42, 0.6);
+                backdrop-filter: blur(6px);
+                -webkit-backdrop-filter: blur(6px);
             }
 
             .admin-layout {
-                flex-direction: column;
-                height: auto;
-                min-height: 100vh;
+                flex-direction: column !important;
+                height: auto !important;
+                min-height: 100vh !important;
+                background: var(--bg);
             }
 
             /* Turn sidebar into drawer */
             .sidebar {
-                position: fixed;
-                left: -270px;
-                top: 0;
-                bottom: 0;
-                width: 260px;
-                z-index: 1100;
-                height: 100vh;
-                box-shadow: 5px 0 25px rgba(0, 0, 0, 0.15);
-                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                position: fixed !important;
+                left: -290px !important;
+                top: 0 !important;
+                bottom: 0 !important;
+                width: 280px !important;
+                z-index: 1100 !important;
+                height: 100vh !important;
+                background: rgba(15, 23, 42, 0.98) !important;
+                backdrop-filter: blur(24px);
+                -webkit-backdrop-filter: blur(24px);
+                box-shadow: 10px 0 40px rgba(0, 0, 0, 0.3) !important;
+                transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+                padding: 4rem 1.5rem 2rem 1.5rem !important; /* spacing for top close button */
             }
 
             .sidebar.open {
-                transform: translateX(270px);
+                transform: translateX(290px) !important;
             }
 
-            /* Layout Main Content adjustments */
+            /* Close Button inside Sidebar */
+            .sidebar-close-btn {
+                position: absolute !important;
+                top: 1.25rem !important;
+                right: 1.25rem !important;
+                background: rgba(255, 255, 255, 0.08) !important;
+                border: none !important;
+                color: #94A3B8 !important;
+                width: 36px !important;
+                height: 36px !important;
+                border-radius: 50% !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                font-size: 1.15rem !important;
+                cursor: pointer !important;
+                transition: all 0.2s ease !important;
+            }
+
+            .sidebar-close-btn:hover {
+                background: rgba(239, 68, 68, 0.15) !important;
+                color: #EF4444 !important;
+            }
+
+            /* Navigation Links inside Mobile Drawer */
+            .sidebar-brand {
+                font-size: 1.35rem !important;
+                margin-bottom: 2rem !important;
+                text-align: center;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+                padding-bottom: 1rem;
+            }
+
+            .nav-item {
+                padding: 0.9rem 1.25rem !important;
+                font-size: 1.05rem !important;
+                margin-bottom: 0.6rem !important;
+                display: flex !important;
+                align-items: center !important;
+                gap: 0.75rem !important;
+            }
+
+            /* Layout Main Content - Crucial height & scrolling overrides */
             .main-content {
-                padding: 1.5rem 1rem;
-                margin-top: 60px; /* offset sticky mobile header */
-                width: 100%;
-                box-sizing: border-box;
+                padding: 1.5rem 1rem !important;
+                margin-top: 60px !important; /* offset sticky mobile header */
+                width: 100% !important;
+                box-sizing: border-box !important;
+                overflow-y: visible !important; /* Let body handle vertical scrolling */
+                height: auto !important;
+                flex: none !important;
             }
 
             .header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-                margin-bottom: 1.5rem;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 1rem !important;
+                margin-bottom: 1.5rem !important;
             }
 
             .header h1 {
-                font-size: 1.5rem;
-                margin: 0;
+                font-size: 1.6rem !important;
+                margin: 0 !important;
             }
 
             .header .btn {
-                width: 100%;
+                width: 100% !important;
                 text-align: center;
+                justify-content: center;
             }
 
             /* Stack Form Grid */
             .form-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
+                grid-template-columns: 1fr !important;
+                gap: 1rem !important;
             }
 
             .form-group.full {
-                grid-column: span 1;
+                grid-column: span 1 !important;
             }
 
             .card {
-                padding: 1.25rem;
+                padding: 1.5rem 1.25rem !important;
+                border-radius: 12px !important;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important;
+                margin-bottom: 1.5rem;
             }
 
-            /* Responsive Table wrappers */
+            /* Table scaling & scrollability */
             table th, table td {
-                padding: 0.75rem 0.5rem !important;
-                font-size: 0.85rem;
+                padding: 0.85rem 0.5rem !important;
+                font-size: 0.825rem !important;
             }
 
             .btn {
-                padding: 0.6rem 1rem;
-                font-size: 0.9rem;
+                padding: 0.5rem 0.85rem !important;
+                font-size: 0.85rem !important;
+                border-radius: 8px !important;
             }
 
             /* Preview Grid optimization */
             .preview-grid {
-                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-                gap: 0.75rem;
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)) !important;
+                gap: 0.75rem !important;
             }
 
             /* Login Overlay container adjust */
             .login-box {
-                margin: 0 1rem;
-                padding: 1.5rem;
-                max-width: 100%;
+                margin: 0 1rem !important;
+                padding: 2rem 1.5rem !important;
+                max-width: 90% !important;
+                border-radius: 12px !important;
             }
         }
     </style>
@@ -430,6 +510,10 @@
         </div>
 
         <aside class="sidebar">
+            <!-- Close Button for Mobile Drawer -->
+            <button class="sidebar-close-btn hidden-desktop" id="sidebar-close-btn" aria-label="Close Navigation">
+                <i class="fas fa-times"></i>
+            </button>
             <div class="sidebar-brand">Copier Maximum Solutions</div>
             <div class="nav-item active" onclick="window.AdminApp.switchTab('add')"><i class="fas fa-plus-circle"></i> Add
                 Product</div>
@@ -671,6 +755,7 @@
             const toggleBtn = document.getElementById('mobile-nav-toggle');
             const sidebar = document.querySelector('.sidebar');
             const overlay = document.getElementById('sidebar-overlay');
+            const closeBtn = document.getElementById('sidebar-close-btn');
 
             if (toggleBtn && sidebar && overlay) {
                 const toggleSidebar = () => {
@@ -680,6 +765,9 @@
 
                 toggleBtn.addEventListener('click', toggleSidebar);
                 overlay.addEventListener('click', toggleSidebar);
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', toggleSidebar);
+                }
 
                 // Auto-close sidebar drawer when navigating tabs
                 document.querySelectorAll('.sidebar .nav-item').forEach(item => {

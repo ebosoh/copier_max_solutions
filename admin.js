@@ -100,6 +100,13 @@ class AdminApplication {
         if (tabId === 'settings') {
             this.loadSettings();
         }
+
+        // Clean view transitions: scroll dashboard main contents and window viewport to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        const mainContent = document.querySelector('.main-content');
+        if (mainContent) {
+            mainContent.scrollTop = 0;
+        }
     }
 
 
