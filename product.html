@@ -90,6 +90,10 @@
                         style="margin-left: 1rem; border-color: #25D366; color: #25D366;">
                         <i class="fab fa-whatsapp"></i> Buy via WhatsApp
                     </a>
+                    <a id="detail-product-link" href="" target="_blank" class="btn btn-outline hidden"
+                        style="margin-left: 1rem; border-color: var(--accent-color); color: var(--accent-color); text-align: center; justify-content: center; display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none;">
+                        <i class="fas fa-external-link-alt"></i> View More Details
+                    </a>
                 </div>
             </div>
         </div>
@@ -137,6 +141,17 @@
             let img = p.images ? p.images.split(',')[0] : 'assets/placeholder.png';
             if (!img || img.length < 5) img = 'https://via.placeholder.com/400';
             document.getElementById('detail-image').src = img;
+
+            // Product Link Button
+            const linkEl = document.getElementById('detail-product-link');
+            if (linkEl) {
+                if (p.product_link && p.product_link.trim() !== '') {
+                    linkEl.href = p.product_link;
+                    linkEl.classList.remove('hidden');
+                } else {
+                    linkEl.classList.add('hidden');
+                }
+            }
         }
 
         loadProduct();

@@ -732,6 +732,17 @@ class App {
             this.closeProductModal();
         };
 
+        // Product Link Button
+        const linkBtn = document.getElementById('modal-product-link');
+        if (linkBtn) {
+            if (product.product_link && product.product_link.trim() !== '') {
+                linkBtn.href = product.product_link;
+                linkBtn.classList.remove('hidden');
+            } else {
+                linkBtn.classList.add('hidden');
+            }
+        }
+
         // Show Modal
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden'; // prevent background scroll

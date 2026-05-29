@@ -177,9 +177,11 @@ class AdminApplication {
             const actualIndex = startIndex + displayIndex;
             const rowId = p.rowId || (actualIndex + 2);
 
+            const linkHtml = p.product_link ? `<a href="${p.product_link}" target="_blank" title="View Product Link" style="color: var(--accent); margin-left: 0.5rem;"><i class="fas fa-external-link-alt" style="font-size: 0.75rem;"></i></a>` : '';
+
             tr.innerHTML = `
                 <td style="padding: 1rem;"><img src="${imgSrc}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"></td>
-                <td style="padding: 1rem; font-weight: 500;">${p.name}</td>
+                <td style="padding: 1rem; font-weight: 500;">${p.name}${linkHtml}</td>
                 <td style="padding: 1rem;">${p.category || 'N/A'}</td>
                 <td style="padding: 1rem; font-weight: bold; color: var(--accent);">KES ${parseFloat(p.price || 0).toLocaleString()}</td>
                 <td style="padding: 1rem; white-space: nowrap;">
@@ -245,6 +247,7 @@ class AdminApplication {
         form.category.value = p.category;
         form.price.value = p.price;
         form.old_price.value = p.old_price || '';
+        form.product_link.value = p.product_link || '';
         form.description.value = p.description || '';
         document.getElementById('rowId').value = rowId;
         document.getElementById('existingImages').value = p.images || '';
@@ -356,6 +359,7 @@ class AdminApplication {
                 category: formData.get('category'),
                 price: formData.get('price'),
                 old_price: formData.get('old_price'),
+                product_link: formData.get('product_link'),
                 description: formData.get('description'),
                 images: existingImagesStr, // Leave base image string intact, Apps Script will append
                 imageFiles: imageFilesData, // Send new files to Google Script
