@@ -1109,14 +1109,14 @@ class App {
         let indicatorsHtml = '';
 
         if (activeDiscounts.length === 0) {
-            // Render Premium Fallback Brand Slide
+            // Render premium fallback slide on dark background
             slidesHtml = `
-                <div class="hero-slide active" onclick="document.getElementById('shop').scrollIntoView({ behavior: 'smooth' })" style="cursor:pointer;">
-                    <img src="commercial-copier.png" style="width:100%;height:100%;object-fit:contain;" alt="Copier Maximum Solutions Premium Office Automations">
+                <div class="hero-slide active slide-product" onclick="document.getElementById('shop').scrollIntoView({ behavior: 'smooth' })" style="cursor:pointer; background: linear-gradient(135deg, #0B1426 0%, #0F2347 50%, #0B1426 100%);">
+                    <img src="commercial-copier.png" style="width:100%;height:100%;object-fit:contain;padding:1.5rem;" alt="Premium Office Copiers & Printers">
                     <div class="hero-slide-overlay">
-                        <span class="slide-badge">OFFICIAL PARTNER</span>
+                        <span class="slide-badge">Official Partner</span>
                         <h2 class="slide-title">Premium Office Automations</h2>
-                        <p class="slide-desc">Top deals on refurbished Kyocera copiers, printers &amp; toners in Nairobi, Kenya.</p>
+                        <p class="slide-desc">Top deals on refurbished Kyocera copiers, printers &amp; toners in Nairobi.</p>
                         <div class="slide-action">Explore Catalog <i class="fas fa-arrow-right"></i></div>
                     </div>
                 </div>
@@ -1126,17 +1126,19 @@ class App {
             activeDiscounts.forEach((d, idx) => {
                 const activeClass = idx === 0 ? 'active' : '';
                 const banner = d.banner_url || 'commercial-copier.png';
-                const imgFit = banner.includes('commercial-copier') ? 'contain' : 'cover';
-                
-                // Format target parameters to make it dynamic
+                const isProduct = !banner.startsWith('http') || banner.includes('commercial-copier');
+                const slideClass = isProduct ? 'slide-product' : '';
+                const imgStyle = isProduct
+                    ? 'width:100%;height:100%;object-fit:contain;padding:1.5rem;'
+                    : 'width:100%;height:100%;object-fit:cover;filter:brightness(0.6);';
                 const escapedTargetType = d.target_type;
                 const escapedTargetId = d.target_id.replace(/'/g, "\\'");
 
                 slidesHtml += `
-                    <div class="hero-slide ${activeClass}" 
+                    <div class="hero-slide ${activeClass} ${slideClass}" 
                          onclick="window.App.handleDiscountClick('${escapedTargetType}', '${escapedTargetId}')" 
                          style="cursor:pointer;">
-                        <img src="${banner}" style="width:100%;height:100%;object-fit:${imgFit};filter:brightness(0.65);" alt="${d.title}">
+                        <img src="${banner}" style="${imgStyle}" alt="${d.title}">
                         <div class="hero-slide-overlay">
                             <span class="slide-badge">${d.discount_value}</span>
                             <h2 class="slide-title">${d.title}</h2>
@@ -1147,10 +1149,7 @@ class App {
                 `;
 
                 const indicatorActive = idx === 0 ? 'active' : '';
-                indicatorsHtml += `
-                    <button class="${indicatorActive}" 
-                            onclick="window.App.goToHeroSlide(${idx})"></button>
-                `;
+                indicatorsHtml += `<button class="${indicatorActive}" onclick="window.App.goToHeroSlide(${idx})"></button>`;
             });
         }
 
