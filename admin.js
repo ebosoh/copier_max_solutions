@@ -63,6 +63,16 @@ class AdminApplication {
         if (testForm) {
             testForm.addEventListener('submit', (e) => this.handleTestimonialSubmit(e));
         }
+
+        // Discount Forms
+        const discForm = document.getElementById('discount-form');
+        if (discForm) {
+            discForm.addEventListener('submit', (e) => this.handleDiscountSubmit(e));
+        }
+        const discTypeInput = document.getElementById('discount-target-type-input');
+        if (discTypeInput) {
+            discTypeInput.addEventListener('change', (e) => this.updateDiscountTargetOptions(e.target.value));
+        }
     }
 
     login() {
@@ -100,6 +110,10 @@ class AdminApplication {
 
         if (tabId === 'settings') {
             this.loadSettings();
+        }
+
+        if (tabId === 'discounts') {
+            this.loadDiscounts();
         }
 
         // Clean view transitions: scroll dashboard main contents and window viewport to top
@@ -650,6 +664,235 @@ class AdminApplication {
             this.loadSettings();
         } catch (e) {
             alert("Failed to delete testimonial.");
+        }
+    }
+
+    /* --- Discounts Management --- */
+    async loadDiscounts() {
+        const body = document.getElementById('discounts-table-body');
+        if (body) body.innerHTML = '<tr><td colspan="6" style="padding: 1rem; text-align: center;"><i class="fas fa-spinner fa-spin"></i> Fetching active discount list...</td></tr>';
+
+        try {
+            // First load products cache so we can populate product redirect selectors if needed
+            if (this.inventoryProducts.length === 0) {
+                this.inventoryProducts = await this.sheetDb.fetchProducts();
+            }
+
+            // Populate redirect selectors default
+            const targetTypeSelect = document.getElementById('discount-target-type-input');
+            if (targetTypeSelect) {
+                this.updateDiscountTargetOptions(targetTypeSelect.value);
+            }
+
+            const discounts = await this.sheetDb.fetchDiscounts();
+            if (body) {
+                body.innerHTML = '';
+                if (discounts.length === 0) {
+                    body.innerHTML = '<tr><td colspan="6" style="padding: 1rem; text-align: center; color: var(--text); opacity: 0.6;">No discount banners added yet. Fallback default branding slide will be shown.</td></tr>';
+                } else {
+                    discounts.forEach(d => {
+                        const tr = document.createElement('tr');
+                        tr.style.borderBottom = "1px solid var(--border)";
+                        const img = d.banner_url ? `<img src="${d.banner_url}" style="height: 40px; width: 80px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border);">` : '<span style="color:var(--text); opacity:0.6;">None</span>';
+                        
+                        let targetText = '';
+                        if (d.target_type === 'category') targetText = `📂 Category: <strong>${d.target_id}</strong>`;
+                        else if (d.target_type === 'product') targetText = `📦 Product Modal: <strong>${d.target_id}</strong>`;
+                        else targetText = `🔗 Link: <a href="${d.target_id}" target="_blank" style="color:var(--accent); font-weight:500;">${d.target_id.substring(0, 30)}...</a>`;
+
+                        const statusBadge = d.active === 'TRUE' 
+                            ? `<span style="background:rgba(16,185,129,0.15); color:#10B981; font-size:0.75rem; padding:4px 8px; border-radius:12px; font-weight:700;">Active</span>`
+                            : `<span style="background:rgba(239,68,68,0.15); color:#EF4444; font-size:0.75rem; padding:4px 8px; border-radius:12px; font-weight:700;">Disabled</span>`;
+
+                        const escapedTitle = (d.title || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                        const escapedVal = (d.discount_value || '').replace(/'/g, "\\'");
+                        const escapedDesc = (d.description || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                        const escapedBanner = (d.banner_url || '').replace(/'/g, "\\'");
+
+                        tr.innerHTML = `
+                            <td style="padding: 1rem;">${img}</td>
+                            <td style="padding: 1rem; font-weight: 600; color:var(--primary);">${d.title}</td>
+                            <td style="padding: 1rem;"><span style="background:#FFD700; color:var(--primary); font-weight:700; font-size:0.8rem; padding:3px 8px; border-radius:4px;">${d.discount_value}</span></td>
+                            <td style="padding: 1rem; font-size:0.85rem;">${targetText}</td>
+                            <td style="padding: 1rem;">${statusBadge}</td>
+                            <td style="padding: 1rem; white-space:nowrap;">
+                                <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--accent-color); color: white; margin-right:0.4rem;" onclick="window.AdminApp.editDiscount(${d.rowId}, '${escapedTitle}', '${escapedVal}', '${d.target_type}', '${(d.target_id||'').replace(/'/g, "\\'")}', '${escapedDesc}', '${escapedBanner}', '${d.active}')"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--danger); color: white;" onclick="window.AdminApp.deleteDiscount(${d.rowId})"><i class="fas fa-trash"></i> Delete</button>
+                            </td>
+                        `;
+                        body.appendChild(tr);
+                    });
+                }
+            }
+        } catch (e) {
+            console.error(e);
+            alert("Error loading dynamic discount offers: " + e.message);
+        }
+    }
+
+    updateDiscountTargetOptions(type) {
+        const select = document.getElementById('discount-target-id-input');
+        const customInput = document.getElementById('discount-custom-link-input');
+        if (!select || !customInput) return;
+
+        select.innerHTML = '';
+
+        if (type === 'category') {
+            select.classList.remove('hidden');
+            select.disabled = false;
+            customInput.classList.add('hidden');
+            customInput.required = false;
+
+            const categories = [
+                "Refurbished Copiers",
+                "Drum units",
+                "Kyocera B/W A4 Printers",
+                "Toner Refills",
+                "Toners",
+                "Accessories",
+                "Brand New Copiers",
+                "Laptops & Computers",
+                "Spare Parts",
+                "Office Printers"
+            ];
+            categories.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c;
+                opt.textContent = c;
+                select.appendChild(opt);
+            });
+        } else if (type === 'product') {
+            select.classList.remove('hidden');
+            select.disabled = false;
+            customInput.classList.add('hidden');
+            customInput.required = false;
+
+            if (this.inventoryProducts.length === 0) {
+                const opt = document.createElement('option');
+                opt.value = '';
+                opt.textContent = "Loading active products list...";
+                select.appendChild(opt);
+            } else {
+                this.inventoryProducts.forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = p.name;
+                    opt.textContent = p.name;
+                    select.appendChild(opt);
+                });
+            }
+        } else if (type === 'link') {
+            select.classList.add('hidden');
+            select.disabled = true;
+            customInput.classList.remove('hidden');
+            customInput.required = true;
+        }
+    }
+
+    async handleDiscountSubmit(e) {
+        e.preventDefault();
+        const btn = e.target.querySelector('button[type="submit"]');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        btn.disabled = true;
+
+        try {
+            const formData = new FormData(e.target);
+            const rowId = document.getElementById('discount-row-id').value;
+            const fileInput = document.getElementById('discount-banner-input');
+            const file = fileInput.files[0];
+
+            if (!rowId && !file) throw new Error('Please select a discount banner background image.');
+
+            const type = formData.get('discountTargetType');
+            let targetVal = '';
+            if (type === 'link') {
+                targetVal = formData.get('discountCustomLink').trim();
+            } else {
+                targetVal = formData.get('discountTargetId');
+            }
+
+            const discountCmd = {
+                action: rowId ? 'edit_discount' : 'add_discount',
+                rowId: rowId || null,
+                title: formData.get('discountTitle'),
+                discount_value: formData.get('discountValue'),
+                target_type: type,
+                target_id: targetVal,
+                description: formData.get('discountDescription'),
+                active: formData.get('discountActive'),
+                existingBannerUrl: document.getElementById('discount-existing-banner').value
+            };
+
+            if (file) {
+                console.log(`Compressing discount banner: ${file.name}...`);
+                const compressedBanner = await this.compressImage(file);
+                const base64Content = await this.toBase64(compressedBanner);
+                discountCmd.imageFile = { name: file.name, content: base64Content };
+            }
+
+            await this.sendToSheet(discountCmd);
+            alert(rowId ? 'Discount Offer updated successfully!' : 'Discount Offer added successfully!');
+            this.cancelDiscountEdit();
+            this.loadDiscounts();
+
+        } catch (err) {
+            console.error(err);
+            alert('Error saving discount offer: ' + err.message);
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }
+
+    editDiscount(rowId, title, discountValue, targetType, targetId, description, bannerUrl, active) {
+        document.getElementById('discount-row-id').value = rowId;
+        document.getElementById('discount-existing-banner').value = bannerUrl;
+        document.getElementById('discount-title-input').value = title;
+        document.getElementById('discount-value-input').value = discountValue;
+        document.getElementById('discount-description-input').value = description;
+        
+        const typeSelect = document.getElementById('discount-target-type-input');
+        typeSelect.value = targetType;
+        this.updateDiscountTargetOptions(targetType);
+
+        if (targetType === 'link') {
+            document.getElementById('discount-custom-link-input').value = targetId;
+        } else {
+            document.getElementById('discount-target-id-input').value = targetId;
+        }
+
+        document.getElementById('discount-active-input').value = active;
+        document.getElementById('discount-form-title').textContent = '✏️ Editing Discount: ' + title;
+        document.getElementById('discount-banner-hint').textContent = bannerUrl ? '(leave empty to keep current banner)' : '';
+        document.getElementById('discount-submit-btn').innerHTML = '<i class="fas fa-save"></i> Update Discount';
+        document.getElementById('discount-cancel-edit').style.display = 'inline-flex';
+        document.getElementById('discount-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    cancelDiscountEdit() {
+        document.getElementById('discount-form').reset();
+        document.getElementById('discount-row-id').value = '';
+        document.getElementById('discount-existing-banner').value = '';
+        document.getElementById('discount-form-title').textContent = 'Add New Discount Offer';
+        document.getElementById('discount-banner-hint').textContent = '';
+        document.getElementById('discount-submit-btn').innerHTML = '<i class="fas fa-plus"></i> Upload Discount Offer';
+        document.getElementById('discount-cancel-edit').style.display = 'none';
+
+        const typeSelect = document.getElementById('discount-target-type-input');
+        if (typeSelect) {
+            typeSelect.value = 'category';
+            this.updateDiscountTargetOptions('category');
+        }
+    }
+
+    async deleteDiscount(rowId) {
+        if (!confirm("Are you sure you want to permanently delete this discount offer banner?")) return;
+        try {
+            await this.sendToSheet({ action: "delete_discount", rowId: rowId });
+            alert("Discount Offer Deleted!");
+            this.loadDiscounts();
+        } catch (e) {
+            alert("Failed to delete discount: " + e.message);
         }
     }
 
