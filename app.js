@@ -197,7 +197,7 @@ class App {
         // Disable Spy on Product Page
         if (window.location.pathname.includes('product.html')) return;
 
-        const sections = ['home', 'about', 'shop', 'contact', 'faqs', 'service-request', 'quote-request'];
+        const sections = ['home', 'about', 'shop', 'contact', 'faqs', 'service-hub'];
         let current = '';
 
         // Find the section currently in view
