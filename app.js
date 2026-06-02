@@ -1013,7 +1013,7 @@ class App {
 
     async loadDiscountsAndHero() {
         try {
-            const discounts = await this.sheetDb.fetchDiscounts();
+            const discounts = await this.db.fetchDiscounts();
             this.renderHeroDiscounts(discounts);
         } catch (e) {
             console.error("Failed to load discount offers:", e);
