@@ -99,7 +99,7 @@ class App {
 
     startHeroCarousel() {
         if (this.heroInterval) clearInterval(this.heroInterval);
-        this.heroInterval = setInterval(() => this.nextHeroSlide(), 5000);
+        this.heroInterval = setInterval(() => this.nextHeroSlide(), 3800);
     }
 
     goToHeroSlide(index) {
@@ -1113,7 +1113,7 @@ class App {
         if (activeDiscounts.length === 0) {
             // Render premium fallback slide on dark background
             slidesHtml = `
-                <div class="hero-slide active slide-product" onclick="document.getElementById('shop').scrollIntoView({ behavior: 'smooth' })" style="cursor:pointer; background: linear-gradient(135deg, #0B1426 0%, #0F2347 50%, #0B1426 100%);">
+                <div class="hero-slide active slide-product" onclick="document.getElementById('shop').scrollIntoView({ behavior: 'smooth' })" style="cursor:pointer; background: radial-gradient(circle at center, #1E293B 0%, #0F172A 100%);">
                     <img src="commercial-copier.png" style="width:100%;height:100%;object-fit:contain;padding:1.5rem;" alt="Premium Office Copiers & Printers">
                     <div class="hero-slide-overlay">
                         <span class="slide-badge">Official Partner</span>

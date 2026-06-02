@@ -524,20 +524,18 @@ h3 {
     width: 450px;
     max-width: 50%;
     height: 400px;
-    position: absolute;
-    right: 2%;
-    top: 50%;
-    /* translateZ(0) forces integer-pixel GPU layer — prevents sub-pixel blur */
-    transform: translateY(-50%) translateZ(0);
+    position: relative; /* Normal flex-child behavior, aligned perfectly by .hero-content align-items:center */
     will-change: transform;
+    flex-shrink: 0;
+    z-index: 10;
 }
 
 /* Premium Rounded Card */
 .hero-carousel {
     border-radius: 24px;
     overflow: hidden;
-    box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255,255,255,0.12);
-    background: #0F172A;
+    box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255,255,255,0.12);
+    background: radial-gradient(circle at center, #1E293B 0%, #0F172A 100%);
     height: 100%;
     position: relative;
     /* Prevents GPU compositing blur from border-radius + overflow:hidden + transform */
@@ -603,7 +601,7 @@ h3 {
     opacity: 0;
     z-index: 1;
     transition: opacity 0.9s ease-in-out;
-    background: #0F172A;
+    background: radial-gradient(circle at center, #1E293B 0%, #0F172A 100%);
     overflow: hidden;
     /* Prevent compositing blur during opacity transitions */
     -webkit-backface-visibility: hidden;
@@ -616,18 +614,19 @@ h3 {
     height: 100%;
     object-fit: contain;        /* contain by default — never stretch/warp */
     display: block;
-    /* Force crisp pixel rendering — eliminates browser softening/blur */
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
+    /* Standard smooth photographic scaling — crisp-edges was pixelating high-res banners */
+    image-rendering: auto; 
     transform: translateZ(0);
+    /* 3D premium floating drop-shadow for machines */
+    filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.55));
 }
 
 /* Product images — padded so they don't touch carousel edges */
 .hero-slide.slide-product img {
     object-fit: contain;
-    padding: 1.25rem;
+    padding: 1.5rem;
 }
 
 .hero-slide.active {
@@ -635,63 +634,75 @@ h3 {
     z-index: 10;
 }
 
-/* Slide overlay text */
+/* Slide overlay text with modern premium glass backdrop */
 .hero-slide-overlay {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 1.5rem 1.75rem;
+    padding: 1.75rem 2rem;
     background: linear-gradient(to top,
-        rgba(5, 10, 25, 0.92) 0%,
-        rgba(5, 10, 25, 0.5) 60%,
+        rgba(15, 23, 42, 0.95) 0%,
+        rgba(15, 23, 42, 0.5) 60%,
         transparent 100%);
     z-index: 5;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
 }
 
 .slide-badge {
     display: inline-block;
-    background: #3B82F6;
+    background: linear-gradient(135deg, var(--accent-color, #3B82F6) 0%, #1D4ED8 100%);
     color: white;
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     font-weight: 700;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    padding: 0.25rem 0.75rem;
+    padding: 0.3rem 0.85rem;
     border-radius: 999px;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.65rem;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .slide-title {
-    font-size: 1.25rem;
-    font-weight: 700;
+    font-size: 1.4rem;
+    font-weight: 800;
     color: #fff;
-    margin: 0 0 0.35rem 0;
-    line-height: 1.3;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    margin: 0 0 0.4rem 0;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
 }
 
 .slide-desc {
-    font-size: 0.82rem;
-    color: rgba(255,255,255,0.8);
-    margin: 0 0 0.75rem 0;
+    font-size: 0.85rem;
+    color: rgba(241, 245, 249, 0.9);
+    margin: 0 0 1rem 0;
     line-height: 1.5;
 }
 
+/* Beautiful Premium Floating Action Button Pill */
 .slide-action {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: #60A5FA;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent-color, #3B82F6);
+    background: rgba(255, 255, 255, 0.95);
+    padding: 0.5rem 1.25rem;
+    border-radius: 999px;
     cursor: pointer;
-    transition: gap 0.2s;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
 }
 
 .slide-action:hover {
-    gap: 0.65rem;
-    color: #93C5FD;
+    gap: 0.7rem;
+    background: #FFFFFF;
+    color: var(--accent-hover, #2563EB);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25);
 }
 
 /* Carousel dot indicators */
@@ -3032,48 +3043,14 @@ h3 {
     100% { transform: scale(1); }
 }
 
-.slide-title {
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: white !important;
-    line-height: 1.2;
-    margin: 0;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-    letter-spacing: -0.01em;
-}
-
-.slide-desc {
-    font-size: 0.95rem;
-    color: #E2E8F0 !important;
-    line-height: 1.5;
-    margin: 0;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-    font-weight: 400;
-    max-width: 90%;
-}
-
-.slide-action {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #FFD700;
-    font-weight: 700;
-    font-size: 0.9rem;
-    margin-top: 0.25rem;
-    transition: transform var(--transition-fast);
-}
-
-.hero-slide:hover .slide-action {
-    transform: translateX(4px);
-    color: white;
-}
-
-.hero-slide:hover img {
-    transform: scale(1.03) !important;
-}
-
+/* Premium Ken Burns Smooth Zoom Effect for Active Slide */
 .hero-slide img {
-    transition: transform 6s ease !important;
+    transform: scale(1.02) translateZ(0);
+    transition: transform 8s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+.hero-slide.active img {
+    transform: scale(1.08) translateZ(0);
 }
 
 /* Responsive adjustments for mobile dynamic carousel */
