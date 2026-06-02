@@ -2216,18 +2216,35 @@ h3 {
    PREMIUM UX ENHANCEMENTS & BRANDING
    ========================================================================== */
 
-/* Swipeable Category Pills */
+/* Swipeable Category Pills & Responsive Desktop Wrap */
 .category-pills-container {
     display: flex;
+    flex-wrap: wrap; /* Wrap by default on desktop for perfect visibility of all capsules */
     gap: 0.75rem;
-    overflow-x: auto;
-    padding: 0.5rem 0 1.25rem 0;
+    padding: 0.5rem 0 1rem 0;
     margin-bottom: 2rem;
-    scrollbar-width: none; /* Hide for Firefox */
-    -ms-overflow-style: none; /* Hide for IE/Edge */
 }
-.category-pills-container::-webkit-scrollbar {
-    display: none; /* Hide for Chrome/Safari */
+
+@media (max-width: 992px) {
+    .category-pills-container {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding: 0.5rem 1rem 1.25rem 1rem;
+        margin-left: -1rem;  /* Pull to the edge of .container padding */
+        margin-right: -1rem; /* Pull to the edge of .container padding */
+        scrollbar-width: none; /* Hide for Firefox */
+        -ms-overflow-style: none; /* Hide for IE/Edge */
+        -webkit-overflow-scrolling: touch;
+    }
+    .category-pills-container::-webkit-scrollbar {
+        display: none; /* Hide for Chrome/Safari */
+    }
+    /* Ensure the last pill has right padding so it isn't clipped when scrolled completely to the right */
+    .category-pills-container::after {
+        content: '';
+        padding-right: 1.5rem;
+        flex-shrink: 0;
+    }
 }
 .category-pill {
     display: inline-flex;

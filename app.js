@@ -854,7 +854,7 @@ class App {
             "Toners",
             "Accessories",
             "Brand New Copiers",
-            "Laptops & Computers",
+            "Computers & Laptops",
             "Spare Parts",
             "Office Printers"
         ];
@@ -877,7 +877,9 @@ class App {
             // Use grouped view for all products
             this.renderGroupedProducts(this.products);
         } else {
-            const filtered = this.products.filter(p => p.category === category);
+            // Map Computers & Laptops pill value to Laptops & Computers database value
+            const filterCat = category === "Computers & Laptops" ? "Laptops & Computers" : category;
+            const filtered = this.products.filter(p => p.category === filterCat);
             this.renderProducts(filtered);
         }
     }
@@ -1173,9 +1175,14 @@ class App {
                 return;
             }
             const pillBtn = Array.from(document.querySelectorAll('.category-pill'))
-                                 .find(btn => btn.textContent.trim() === target);
+                                 .find(btn => {
+                                     const text = btn.textContent.trim();
+                                     return text === target || 
+                                            (target === "Laptops & Computers" && text === "Computers & Laptops") ||
+                                            (target === "Computers & Laptops" && text === "Laptops & Computers");
+                                 });
             if (pillBtn) {
-                this.handleCategoryPillClick(pillBtn, target);
+                this.handleCategoryPillClick(pillBtn, pillBtn.textContent.trim());
             } else {
                 this.handleSearch(target);
             }
