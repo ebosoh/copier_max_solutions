@@ -3084,3 +3084,257 @@ h3 {
         padding: 1.5rem 1.25rem !important;
     }
 }
+
+/* ==========================================================================
+   PREMIUM SUBMENU DROPDOWN & FLYOUT NAVIGATION
+   ========================================================================== */
+
+/* ── 1. Desktop Nav Header Dropdowns ── */
+.nav-dropdown-wrapper {
+    position: relative;
+    display: inline-block;
+    z-index: 1001;
+}
+
+.dropdown-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    cursor: pointer;
+}
+
+.dropdown-trigger-icon {
+    font-size: 0.75rem;
+    transition: transform var(--transition-smooth, 0.3s ease);
+}
+
+.nav-dropdown-wrapper:hover .dropdown-trigger-icon {
+    transform: rotate(180deg);
+}
+
+/* First-level dropdown menu */
+.nav-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(15px) scale(0.95);
+    opacity: 0;
+    visibility: hidden;
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: var(--radius-md, 8px);
+    box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.15);
+    padding: 0.75rem 0;
+    min-width: 250px;
+    z-index: 1000;
+    list-style: none;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, visibility 0.25s;
+    pointer-events: none;
+}
+
+.nav-dropdown-wrapper:hover .nav-dropdown {
+    transform: translateX(-50%) translateY(5px) scale(1);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.nav-dropdown li {
+    position: relative;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-dropdown li a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.65rem 1.5rem;
+    margin: 0 !important;
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+    color: var(--text-body, #334155) !important;
+    transition: all 0.2s ease !important;
+    border-radius: 0 !important;
+}
+
+.nav-dropdown li a:hover {
+    background-color: rgba(59, 130, 246, 0.05) !important;
+    color: var(--accent-color, #3B82F6) !important;
+    padding-left: 1.75rem !important;
+}
+
+/* Arrow inside submenu list item */
+.nav-dropdown li a i {
+    font-size: 0.7rem;
+    opacity: 0.6;
+    transition: transform var(--transition-fast, 0.2s);
+}
+
+.nav-dropdown li a:hover i {
+    transform: translateX(4px);
+    opacity: 1;
+    color: var(--accent-color, #3B82F6);
+}
+
+/* Nested (second-level) dropdown flyout menu */
+.nav-nested-dropdown {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    transform: translateX(15px) scale(0.95);
+    opacity: 0;
+    visibility: hidden;
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: var(--radius-md, 8px);
+    box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.15);
+    padding: 0.5rem 0;
+    min-width: 180px;
+    z-index: 1010;
+    list-style: none;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, visibility 0.25s;
+    pointer-events: none;
+}
+
+.nav-dropdown-item-with-nested:hover .nav-nested-dropdown {
+    transform: translateX(5px) scale(1);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* ── 2. Sidebar Categories Flyout Submenus ── */
+.sidebar-item-with-submenu {
+    position: relative;
+}
+
+.submenu-trigger-icon {
+    font-size: 0.75rem;
+    opacity: 0.5;
+    transition: transform var(--transition-fast, 0.2s);
+}
+
+.sidebar-item-with-submenu:hover .submenu-trigger-icon {
+    transform: rotate(90deg);
+    opacity: 1;
+}
+
+.sidebar-submenu {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    transform: translateX(15px) scale(0.95);
+    opacity: 0;
+    visibility: hidden;
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: var(--radius-md, 8px);
+    box-shadow: 0 12px 35px -5px rgba(15, 23, 42, 0.18);
+    padding: 0.75rem 0;
+    min-width: 250px;
+    z-index: 1000;
+    list-style: none;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, visibility 0.25s;
+    pointer-events: none;
+}
+
+.sidebar-item-with-submenu:hover .sidebar-submenu {
+    transform: translateX(5px) scale(1);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.sidebar-submenu li a {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.65rem 1.25rem !important;
+    margin: 0 !important;
+    font-size: 0.9rem !important;
+    border-bottom: none !important;
+    color: var(--text-body, #334155) !important;
+    transition: all 0.2s ease !important;
+}
+
+.sidebar-submenu li a:hover {
+    background: rgba(59, 130, 246, 0.05) !important;
+    color: var(--accent-color, #3B82F6) !important;
+    padding-left: 1.5rem !important;
+}
+
+.sidebar-submenu li a i {
+    font-size: 0.7rem;
+    opacity: 0.6;
+    transition: transform var(--transition-fast, 0.2s);
+}
+
+.sidebar-submenu li a:hover i {
+    transform: translateX(4px);
+    opacity: 1;
+    color: var(--accent-color, #3B82F6);
+}
+
+/* Sidebar nested (second-level) submenus */
+.sidebar-submenu-item-with-nested {
+    position: relative;
+}
+
+.sidebar-nested-submenu {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    transform: translateX(15px) scale(0.95);
+    opacity: 0;
+    visibility: hidden;
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: var(--radius-md, 8px);
+    box-shadow: 0 12px 35px -5px rgba(15, 23, 42, 0.18);
+    padding: 0.5rem 0;
+    min-width: 180px;
+    z-index: 1010;
+    list-style: none;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, visibility 0.25s;
+    pointer-events: none;
+}
+
+.sidebar-submenu-item-with-nested:hover .sidebar-nested-submenu {
+    transform: translateX(5px) scale(1);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* ── 3. Responsive Accordion Stack for Mobile ── */
+@media (max-width: 768px) {
+    .nav-dropdown-wrapper {
+        width: 100%;
+    }
+    
+    .nav-dropdown,
+    .nav-nested-dropdown,
+    .sidebar-submenu,
+    .sidebar-nested-submenu {
+        position: static !important;
+        transform: none !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: none; /* hidden by default, toggles stacked list on hover/simulate */
+        box-shadow: none !important;
+        border: none !important;
+        border-left: 2px solid rgba(59, 130, 246, 0.2) !important;
+        margin-left: 1.5rem !important;
+        padding: 0.25rem 0 !important;
+        pointer-events: auto !important;
+        background: transparent !important;
+    }
+
+    .nav-dropdown-wrapper:hover .nav-dropdown,
+    .nav-dropdown-item-with-nested:hover .nav-nested-dropdown,
+    .sidebar-item-with-submenu:hover .sidebar-submenu,
+    .sidebar-submenu-item-with-nested:hover .sidebar-nested-submenu {
+        display: block !important;
+    }
+}

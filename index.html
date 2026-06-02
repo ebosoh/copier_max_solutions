@@ -55,6 +55,29 @@
             <nav class="desktop-nav hidden-mobile">
                 <a href="#home">Home</a>
                 <a href="#about">About Us</a>
+                <!-- Premium Dropdown for Toners -->
+                <div class="nav-dropdown-wrapper">
+                    <a href="#shop" class="dropdown-trigger" onclick="App.handleSearch('Toners')">Toners <i class="fas fa-chevron-down dropdown-trigger-icon"></i></a>
+                    <ul class="nav-dropdown">
+                        <li class="nav-dropdown-item-with-nested">
+                            <a href="#shop" onclick="App.handleSearch('Kyocera Toners')">Kyocera Toners <i class="fas fa-chevron-right nested-trigger-icon"></i></a>
+                            <ul class="nav-nested-dropdown">
+                                <li><a href="#shop" onclick="App.handleSearch('Kyocera Colored Toners')">Colored Toners</a></li>
+                                <li><a href="#shop" onclick="App.handleSearch('Kyocera B/W Toners')">B/W Toners</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#shop" onclick="App.handleSearch('Konica Minolta Biz Hub Toners')">Konica Minolta Biz Hub Toners</a></li>
+                        <li class="nav-dropdown-item-with-nested">
+                            <a href="#shop" onclick="App.handleSearch('Ricoh Toners')">Ricoh Aficioh Toners <i class="fas fa-chevron-right nested-trigger-icon"></i></a>
+                            <ul class="nav-nested-dropdown">
+                                <li><a href="#shop" onclick="App.handleSearch('Ricoh Colored Toners')">Colored Toners</a></li>
+                                <li><a href="#shop" onclick="App.handleSearch('Ricoh B/W Toners')">B/W Toners</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#shop" onclick="App.handleSearch('Epson Inks')">Epson Inks</a></li>
+                        <li><a href="#shop" onclick="App.handleSearch('HP toner Cartridges')">HP Toner Cartridges</a></li>
+                    </ul>
+                </div>
                 <a href="#shop">Shop</a>
                 <a href="#contact">Contacts</a>
                 <a href="#faqs">FAQs</a>
@@ -138,7 +161,29 @@
                     <li><a href="#shop" onclick="App.handleSearch('Drum units')">Drum units</a></li>
                     <li><a href="#shop" onclick="App.handleSearch('Kyocera B/W A4 Printers')">Kyocera B/W A4 Printers</a></li>
                     <li><a href="#shop" onclick="App.handleSearch('Toner Refills')">Toner Refills</a></li>
-                    <li><a href="#shop" onclick="App.handleSearch('Toners')">Toners</a></li>
+                    <li class="sidebar-item-with-submenu">
+                        <a href="#shop" onclick="App.handleSearch('Toners')">Toners <i class="fas fa-chevron-right submenu-trigger-icon"></i></a>
+                        <!-- Submenu Flyout -->
+                        <ul class="sidebar-submenu">
+                            <li class="sidebar-submenu-item-with-nested">
+                                <a href="#shop" onclick="App.handleSearch('Kyocera Toners')">Kyocera Toners <i class="fas fa-chevron-right nested-trigger-icon"></i></a>
+                                <ul class="sidebar-nested-submenu">
+                                    <li><a href="#shop" onclick="App.handleSearch('Kyocera Colored Toners')">Colored Toners</a></li>
+                                    <li><a href="#shop" onclick="App.handleSearch('Kyocera B/W Toners')">B/W Toners</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="#shop" onclick="App.handleSearch('Konica Minolta Biz Hub Toners')">Konica Minolta Biz Hub Toners</a></li>
+                            <li class="sidebar-submenu-item-with-nested">
+                                <a href="#shop" onclick="App.handleSearch('Ricoh Toners')">Ricoh Aficioh Toners <i class="fas fa-chevron-right nested-trigger-icon"></i></a>
+                                <ul class="sidebar-nested-submenu">
+                                    <li><a href="#shop" onclick="App.handleSearch('Ricoh Colored Toners')">Colored Toners</a></li>
+                                    <li><a href="#shop" onclick="App.handleSearch('Ricoh B/W Toners')">B/W Toners</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="#shop" onclick="App.handleSearch('Epson Inks')">Epson Inks</a></li>
+                            <li><a href="#shop" onclick="App.handleSearch('HP toner Cartridges')">HP Toner Cartridges</a></li>
+                        </ul>
+                    </li>
                     <li><a href="#shop" onclick="App.handleSearch('Accessories')">Accessories</a></li>
                     <li><a href="#shop" onclick="App.handleSearch('Brand New Copiers')">Brand New Copiers</a></li>
                     <li><a href="#shop" onclick="App.handleSearch('Laptops & Computers')">Computers & Laptops</a></li>
