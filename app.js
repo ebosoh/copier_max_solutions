@@ -459,16 +459,10 @@ class App {
         if (!grid) return;
 
         const categories = [
-            { name: "Refurbished Copiers", defaultImage: "commercial-copier.png" },
-            { name: "Drum units", defaultImage: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300&auto=format&fit=crop&q=60" },
-            { name: "Kyocera B/W A4 Printers", defaultImage: "kyocera-new.png" },
-            { name: "Toner Refills", defaultImage: "https://images.unsplash.com/photo-1558655146-d09347e92766?w=300&auto=format&fit=crop&q=60" },
-            { name: "Toners", defaultImage: "https://images.unsplash.com/photo-1544256718-3bcf237f3974?w=300&auto=format&fit=crop&q=60" },
-            { name: "Accessories", defaultImage: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=300&auto=format&fit=crop&q=60" },
-            { name: "Brand New Copiers", defaultImage: "kyocera-new.png" },
-            { name: "Laptops & Computers", defaultImage: "https://images.unsplash.com/photo-1496181130204-755241544e35?w=300&auto=format&fit=crop&q=60" },
-            { name: "Spare Parts", defaultImage: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=300&auto=format&fit=crop&q=60" },
-            { name: "Office Printers", defaultImage: "https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=300&auto=format&fit=crop&q=60" }
+            { name: "Multifunctional Photocopiers and Printers", defaultImage: "commercial-copier.png" },
+            { name: "Computers & Laptops", defaultImage: "https://images.unsplash.com/photo-1496181130204-755241544e35?w=300&auto=format&fit=crop&q=60" },
+            { name: "Toner Cartridges & Refills", defaultImage: "https://images.unsplash.com/photo-1544256718-3bcf237f3974?w=300&auto=format&fit=crop&q=60" },
+            { name: "Photocopy Spareparts", defaultImage: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=300&auto=format&fit=crop&q=60" }
         ];
 
         this.currentCategoryPage = page;
@@ -484,9 +478,17 @@ class App {
         const endIndex = startIndex + limit;
         const displayCategories = categories.slice(startIndex, endIndex);
 
+        const subCategoriesMap = {
+            "Multifunctional Photocopiers and Printers": ["Refurbished Copiers", "Brand New Copiers", "Kyocera B/W A4 Printers", "Office Printers"],
+            "Computers & Laptops": ["Laptops & Computers"],
+            "Toner Cartridges & Refills": ["Toners", "Toner Refills", "Accessories"],
+            "Photocopy Spareparts": ["Spare Parts", "Drum units"]
+        };
+
         grid.innerHTML = displayCategories.map(cat => {
-            // Find a product in this category to get a real image from the Google Sheet
-            const productInCat = this.products.find(p => p.category === cat.name);
+            // Find a product in the mapped sub-categories to get a real image from the Google Sheet
+            const subCats = subCategoriesMap[cat.name] || [];
+            const productInCat = this.products.find(p => subCats.includes(p.category));
             let img = cat.defaultImage;
             if (productInCat && productInCat.images) {
                 const firstImg = productInCat.images.split(',')[0];
@@ -496,7 +498,7 @@ class App {
             }
 
             return `
-                <div class="category-card" onclick="window.App.handleSearch('${cat.name}'); document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });" style="cursor:pointer;">
+                <div class="category-card" onclick="window.App.handleMacroCategoryClick('${cat.name.replace(/'/g, "\\'")}')" style="cursor:pointer;">
                     <div class="category-image-wrapper">
                         <img src="${img}" alt="${cat.name}" class="category-img">
                     </div>
@@ -806,6 +808,27 @@ class App {
         }
     }
 
+    handleMacroCategoryClick(macroName) {
+        const mapping = {
+            "Multifunctional Photocopiers and Printers": ["Refurbished Copiers", "Brand New Copiers", "Kyocera B/W A4 Printers", "Office Printers"],
+            "Computers & Laptops": ["Laptops & Computers"],
+            "Toner Cartridges & Refills": ["Toners", "Toner Refills", "Accessories"],
+            "Photocopy Spareparts": ["Spare Parts", "Drum units"]
+        };
+
+        const subCats = mapping[macroName] || [];
+
+        // Deactivate all pills
+        document.querySelectorAll('.category-pill').forEach(pill => pill.classList.remove('active'));
+
+        const filtered = this.products.filter(p => subCats.includes(p.category));
+        this.renderProducts(filtered);
+
+        // Scroll smoothly to shop section
+        const shop = document.getElementById('shop');
+        if (shop) shop.scrollIntoView({ behavior: 'smooth' });
+    }
+
     toggleFaq(faqId) {
         const item = document.getElementById(faqId);
         if (!item) return;
@@ -831,7 +854,6 @@ class App {
                 { name: "Ricoh MP 2555", price: 65000 }
             ],
             "Kyocera B/W A4 Printers": [
-                { name: "Kyocera ECOSYS P2235dn", price: 18000 },
                 { name: "Kyocera ECOSYS M2040dn", price: 38000 }
             ],
             "Toners": [
@@ -1004,8 +1026,11 @@ class App {
         const indicators = document.querySelector('.carousel-indicators');
         if (!carousel || !indicators) return;
 
-        // Filter active discounts
-        const activeDiscounts = (list || []).filter(d => d.active === "TRUE");
+        // Filter active discounts (support both boolean true and string "TRUE"/"true")
+        const activeDiscounts = (list || []).filter(d => 
+            d.active === true || 
+            String(d.active).toUpperCase() === "TRUE"
+        );
 
         let slidesHtml = '';
         let indicatorsHtml = '';
@@ -1064,6 +1089,16 @@ class App {
 
     handleDiscountClick(type, target) {
         if (type === 'category') {
+            const mapping = {
+                "Multifunctional Photocopiers and Printers": ["Refurbished Copiers", "Brand New Copiers", "Kyocera B/W A4 Printers", "Office Printers"],
+                "Computers & Laptops": ["Laptops & Computers"],
+                "Toner Cartridges & Refills": ["Toners", "Toner Refills", "Accessories"],
+                "Photocopy Spareparts": ["Spare Parts", "Drum units"]
+            };
+            if (mapping[target]) {
+                this.handleMacroCategoryClick(target);
+                return;
+            }
             const pillBtn = Array.from(document.querySelectorAll('.category-pill'))
                                  .find(btn => btn.textContent.trim() === target);
             if (pillBtn) {

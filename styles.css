@@ -549,6 +549,10 @@ h3 {
 }
 
 .hero-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    z-index: 1;
     transition: opacity 1s ease-in-out;
 }
 
