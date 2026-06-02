@@ -78,6 +78,15 @@
                         <li><a href="#shop" onclick="App.handleSearch('HP toner Cartridges')">HP Toner Cartridges</a></li>
                     </ul>
                 </div>
+                <!-- Premium Dropdown for Spare Parts -->
+                <div class="nav-dropdown-wrapper">
+                    <a href="#shop" class="dropdown-trigger" onclick="App.handleSearch('Spare Parts')">Spare Parts <i class="fas fa-chevron-down dropdown-trigger-icon"></i></a>
+                    <ul class="nav-dropdown">
+                        <li><a href="#shop" onclick="App.handleSearch('Kyocera Spare Parts')">Kyocera</a></li>
+                        <li><a href="#shop" onclick="App.handleSearch('Ricoh Spare Parts')">Ricoh Aficioh</a></li>
+                        <li><a href="#shop" onclick="App.handleSearch('Konica Minolta Spare Parts')">Konica Minolta Biz Hub</a></li>
+                    </ul>
+                </div>
                 <a href="#shop">Shop</a>
                 <a href="#contact">Contacts</a>
                 <a href="#faqs">FAQs</a>
@@ -187,7 +196,15 @@
                     <li><a href="#shop" onclick="App.handleSearch('Accessories')">Accessories</a></li>
                     <li><a href="#shop" onclick="App.handleSearch('Brand New Copiers')">Brand New Copiers</a></li>
                     <li><a href="#shop" onclick="App.handleSearch('Laptops & Computers')">Computers & Laptops</a></li>
-                    <li><a href="#shop" onclick="App.handleSearch('Spare Parts')">Spare Parts</a></li>
+                    <li class="sidebar-item-with-submenu">
+                        <a href="#shop" onclick="App.handleSearch('Spare Parts')">Spare Parts <i class="fas fa-chevron-right submenu-trigger-icon"></i></a>
+                        <!-- Submenu Flyout -->
+                        <ul class="sidebar-submenu">
+                            <li><a href="#shop" onclick="App.handleSearch('Kyocera Spare Parts')">Kyocera</a></li>
+                            <li><a href="#shop" onclick="App.handleSearch('Ricoh Spare Parts')">Ricoh Aficioh</a></li>
+                            <li><a href="#shop" onclick="App.handleSearch('Konica Minolta Spare Parts')">Konica Minolta Biz Hub</a></li>
+                        </ul>
+                    </li>
                     <li><a href="#shop" onclick="App.handleSearch('Office Printers')">Office Printers</a></li>
                 </ul>
             </aside>
