@@ -22,6 +22,8 @@ class App {
 
         // Fetch Data
         await this.loadProducts();
+        this.renderCategoryPills();
+        this.updateQuoteModels("Refurbished Copiers");
     }
 
     bindEvents() {
@@ -195,7 +197,7 @@ class App {
         // Disable Spy on Product Page
         if (window.location.pathname.includes('product.html')) return;
 
-        const sections = ['home', 'shop', 'services', 'contact'];
+        const sections = ['home', 'about', 'shop', 'contact', 'faqs', 'service-request', 'quote-request'];
         let current = '';
 
         // Find the section currently in view
@@ -758,6 +760,174 @@ class App {
 
     changeMainImage(imgUrl) {
         document.getElementById('modal-main-img').src = imgUrl;
+    }
+
+    renderCategoryPills() {
+        const container = document.getElementById('category-pills-bar');
+        if (!container) return;
+
+        const categories = [
+            "All Products",
+            "Refurbished Copiers",
+            "Drum units",
+            "Kyocera B/W A4 Printers",
+            "Toner Refills",
+            "Toners",
+            "Accessories",
+            "Brand New Copiers",
+            "Laptops & Computers",
+            "Spare Parts",
+            "Office Printers"
+        ];
+
+        container.innerHTML = categories.map(cat => {
+            const isActive = cat === "All Products" ? "active" : "";
+            return `
+                <button class="category-pill ${isActive}" onclick="window.App.handleCategoryPillClick(this, '${cat}')">
+                    ${cat}
+                </button>
+            `;
+        }).join('');
+    }
+
+    handleCategoryPillClick(element, category) {
+        document.querySelectorAll('.category-pill').forEach(pill => pill.classList.remove('active'));
+        element.classList.add('active');
+
+        if (category === "All Products") {
+            this.renderProducts(this.products);
+        } else {
+            const filtered = this.products.filter(p => p.category === category);
+            this.renderProducts(filtered);
+        }
+    }
+
+    toggleFaq(faqId) {
+        const item = document.getElementById(faqId);
+        if (!item) return;
+        const isActive = item.classList.contains('active');
+        
+        document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('active'));
+        
+        if (!isActive) {
+            item.classList.add('active');
+        }
+    }
+
+    updateQuoteModels(category) {
+        const select = document.getElementById('quote-model-select');
+        if (!select) return;
+        select.innerHTML = '';
+
+        const modelPrices = {
+            "Refurbished Copiers": [
+                { name: "Kyocera TASKalfa 4052ci", price: 125000 },
+                { name: "Kyocera TASKalfa 3511i", price: 55000 },
+                { name: "Ricoh MP C3004", price: 95000 },
+                { name: "Ricoh MP 2555", price: 65000 }
+            ],
+            "Kyocera B/W A4 Printers": [
+                { name: "Kyocera ECOSYS P2235dn", price: 18000 },
+                { name: "Kyocera ECOSYS M2040dn", price: 38000 }
+            ],
+            "Toners": [
+                { name: "Kyocera TK-1170 Black Toner", price: 3500 },
+                { name: "Kyocera TK-8505 CMYK Set", price: 42000 },
+                { name: "Ricoh MP C3003 Black Toner", price: 4500 }
+            ],
+            "Spare Parts": [
+                { name: "Kyocera Drum Unit DK-1150", price: 9500 },
+                { name: "Ricoh Fuser Film", price: 3000 },
+                { name: "Kyocera Feed Roller Set", price: 1500 }
+            ]
+        };
+
+        const models = modelPrices[category] || [];
+        models.forEach(m => {
+            const opt = document.createElement('option');
+            opt.value = m.name;
+            opt.textContent = `${m.name} (KES ${m.price.toLocaleString()})`;
+            opt.setAttribute('data-price', m.price);
+            select.appendChild(opt);
+        });
+
+        this.recalculateQuotePrice();
+    }
+
+    recalculateQuotePrice() {
+        const select = document.getElementById('quote-model-select');
+        if (!select) return;
+
+        const selectedOption = select.options[select.selectedIndex];
+        if (!selectedOption) return;
+
+        const basePrice = parseFloat(selectedOption.getAttribute('data-price')) || 0;
+        
+        const form = document.querySelector('#quote-request form');
+        if (!form) return;
+
+        const qty = parseInt(form.qty.value) || 1;
+        const addon = form.addon.value;
+
+        let addonCost = 0;
+        if (addon === "single") addonCost = 3500;
+        if (addon === "double") addonCost = 7000;
+
+        const total = (basePrice * qty) + addonCost;
+
+        document.getElementById('quote-unit-price').textContent = `KES ${basePrice.toLocaleString()}`;
+        document.getElementById('quote-addon-price').textContent = `KES ${addonCost.toLocaleString()}`;
+        document.getElementById('quote-total-price').textContent = `KES ${total.toLocaleString()}`;
+    }
+
+    submitServiceRequest(form) {
+        const name = form.name.value.trim();
+        const phone = form.phone.value.trim();
+        const brand = form.brand.value;
+        const service = form.service.value;
+        const desc = form.description.value.trim();
+
+        let message = `🔧 *TECHNICAL SERVICE REQUEST*\n\n`;
+        message += `• *Client Name:* ${name}\n`;
+        message += `• *Contact Phone:* ${phone}\n`;
+        message += `• *Device Brand:* ${brand}\n`;
+        message += `• *Service Needed:* ${service}\n\n`;
+        message += `💬 *Issue Description:*\n${desc}\n\n`;
+        message += `Please assign a technician to contact me. Thank you!`;
+
+        const waNumber = "254717520268";
+        const url = `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
+        window.open(url, '_blank');
+        form.reset();
+    }
+
+    submitQuotationRequest(form) {
+        const category = form.category.value;
+        const model = form.model.value;
+        const qty = form.qty.value;
+        const addon = form.addon.value;
+
+        const unitText = document.getElementById('quote-unit-price').textContent;
+        const totalText = document.getElementById('quote-total-price').textContent;
+
+        let addonDetails = "None";
+        if (addon === "single") addonDetails = "1x Extra Replacement Toner";
+        if (addon === "double") addonDetails = "2x Extra Replacement Toners";
+
+        let message = `📋 *PURCHASE QUOTATION REQUEST*\n\n`;
+        message += `• *Category:* ${category}\n`;
+        message += `• *Product Model:* ${model}\n`;
+        message += `• *Unit Price:* ${unitText}\n`;
+        message += `• *Quantity:* ${qty}\n`;
+        message += `• *Add-on Selection:* ${addonDetails}\n\n`;
+        message += `💰 *Estimated Total Quote:* ${totalText}\n\n`;
+        message += `Please confirm stock availability and send an official invoice draft. Thank you!`;
+
+        const waNumber = "254717520268";
+        const url = `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
+        window.open(url, '_blank');
+        form.reset();
+        this.updateQuoteModels(category);
     }
 }
 

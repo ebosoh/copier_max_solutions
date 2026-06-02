@@ -628,6 +628,9 @@
                             </tbody>
                         </table>
                     </div>
+                    <div id="mobile-inventory-cards-container" class="mobile-inventory-cards">
+                        <!-- Populated dynamically on mobile -->
+                    </div>
                     <div id="inventory-pagination" class="pagination"></div>
                 </div>
             </div>
@@ -784,6 +787,37 @@
             }
         });
     </script>
+    <!-- Multi-Step Progress Overlay Dialog -->
+    <div id="progress-modal" class="progress-overlay hidden">
+        <div class="progress-card">
+            <!-- Success checkmark container, hidden until success -->
+            <div id="progress-success-checkmark" class="success-animation-wrapper hidden">
+                <svg class="success-checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                    <circle class="success-checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+                    <path class="success-checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                </svg>
+            </div>
+            <div id="progress-spinner" style="margin-bottom:1.5rem;">
+                <i class="fas fa-spinner fa-spin fa-3x" style="color:var(--accent);"></i>
+            </div>
+            <div class="progress-title" id="progress-title-text">Saving Product...</div>
+            <div class="progress-steps-list">
+                <div class="progress-step-item" id="step-compress">
+                    <div class="progress-step-icon"><i class="fas fa-image"></i></div>
+                    <span>Optimizing & compressing images...</span>
+                </div>
+                <div class="progress-step-item" id="step-sheets">
+                    <div class="progress-step-icon"><i class="fas fa-file-excel"></i></div>
+                    <span>Updating product details in database...</span>
+                </div>
+                <div class="progress-step-item" id="step-github">
+                    <div class="progress-step-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <span>Uploading images to secure storage...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="config.js"></script>
     <script type="module" src="admin.js"></script>
 </body>

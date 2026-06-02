@@ -54,9 +54,12 @@
 
             <nav class="desktop-nav hidden-mobile">
                 <a href="#home">Home</a>
+                <a href="#about">About Us</a>
                 <a href="#shop">Shop</a>
-                <a href="#services">Services</a>
-                <a href="#contact">Contact</a>
+                <a href="#contact">Contacts</a>
+                <a href="#faqs">FAQs</a>
+                <a href="#service-request">Request for Service</a>
+                <a href="#quote-request">Quotation Request</a>
                 <a href="admin.html" class="hidden-desktop admin-mobile-login" style="color: #3B82F6; font-weight: bold; border-top: 1px dashed rgba(0, 0, 0, 0.1); padding-top: 0.75rem; margin-top: 0.5rem;"><i class="fas fa-sign-in-alt" style="margin-right: 0.5rem;"></i> Admin Login</a>
             </nav>
 
@@ -180,6 +183,44 @@
         </div>
     </section>
 
+    <!-- About Us Section -->
+    <section id="about" class="about-section section-padding bg-white" style="border-bottom: 1px solid rgba(15, 23, 42, 0.05);">
+        <div class="container">
+            <div class="about-grid-content">
+                <div class="about-media-wrapper">
+                    <img src="commercial-copier.png" alt="About Copier Maximum Solutions">
+                    <div class="about-stats-badge">
+                        <div class="about-stats-count">10+</div>
+                        <div class="about-stats-label">Years of Trust</div>
+                    </div>
+                </div>
+                <div class="about-text-details">
+                    <h3>WHO WE ARE</h3>
+                    <h2 style="font-size: 2.25rem; margin-bottom: 1.5rem; line-height: 1.2;">Your Ultimate Partner in Office Efficiency & Automation</h2>
+                    <p style="font-size: 1.05rem; line-height: 1.75; color: var(--text-body); margin-bottom: 2rem;">
+                        At Copier Maximum Solutions, we specialize in supplying high-performance refurbished and brand new copiers, multi-functional printers, accessories, and spare parts. Backed by certified technical teams, same-day delivery options across Nairobi, and flexible leasing services, we ensure your business operations never miss a beat.
+                    </p>
+                    <div class="about-features-row">
+                        <div class="about-feature-box">
+                            <div class="about-feature-icon"><i class="fas fa-check-circle"></i></div>
+                            <div>
+                                <h4 style="margin: 0 0 0.25rem 0; font-size: 1rem; font-weight: 700;">Premium Imports</h4>
+                                <p style="font-size: 0.85rem; margin: 0; line-height: 1.5; color: var(--text-light);">Rigorous multi-point testing on all refurbished Kyocera, Ricoh & HP devices.</p>
+                            </div>
+                        </div>
+                        <div class="about-feature-box">
+                            <div class="about-feature-icon"><i class="fas fa-headset"></i></div>
+                            <div>
+                                <h4 style="margin: 0 0 0.25rem 0; font-size: 1rem; font-weight: 700;">24/7 Support SLA</h4>
+                                <p style="font-size: 0.85rem; margin: 0; line-height: 1.5; color: var(--text-light);">On-site certified engineer assistance and remote troubleshooting agreements.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Categories Grid -->
     <section class="categories-section section-padding">
         <div class="container">
@@ -200,6 +241,11 @@
             <div class="flex justify-between items-center mb-8">
                 <h2>Latest Arrivals</h2>
                 <a href="#all-products" class="view-all-link">View All <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+            <!-- Horizontal Scroll Category Pills -->
+            <div id="category-pills-bar" class="category-pills-container">
+                <!-- Dynamically populated via JS -->
             </div>
             <div id="products-container" class="grid-products">
                 <!-- Javascript will populate this -->
@@ -347,6 +393,191 @@
                     <button class="active" onclick="window.App.goToTestimonial(0)"></button>
                     <button onclick="window.App.goToTestimonial(1)"></button>
                     <button onclick="window.App.goToTestimonial(2)"></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQs Section -->
+    <section id="faqs" class="faqs-section section-padding bg-slate" style="border-top: 1px solid rgba(15, 23, 42, 0.05);">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>Frequently Asked Questions</h2>
+                <p>Everything you need to know about our products, support, and services.</p>
+            </div>
+            <div class="faq-container">
+                <div class="faq-item" id="faq-1">
+                    <button class="faq-trigger" onclick="window.App.toggleFaq('faq-1')">
+                        <span>Are your copiers and printers refurbished or brand new?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-content">
+                        <div class="faq-inner">
+                            We stock both! We offer premium imported refurbished copiers and printers (sourced from Europe & USA, meticulously tested and rebuilt to standard by our technicians) as well as factory brand new office machinery from Kyocera, Canon, and HP.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item" id="faq-2">
+                    <button class="faq-trigger" onclick="window.App.toggleFaq('faq-2')">
+                        <span>Do you provide warranties on office automation products?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-content">
+                        <div class="faq-inner">
+                            Yes! All our refurbished copiers come with a comprehensive 1-Year Warranty or a specific click-count guarantee, whichever comes first. Brand new items carry original manufacturer warranties.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item" id="faq-3">
+                    <button class="faq-trigger" onclick="window.App.toggleFaq('faq-3')">
+                        <span>How fast is your delivery service in Kenya?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-content">
+                        <div class="faq-inner">
+                            We offer same-day delivery within Nairobi and environs (usually within 2-4 hours for toners and spares). For orders outside Nairobi, we arrange prompt parcel shipping with trusted regional couriers.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item" id="faq-4">
+                    <button class="faq-trigger" onclick="window.App.toggleFaq('faq-4')">
+                        <span>Can we lease copiers instead of purchasing them outright?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-content">
+                        <div class="faq-inner">
+                            Absolutely. We offer tailored copier leasing contracts and SLA maintenance agreements for schools, law firms, corporations, and hospitals. Contact us for custom lease packages.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item" id="faq-5">
+                    <button class="faq-trigger" onclick="window.App.toggleFaq('faq-5')">
+                        <span>Where is your showroom located?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-content">
+                        <div class="faq-inner">
+                            Our showroom and technical warehouse is located in Nairobi CBD, Kenya. Visit us to see live product demonstrations, sample prints, and consult with our sales agents!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Service & Quotation Center -->
+    <section class="service-hub-section section-padding bg-slate" style="border-top: 1px solid rgba(15, 23, 42, 0.05); border-bottom: 1px solid rgba(15, 23, 42, 0.05);">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>Interactive Service & Quote Center</h2>
+                <p>Request expert technical service or generate an instant purchase quotation.</p>
+            </div>
+            
+            <div class="hub-grid">
+                <!-- Service Request Card -->
+                <div id="service-request" class="hub-card">
+                    <h3><i class="fas fa-tools"></i> Technical Service Form</h3>
+                    <p>Need copier repair, maintenance, or original toner replenishment? Submit your request details below to chat directly with a technician.</p>
+                    
+                    <form class="hub-form" onsubmit="event.preventDefault(); window.App.submitServiceRequest(this);">
+                        <div class="form-row">
+                            <div class="hub-form-group">
+                                <label>Your Name</label>
+                                <input type="text" name="name" required placeholder="John Doe">
+                            </div>
+                            <div class="hub-form-group">
+                                <label>Phone Number</label>
+                                <input type="tel" name="phone" required placeholder="0712345678">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="hub-form-group">
+                                <label>Device Brand</label>
+                                <select name="brand" required>
+                                    <option value="Kyocera">Kyocera</option>
+                                    <option value="Ricoh">Ricoh</option>
+                                    <option value="HP">HP</option>
+                                    <option value="Canon">Canon</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="hub-form-group">
+                                <label>Service Type</label>
+                                <select name="service" required>
+                                    <option value="Hardware Repairs">Hardware Repairs</option>
+                                    <option value="Preventative Maintenance">Preventative Maintenance</option>
+                                    <option value="Toner / Supply Refill">Toner / Supply Refill</option>
+                                    <option value="Lease Inquiry">Lease Inquiry</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="hub-form-group">
+                            <label>Issue Description</label>
+                            <textarea name="description" rows="3" required placeholder="Describe device error codes or symptoms..."></textarea>
+                        </div>
+                        <button type="submit" class="hub-submit-btn btn-wa">
+                            <i class="fab fa-whatsapp"></i> Chat with Technician
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Quotation Request Card -->
+                <div id="quote-request" class="hub-card">
+                    <h3><i class="fas fa-file-invoice-dollar"></i> Instant Quotation Request</h3>
+                    <p>Compile a custom product purchase list. Choose a category, device, quantity, and optional extras to generate an estimated price check.</p>
+                    
+                    <form class="hub-form" onsubmit="event.preventDefault(); window.App.submitQuotationRequest(this);">
+                        <div class="form-row">
+                            <div class="hub-form-group">
+                                <label>Product Category</label>
+                                <select name="category" onchange="window.App.updateQuoteModels(this.value)" required>
+                                    <option value="Refurbished Copiers">Refurbished Copiers</option>
+                                    <option value="Kyocera B/W A4 Printers">Kyocera B/W A4 Printers</option>
+                                    <option value="Toners">Toners</option>
+                                    <option value="Spare Parts">Spare Parts</option>
+                                </select>
+                            </div>
+                            <div class="hub-form-group">
+                                <label>Select Model</label>
+                                <select id="quote-model-select" name="model" onchange="window.App.recalculateQuotePrice()" required>
+                                    <!-- Dynamic options -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="hub-form-group">
+                                <label>Quantity</label>
+                                <input type="number" name="qty" min="1" value="1" oninput="window.App.recalculateQuotePrice()" required>
+                            </div>
+                            <div class="hub-form-group">
+                                <label>Toner Add-on?</label>
+                                <select name="addon" onchange="window.App.recalculateQuotePrice()">
+                                    <option value="none">No additions</option>
+                                    <option value="single">Add 1x Extra Toner</option>
+                                    <option value="double">Add 2x Extra Toners</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="quote-preview-box">
+                            <div class="quote-preview-row">
+                                <span>Unit Base Price:</span>
+                                <span id="quote-unit-price">KES 0</span>
+                            </div>
+                            <div class="quote-preview-row">
+                                <span>Add-on Cost:</span>
+                                <span id="quote-addon-price">KES 0</span>
+                            </div>
+                            <div class="quote-preview-total">
+                                <span>Estimated Total:</span>
+                                <span id="quote-total-price">KES 0</span>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="hub-submit-btn btn-wa" style="margin-top:auto;">
+                            <i class="fab fa-whatsapp"></i> Send Quote Request
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

@@ -5,6 +5,7 @@ class AdminApplication {
         this.isAuthenticated = false;
         this.adminToken = null; // Memory-held password
         this.selectedFiles = [];
+        this.selectedImages = []; // Unified image management list
         this.sheetDb = new GoogleSheetAdapter(CONFIG.sheetID, CONFIG.googleScriptUrl);
         this.inventoryProducts = [];
         this.currentProductPage = 1;
@@ -119,6 +120,7 @@ class AdminApplication {
         const subBtn = document.querySelector('#product-form button[type="submit"]');
         if (subBtn) subBtn.innerHTML = '<i class="fas fa-save"></i> Save Product';
         this.selectedFiles = [];
+        this.selectedImages = []; // Reset unified images
     }
 
     async loadInventory() {
@@ -147,8 +149,10 @@ class AdminApplication {
 
     renderInventoryPage(page) {
         const tbody = document.getElementById('inventory-table-body');
-        if (!tbody) return;
+        const cardsContainer = document.getElementById('mobile-inventory-cards-container');
+        if (!tbody || !cardsContainer) return;
         tbody.innerHTML = '';
+        cardsContainer.innerHTML = '';
         
         this.currentProductPage = page;
         const limit = 10;
@@ -165,20 +169,22 @@ class AdminApplication {
 
         if (displayItems.length === 0) {
             tbody.innerHTML = '<tr><td colspan="5" style="padding: 2rem; text-align: center; color: var(--text); opacity: 0.6;">No products found in inventory.</td></tr>';
+            cardsContainer.innerHTML = '<div style="padding: 2rem; text-align: center; color: var(--text); opacity: 0.6; width:100%;">No products found in inventory.</div>';
             this.renderPaginationControls(totalPages, page);
             return;
         }
 
         displayItems.forEach((p, displayIndex) => {
-            const tr = document.createElement('tr');
-            tr.style.borderBottom = "1px solid var(--border)";
-            let imgSrc = p.images ? p.images.split(',')[0] : 'https://via.placeholder.com/50';
-
             const actualIndex = startIndex + displayIndex;
             const rowId = p.rowId || (actualIndex + 2);
+            let imgSrc = p.images ? p.images.split(',')[0] : 'https://via.placeholder.com/50';
+            if (!imgSrc || imgSrc.length < 5) imgSrc = 'https://via.placeholder.com/50';
 
             const linkHtml = p.product_link ? `<a href="${p.product_link}" target="_blank" title="View Product Link" style="color: var(--accent); margin-left: 0.5rem;"><i class="fas fa-external-link-alt" style="font-size: 0.75rem;"></i></a>` : '';
 
+            // Desktop Table Row
+            const tr = document.createElement('tr');
+            tr.style.borderBottom = "1px solid var(--border)";
             tr.innerHTML = `
                 <td style="padding: 1rem;"><img src="${imgSrc}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"></td>
                 <td style="padding: 1rem; font-weight: 500;">${p.name}${linkHtml}</td>
@@ -190,6 +196,27 @@ class AdminApplication {
                 </td>
             `;
             tbody.appendChild(tr);
+
+            // Mobile Card Row
+            const card = document.createElement('div');
+            card.className = 'mobile-inventory-card';
+            card.innerHTML = `
+                <div class="card-header-main">
+                    <img src="${imgSrc}" class="card-thumb">
+                    <div class="card-meta">
+                        <h4>${p.name}${linkHtml}</h4>
+                        <span class="card-cat-badge">${p.category || 'Uncategorized'}</span>
+                    </div>
+                </div>
+                <div class="card-price-row">
+                    <div class="card-price-label">KES ${parseFloat(p.price || 0).toLocaleString()}</div>
+                    <div class="card-actions-wrapper">
+                        <button class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;" onclick="window.AdminApp.editProduct(${rowId}, ${actualIndex})"><i class="fas fa-edit"></i> Edit</button>
+                        <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--danger); color: white;" onclick="window.AdminApp.deleteProduct(${rowId})"><i class="fas fa-trash"></i> Delete</button>
+                    </div>
+                </div>
+            `;
+            cardsContainer.appendChild(card);
         });
 
         this.renderPaginationControls(totalPages, page);
@@ -252,32 +279,17 @@ class AdminApplication {
         document.getElementById('rowId').value = rowId;
         document.getElementById('existingImages').value = p.images || '';
 
-        // Show existing images in preview
-        const previewArea = document.getElementById('preview-area');
-        previewArea.innerHTML = '';
-        this.selectedFiles = []; // Reset new file selections
+        // Unify images in reorder preview
+        this.selectedImages = [];
         if (p.images) {
-            let existingImagesArray = p.images.split(',').filter(imgUrl => imgUrl);
-            existingImagesArray.forEach(imgUrl => {
-                const div = document.createElement('div');
-                div.className = 'preview-item';
-                div.innerHTML = `
-                    <img src="${imgUrl}">
-                    <div style="position:absolute; bottom:4px; left:4px; background:rgba(0,0,0,0.5); color:white; font-size:0.7rem; padding:2px; border-radius:4px;">Old</div>
-                    <button type="button" class="remove-old-btn" title="Remove image" style="position:absolute; top:4px; right:4px; background:rgba(239,68,68,0.9); color:white; border:none; border-radius:50%; width:24px; height:24px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
-                        <i class="fas fa-times"></i>
-                    </button>
-                `;
-                div.querySelector('.remove-old-btn').addEventListener('click', (evt) => {
-                    evt.preventDefault();
-                    evt.stopPropagation();
-                    existingImagesArray = existingImagesArray.filter(url => url !== imgUrl);
-                    document.getElementById('existingImages').value = existingImagesArray.join(',');
-                    div.remove();
+            p.images.split(',').filter(imgUrl => imgUrl).forEach(imgUrl => {
+                this.selectedImages.push({
+                    type: 'existing',
+                    value: imgUrl
                 });
-                previewArea.appendChild(div);
             });
         }
+        this.renderPreviews();
     }
 
     async deleteProduct(rowId) {
@@ -293,34 +305,17 @@ class AdminApplication {
     }
 
     handleFiles(fileList) {
-        const previewArea = document.getElementById('preview-area');
-        // Clear previous selection (or append, depending on UX. Let's append)
-
         Array.from(fileList).forEach(file => {
             if (!file.type.startsWith('image/')) return;
 
-            this.selectedFiles.push(file);
-
-            // Preview
             const reader = new FileReader();
             reader.onload = (e) => {
-                const div = document.createElement('div');
-                div.className = 'preview-item';
-                div.innerHTML = `
-                    <img src="${e.target.result}">
-                    <button type="button" class="remove-btn" title="Remove image" style="position:absolute; top:4px; right:4px; background:rgba(239,68,68,0.9); color:white; border:none; border-radius:50%; width:24px; height:24px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
-                        <i class="fas fa-times"></i>
-                    </button>
-                `;
-
-                div.querySelector('.remove-btn').addEventListener('click', (evt) => {
-                    evt.preventDefault();
-                    evt.stopPropagation();
-                    this.selectedFiles = this.selectedFiles.filter(f => f !== file);
-                    div.remove();
+                this.selectedImages.push({
+                    type: 'new',
+                    file: file,
+                    value: e.target.result // base64 preview string
                 });
-
-                previewArea.appendChild(div);
+                this.renderPreviews();
             };
             reader.readAsDataURL(file);
         });
@@ -328,29 +323,38 @@ class AdminApplication {
 
     async handleSubmit(e) {
         e.preventDefault();
-        const btn = e.target.querySelector('button[type="submit"]');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-        btn.disabled = true;
+        const formData = new FormData(e.target);
+        const rowId = formData.get('rowId');
+        
+        // Show Multi-Step Progress Overlay Modal
+        this.showProgressModal(rowId ? "Updating Product..." : "Saving Product...");
 
         try {
-            // 1. Convert new images to base64, to send to Apps Script
+            // Step 1: Compress Images locally
+            this.updateProgressStep('compress', 'active');
+            
             const imageFilesData = [];
-            for (const file of this.selectedFiles) {
-                console.log(`Preparing ${file.name}...`);
-                const base64Content = await this.toBase64(file);
+            const newFiles = this.selectedImages.filter(img => img.type === 'new');
+            
+            for (const img of newFiles) {
+                console.log(`Compressing ${img.file.name}...`);
+                const compressedFile = await this.compressImage(img.file);
+                const base64Content = await this.toBase64(compressedFile);
                 imageFilesData.push({
-                    name: file.name,
+                    name: img.file.name,
                     content: base64Content
                 });
             }
+            this.updateProgressStep('compress', 'completed');
 
-            // Existing images (from edit mode)
-            const existingImagesStr = document.getElementById('existingImages').value;
-
-            // 2. Prepare Data
-            const formData = new FormData(e.target);
-            const rowId = formData.get('rowId');
+            // Step 2: Sending metadata to sheets
+            this.updateProgressStep('sheets', 'active');
+            
+            // Collect ordered list of existing image URLs
+            const existingImagesStr = this.selectedImages
+                .filter(img => img.type === 'existing')
+                .map(img => img.value)
+                .join(',');
 
             const productCmd = {
                 action: rowId ? "edit" : "add",
@@ -362,23 +366,27 @@ class AdminApplication {
                 product_link: formData.get('product_link'),
                 description: formData.get('description'),
                 images: existingImagesStr, // Leave base image string intact, Apps Script will append
-                imageFiles: imageFilesData, // Send new files to Google Script
+                imageFiles: imageFilesData, // Send compressed files to Google Script
                 date_added: new Date().toISOString()
             };
 
-            // 3. Send to Google Sheet
-            await this.sendToSheet(productCmd);
+            this.updateProgressStep('sheets', 'completed');
 
-            alert(rowId ? 'Product Updated Successfully!' : 'Product Saved Successfully!');
-            this.resetForm();
-            this.switchTab('list');
+            // Step 3: Secure upload in storage
+            this.updateProgressStep('github', 'active');
+            await this.sendToSheet(productCmd);
+            this.updateProgressStep('github', 'completed');
+
+            // Save Completed -> Confetti animation
+            this.showProgressSuccess(rowId ? 'Product Updated Successfully!' : 'Product Saved Successfully!', () => {
+                this.resetForm();
+                this.switchTab('list');
+            });
 
         } catch (error) {
             console.error(error);
+            this.hideProgressModal();
             alert('Error saving product: ' + error.message);
-        } finally {
-            btn.innerHTML = originalText;
-            btn.disabled = false;
         }
     }
 
@@ -643,6 +651,158 @@ class AdminApplication {
         } catch (e) {
             alert("Failed to delete testimonial.");
         }
+    }
+
+    async compressImage(file) {
+        return new Promise((resolve) => {
+            const maxW = 1200;
+            const maxH = 1200;
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (ev) => {
+                const img = new Image();
+                img.src = ev.target.result;
+                img.onload = () => {
+                    let w = img.width;
+                    let h = img.height;
+                    
+                    if (w > maxW || h > maxH) {
+                        if (w > h) {
+                            h = Math.round((h * maxW) / w);
+                            w = maxW;
+                        } else {
+                            w = Math.round((w * maxH) / h);
+                            h = maxH;
+                        }
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = w;
+                    canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+                    
+                    canvas.toBlob((blob) => {
+                        const compressedFile = new File([blob], file.name, {
+                            type: 'image/jpeg',
+                            lastModified: Date.now()
+                        });
+                        resolve(compressedFile);
+                    }, 'image/jpeg', 0.82); // 82% quality JPEG
+                };
+            };
+        });
+    }
+
+    renderPreviews() {
+        const previewArea = document.getElementById('preview-area');
+        if (!previewArea) return;
+        previewArea.innerHTML = '';
+
+        this.selectedImages.forEach((img, idx) => {
+            const div = document.createElement('div');
+            div.className = `preview-item ${idx === 0 ? 'cover-item' : ''}`;
+            
+            const typeTag = img.type === 'existing' 
+                ? `<div style="position:absolute; bottom:6px; left:6px; background:rgba(15,23,42,0.85); color:white; font-size:0.65rem; padding:2px 6px; border-radius:4px; z-index:3;">Old</div>`
+                : `<div style="position:absolute; bottom:6px; left:6px; background:rgba(16,185,129,0.85); color:white; font-size:0.65rem; padding:2px 6px; border-radius:4px; z-index:3;">New</div>`;
+            
+            const coverTag = idx === 0 ? `<div class="primary-cover-badge">Primary Cover</div>` : '';
+
+            div.innerHTML = `
+                <img src="${img.value}">
+                ${typeTag}
+                ${coverTag}
+                <div class="preview-item-controls">
+                    <button type="button" class="control-btn-item" title="Move Left" onclick="window.AdminApp.moveImage(${idx}, -1)">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <button type="button" class="control-btn-item" title="Move Right" onclick="window.AdminApp.moveImage(${idx}, 1)">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button type="button" class="control-btn-item btn-danger-hover" title="Remove Image" onclick="window.AdminApp.removeImage(${idx})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            previewArea.appendChild(div);
+        });
+        
+        // Update existingImages hidden input with current existing images in order
+        const existingUrls = this.selectedImages
+            .filter(img => img.type === 'existing')
+            .map(img => img.value);
+        document.getElementById('existingImages').value = existingUrls.join(',');
+    }
+
+    moveImage(idx, dir) {
+        const newIdx = idx + dir;
+        if (newIdx < 0 || newIdx >= this.selectedImages.length) return;
+        
+        // Swap elements
+        const temp = this.selectedImages[idx];
+        this.selectedImages[idx] = this.selectedImages[newIdx];
+        this.selectedImages[newIdx] = temp;
+        
+        this.renderPreviews();
+    }
+    
+    removeImage(idx) {
+        this.selectedImages.splice(idx, 1);
+        this.renderPreviews();
+    }
+
+    /* --- Progress Multi-Step Modal Helpers --- */
+    showProgressModal(title) {
+        const modal = document.getElementById('progress-modal');
+        if (!modal) return;
+        
+        document.getElementById('progress-title-text').textContent = title;
+        document.getElementById('progress-spinner').classList.remove('hidden');
+        document.getElementById('progress-success-checkmark').classList.add('hidden');
+        
+        // Reset steps
+        document.querySelectorAll('.progress-step-item').forEach(el => {
+            el.classList.remove('active', 'completed');
+        });
+        
+        modal.classList.remove('hidden');
+    }
+    
+    updateProgressStep(stepId, state) {
+        const item = document.getElementById(`step-${stepId}`);
+        if (!item) return;
+        
+        if (state === 'active') {
+            item.classList.add('active');
+            item.classList.remove('completed');
+        } else if (state === 'completed') {
+            item.classList.add('completed');
+            item.classList.remove('active');
+        }
+    }
+    
+    showProgressSuccess(message, callback) {
+        document.getElementById('progress-spinner').classList.add('hidden');
+        document.getElementById('progress-success-checkmark').classList.remove('hidden');
+        document.getElementById('progress-title-text').textContent = message;
+        
+        // Complete all steps visually
+        document.querySelectorAll('.progress-step-item').forEach(el => {
+            el.classList.add('completed');
+            el.classList.remove('active');
+        });
+        
+        setTimeout(() => {
+            const modal = document.getElementById('progress-modal');
+            if (modal) modal.classList.add('hidden');
+            if (callback) callback();
+        }, 2200);
+    }
+    
+    hideProgressModal() {
+        const modal = document.getElementById('progress-modal');
+        if (modal) modal.classList.add('hidden');
     }
 
     toBase64(file) {
