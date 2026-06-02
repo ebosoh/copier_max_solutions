@@ -17,9 +17,6 @@ class App {
         this.bindEvents();
         this.updateCartBadge(); // Initialize cart badges from local storage
 
-        // Initial Render
-        this.renderCategories(); // Static categories for now
-
         // Fetch Data
         await this.loadProducts();
         this.renderCategoryPills();
@@ -364,7 +361,7 @@ class App {
 
             this.renderProducts(this.products);
             this.updateHero(this.products);
-            this.renderCategories(); // Re-render categories to use real product images once fetched
+            this.renderNewArrivals(); // Render New Arrivals with fetched products
 
             // Load discount offers and dynamic hero carousel
             await this.loadDiscountsAndHero();
@@ -455,102 +452,19 @@ class App {
         this.initTestimonialsCarousel();
     }
 
-    renderCategories(page = 1) {
-        const grid = document.getElementById('categories-grid');
-        if (!grid) return;
+    renderNewArrivals() {
+        const container = document.getElementById('new-arrivals-grid');
+        if (!container) return;
 
-        const categories = [
-            { name: "Multifunctional Photocopiers and Printers", defaultImage: "commercial-copier.png" },
-            { name: "Computers & Laptops", defaultImage: "https://images.unsplash.com/photo-1496181130204-755241544e35?w=300&auto=format&fit=crop&q=60" },
-            { name: "Toner Cartridges & Refills", defaultImage: "https://images.unsplash.com/photo-1544256718-3bcf237f3974?w=300&auto=format&fit=crop&q=60" },
-            { name: "Photocopy Spareparts", defaultImage: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=300&auto=format&fit=crop&q=60" }
-        ];
+        // Take the latest 4 products (which are at the front of this.products)
+        const newArrivals = this.products.slice(0, 4);
 
-        this.currentCategoryPage = page;
-        const limit = 10;
-        const totalItems = categories.length;
-        const totalPages = Math.ceil(totalItems / limit);
-
-        if (page < 1) page = 1;
-        if (page > totalPages && totalPages > 0) page = totalPages;
-        this.currentCategoryPage = page;
-
-        const startIndex = (page - 1) * limit;
-        const endIndex = startIndex + limit;
-        const displayCategories = categories.slice(startIndex, endIndex);
-
-        const subCategoriesMap = {
-            "Multifunctional Photocopiers and Printers": ["Refurbished Copiers", "Brand New Copiers", "Kyocera B/W A4 Printers", "Office Printers"],
-            "Computers & Laptops": ["Laptops & Computers"],
-            "Toner Cartridges & Refills": ["Toners", "Toner Refills", "Accessories"],
-            "Photocopy Spareparts": ["Spare Parts", "Drum units"]
-        };
-
-        grid.innerHTML = displayCategories.map(cat => {
-            // Find a product in the mapped sub-categories to get a real image from the Google Sheet
-            const subCats = subCategoriesMap[cat.name] || [];
-            const productInCat = this.products.find(p => subCats.includes(p.category));
-            let img = cat.defaultImage;
-            if (productInCat && productInCat.images) {
-                const firstImg = productInCat.images.split(',')[0];
-                if (firstImg && firstImg.length > 5) {
-                    img = firstImg;
-                }
-            }
-
-            return `
-                <div class="category-card" onclick="window.App.handleMacroCategoryClick('${cat.name.replace(/'/g, "\\'")}')" style="cursor:pointer;">
-                    <div class="category-image-wrapper">
-                        <img src="${img}" alt="${cat.name}" class="category-img">
-                    </div>
-                    <div class="category-info-overlay">
-                        <h3>${cat.name}</h3>
-                        <span class="explore-btn">Explore <i class="fas fa-arrow-right"></i></span>
-                    </div>
-                </div>
-            `;
-        }).join('');
-
-        this.renderCategoriesPagination(categories, totalPages, page);
-    }
-
-    renderCategoriesPagination(categories, totalPages, currentPage) {
-        const paginationContainer = document.getElementById('categories-pagination');
-        if (!paginationContainer) return;
-
-        if (totalPages <= 1) {
-            paginationContainer.innerHTML = '';
+        if (newArrivals.length === 0) {
+            container.innerHTML = '<p class="text-center py-8 w-full" style="grid-column: 1/-1;">No new arrivals available yet.</p>';
             return;
         }
 
-        let html = '';
-        
-        // Prev button
-        html += `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} data-page="${currentPage - 1}"><i class="fas fa-chevron-left"></i></button>`;
-
-        // Page buttons
-        for (let i = 1; i <= totalPages; i++) {
-            html += `<button class="page-btn ${currentPage === i ? 'active' : ''}" data-page="${i}">${i}</button>`;
-        }
-
-        // Next button
-        html += `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} data-page="${currentPage + 1}"><i class="fas fa-chevron-right"></i></button>`;
-
-        paginationContainer.innerHTML = html;
-
-        // Bind events
-        paginationContainer.querySelectorAll('button').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const targetBtn = e.currentTarget;
-                if (targetBtn.disabled) return;
-                const page = parseInt(targetBtn.getAttribute('data-page'), 10);
-                this.renderCategories(page);
-                
-                // Scroll to categories section
-                const categoriesSec = document.querySelector('.categories-section');
-                if (categoriesSec) categoriesSec.scrollIntoView({ behavior: 'smooth' });
-            });
-        });
+        container.innerHTML = newArrivals.map(p => this.createProductCard(p)).join('');
     }
 
     renderProducts(products, page = 1) {
