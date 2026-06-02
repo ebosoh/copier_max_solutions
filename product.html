@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details | Copier Maximum</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header class="main-header">
+        <div class="container flex justify-between items-center">
+            <a href="index.html" class="logo">
+                <img src="logo.png" alt="Copier Maximum Solutions" class="logo-image">
+            </a>
+
+            <!-- Contact Info Block -->
+            <div class="header-contact-info hidden-mobile flex items-center gap-4 ml-8">
+                <div class="icon-wrapper text-yellow-500 text-4xl">
+                    <i class="fas fa-headset" style="color: #FFD700;"></i>
+                </div>
+                <div class="contact-details text-sm">
+                    <p class="text-gray-500 mb-1">Got Questions ? Call us 24/7!</p>
+                    <div class="phones font-bold text-gray-800 text-lg leading-tight">
+                        <span>+254717520268</span> <span class="text-gray-400 mx-1">|</span>
+                        <span>+254101520268</span> <span class="text-gray-400 mx-1">|</span>
+                        <span>+254725770263</span> <span class="text-gray-400 mx-1">|</span>
+                        <span>+254702454615</span>
+                    </div>
+                    <div class="emails text-sm text-gray-600 mt-1 font-medium">
+                        Email: info@copiermaxsolutions.co.ke <span class="mx-1">|</span> copiermaxsolution@gmail.com
+                    </div>
+                </div>
+            </div>
+            <nav class="desktop-nav hidden-mobile">
+                <a href="index.html">Home</a>
+                <a href="index.html#about">About Us</a>
+                <a href="index.html#shop">Shop</a>
+                <a href="index.html#contact">Contacts</a>
+                <a href="index.html#faqs">FAQs</a>
+                <a href="index.html#service-hub">Quotation/Service Request</a>
+                <a href="admin.html" class="hidden-desktop admin-mobile-login" style="color: #3B82F6; font-weight: bold; border-top: 1px dashed rgba(0, 0, 0, 0.1); padding-top: 0.75rem; margin-top: 0.5rem;"><i class="fas fa-sign-in-alt" style="margin-right: 0.5rem;"></i> Admin Login</a>
+            </nav>
+
+            <a href="https://wa.me/254717520268" target="_blank" class="whatsapp-btn hidden-mobile"
+                title="Chat on WhatsApp">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+            <button class="mobile-menu-toggle hidden-desktop" aria-label="Toggle navigation menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <!-- Actions removed -->
+        </div>
+    </header>
+
+    <main class="container section-padding">
+        <div class="product-detail-grid"
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem;">
+            <!-- Left: Image -->
+            <div class="detail-image-container"
+                style="background: white; padding: 2rem; border-radius: var(--radius-md); border: 1px solid #f1f5f9;">
+                <img id="detail-image" src="" alt="Product"
+                    style="width: 100%; height: auto; max-height: 400px; object-fit: contain;">
+            </div>
+
+            <!-- Right: Info -->
+            <div class="detail-info">
+                <div id="detail-category"
+                    style="color: var(--accent-color); font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px;">
+                    Category</div>
+                <h1 id="detail-name" style="margin-bottom: 1rem; font-size: 2rem;">Loading...</h1>
+
+                <div class="price-block" style="margin-bottom: 2rem;">
+                    <span id="detail-price"
+                        style="font-size: 1.5rem; font-weight: 700; color: var(--primary-color);"></span>
+                    <span id="detail-old-price"
+                        style="text-decoration: line-through; color: var(--text-light); margin-left: 1rem;"></span>
+                </div>
+
+                <div class="description-block" style="margin-bottom: 2rem;">
+                    <h3>Description</h3>
+                    <p id="detail-description" style="color: var(--text-body); line-height: 1.8;">Fetching details...
+                    </p>
+                </div>
+
+                <div class="actions">
+                    <button class="btn btn-primary" onclick="window.App.addToCartWithQty()">
+                        <i class="fas fa-cart-plus" style="margin-right: 0.5rem"></i> Add to Cart
+                    </button>
+                    <a href="https://wa.me/254717520268" class="btn btn-outline"
+                        style="margin-left: 1rem; border-color: #25D366; color: #25D366;">
+                        <i class="fab fa-whatsapp"></i> Buy via WhatsApp
+                    </a>
+                    <a id="detail-product-link" href="" target="_blank" class="btn btn-outline hidden"
+                        style="margin-left: 1rem; border-color: var(--accent-color); color: var(--accent-color); text-align: center; justify-content: center; display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none;">
+                        <i class="fas fa-external-link-alt"></i> View More Details
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="config.js"></script>
+    <script type="module">
+        import { GoogleSheetAdapter } from './google-sheet-adapter.js';
+
+        // Simple logic inline for now, can extract to app.js if needed
+        const urlParams = new URLSearchParams(window.location.search);
+        const productName = urlParams.get('product');
+
+        async function loadProduct() {
+            if (!productName) return;
+
+            const db = new GoogleSheetAdapter(CONFIG.sheetID);
+            // Fetch all (caching strategy would be better in prod)
+            const products = await db.fetchProducts();
+
+            // Find specific product - simple search
+            let product = products.find(p => p.name === productName);
+
+            // Fallback to mock if not found (for demo)
+            if (!product) {
+                const mock = window.App ? window.App.getMockData() : []; // access mock if imported
+                product = mock.find(p => p.name === productName) || {
+                    name: productName,
+                    price: "0",
+                    description: "Product details not found.",
+                    images: "https://via.placeholder.com/400"
+                };
+            }
+
+            render(product);
+        }
+
+        function render(p) {
+            document.getElementById('detail-name').textContent = p.name;
+            document.getElementById('detail-category').textContent = p.category || 'Product';
+            document.getElementById('detail-price').textContent = `KES ${parseFloat(p.price).toLocaleString()}`;
+            if (p.old_price) document.getElementById('detail-old-price').textContent = `KES ${parseFloat(p.old_price).toLocaleString()}`;
+            document.getElementById('detail-description').textContent = p.description || "No description available.";
+
+            let img = p.images ? p.images.split(',')[0] : 'assets/placeholder.png';
+            if (!img || img.length < 5) img = 'https://via.placeholder.com/400';
+            document.getElementById('detail-image').src = img;
+
+            // Product Link Button
+            const linkEl = document.getElementById('detail-product-link');
+            if (linkEl) {
+                if (p.product_link && p.product_link.trim() !== '') {
+                    linkEl.href = p.product_link;
+                    linkEl.classList.remove('hidden');
+                } else {
+                    linkEl.classList.add('hidden');
+                }
+            }
+        }
+
+        loadProduct();
+    </script>
+
+    <!-- Floating Cart Button for Mobile -->
+    <button class="mobile-cart-floating" onclick="window.App.checkoutWhatsApp()" title="View Cart & Checkout">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="badge hidden">0</span>
+    </button>
+
+    <!-- Link App.js for consistent cart & menu behavior across pages -->
+    <script type="module" src="app.js"></script>
+</body>
+
+</html>

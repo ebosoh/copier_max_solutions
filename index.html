@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copier Maximum Solutions | Premium Office Automation & Supplies</title>
+    <meta name="description"
+        content="Best deals on Refurbished Copiers, Kyocera Printers, Toners, Laptops, and Spare Parts in Kenya. Copier Maximum Solutions - Your Partner in Office Efficiency.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Top Bar (Contact & quick links) -->
+    <div class="top-bar">
+        <!-- To be populated via JS or static -->
+    </div>
+
+    <!-- Main Navigation -->
+    <header class="main-header">
+        <div class="container flex justify-between items-center">
+            <a href="index.html" class="logo">
+                <img src="logo.png" alt="Copier Maximum Solutions" class="logo-image">
+            </a>
+
+            <!-- Contact Info Block -->
+            <div class="header-contact-info hidden-mobile flex items-center gap-4 ml-8">
+                <div class="icon-wrapper text-yellow-500 text-4xl">
+                    <i class="fas fa-headset" style="color: #FFD700;"></i>
+                </div>
+                <div class="contact-details text-sm">
+                    <p class="text-gray-500 mb-1">Got Questions ? Call us 24/7!</p>
+                    <div class="phones font-bold text-gray-800 text-lg leading-tight">
+                        <span>+254717520268</span> <span class="text-gray-400 mx-1">|</span>
+                        <span>+254101520268</span> <span class="text-gray-400 mx-1">|</span>
+                        <span>+254725770263</span> <span class="text-gray-400 mx-1">|</span>
+                        <span>+254702454615</span>
+                    </div>
+                    <div class="emails text-sm text-gray-600 mt-1 font-medium">
+                        Email: info@copiermaxsolutions.co.ke <span class="mx-1">|</span> copiermaxsolution@gmail.com
+                    </div>
+                </div>
+            </div>
+
+            <nav class="desktop-nav hidden-mobile">
+                <a href="#home">Home</a>
+                <a href="#about">About Us</a>
+                <a href="#shop">Shop</a>
+                <a href="#contact">Contacts</a>
+                <a href="#faqs">FAQs</a>
+                <a href="#service-hub">Quotation/Service Request</a>
+                <a href="admin.html" class="hidden-desktop admin-mobile-login" style="color: #3B82F6; font-weight: bold; border-top: 1px dashed rgba(0, 0, 0, 0.1); padding-top: 0.75rem; margin-top: 0.5rem;"><i class="fas fa-sign-in-alt" style="margin-right: 0.5rem;"></i> Admin Login</a>
+            </nav>
+
+            <a href="https://wa.me/254717520268" target="_blank" class="whatsapp-btn hidden-mobile"
+                title="Chat on WhatsApp">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+
+            <a href="admin.html" class="btn-login hidden-mobile"
+                id="admin-login-btn" title="Admin Login">
+                <i class="fas fa-sign-in-alt"></i> <span>Login</span>
+            </a>
+
+            <button class="mobile-menu-toggle hidden-desktop" aria-label="Toggle navigation menu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Search Toolbar -->
+    <div class="main-search-toolbar">
+        <div class="container flex items-center gap-4">
+            <!-- Department Label (Aligns with sidebar below) -->
+            <div class="dept-header-label hidden-mobile">
+                Shop By Department <i class="fas fa-chevron-down ml-2 text-sm"></i>
+            </div>
+
+            <!-- Search Widget -->
+            <div class="search-widget flex-1 flex items-center bg-white rounded-full pl-4 pr-1 py-1">
+                <input type="text" id="global-search" class="flex-1 outline-none text-gray-700"
+                    placeholder="Search for Products">
+
+                <div class="category-select-wrapper border-l border-gray-300 px-3 relative cursor-pointer">
+                    <select id="global-category"
+                        class="appearance-none bg-transparent pr-4 outline-none cursor-pointer text-sm font-medium text-gray-600">
+                        <option value="">All Categories</option>
+                        <option value="Refurbished Copiers">Refurbished Copiers</option>
+                        <option value="Drum units">Drum units</option>
+                        <option value="Kyocera B/W A4 Printers">Kyocera B/W A4 Printers</option>
+                        <option value="Toner Refills">Toner Refills</option>
+                        <option value="Toners">Toners</option>
+                        <option value="Accessories">Accessories</option>
+                        <option value="Brand New Copiers">Brand New Copiers</option>
+                        <option value="Laptops & Computers">Laptops & Computers</option>
+                        <option value="Spare Parts">Spare Parts</option>
+                        <option value="Office Printers">Office Printers</option>
+                    </select>
+                </div>
+
+                <button
+                    class="search-btn bg-gray-800 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-700 transition"
+                    onclick="App.triggerSearch()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+
+            <!-- Toolbar Icons -->
+            <div class="toolbar-icons hidden-mobile flex items-center gap-4 text-xl text-gray-800">
+                <a href="#" class="hover:text-white transition" title="Refresh"><i class="fas fa-sync-alt"></i></a>
+                <a href="#" class="hover:text-white transition" title="Wishlist"><i class="far fa-heart"></i></a>
+                <button class="cart-toggle relative hover:text-white transition icon-btn" title="Cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="badge hidden">0</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="container flex gap-8">
+            <!-- Sidebar Categories -->
+            <aside class="hero-sidebar hidden-mobile">
+                <!-- Header removed, now in toolbar -->
+                <ul class="sidebar-list">
+                    <li><a href="#shop" onclick="App.handleSearch('Refurbished Copiers')">Refurbished Copiers</a></li>
+                    <li><a href="#shop" onclick="App.handleSearch('Drum units')">Drum units</a></li>
+                    <li><a href="#shop" onclick="App.handleSearch('Kyocera B/W A4 Printers')">Kyocera B/W A4 Printers</a></li>
+                    <li><a href="#shop" onclick="App.handleSearch('Toner Refills')">Toner Refills</a></li>
+                    <li><a href="#shop" onclick="App.handleSearch('Toners')">Toners</a></li>
+                    <li><a href="#shop" onclick="App.handleSearch('Accessories')">Accessories</a></li>
+                    <li><a href="#shop" onclick="App.handleSearch('Brand New Copiers')">Brand New Copiers</a></li>
+                    <li><a href="#shop" onclick="App.handleSearch('Laptops & Computers')">Laptops & Computers</a></li>
+                    <li><a href="#shop" onclick="App.handleSearch('Spare Parts')">Spare Parts</a></li>
+                    <li><a href="#shop" onclick="App.handleSearch('Office Printers')">Office Printers</a></li>
+                </ul>
+            </aside>
+
+            <!-- Main Hero Content -->
+            <div class="hero-content flex-1 flex items-center justify-between gap-12 relative">
+                <!-- Text Content -->
+                <div class="hero-text z-10 max-w-md">
+                    <h1>Elevate Your Office <br> Productivity</h1>
+                    <p>Premium Refurbished Copiers, Printers & Supplies at Unbeatable Prices.</p>
+                    <a href="#shop" class="btn btn-primary">Shop Now</a>
+                </div>
+
+                <!-- Hero Product Carousel -->
+                <div class="hero-carousel-wrapper h-[400px] relative">
+                    <div
+                        class="hero-carousel relative w-full h-full rounded-2xl overflow-hidden shadow-2xl border-4 border-white/20 backdrop-blur-sm bg-transparent">
+
+                        <div
+                            class="hero-slide active absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-100 bg-white">
+                            <img src="commercial-copier.png" class="w-full h-full object-contain">
+                        </div>
+
+
+
+                    </div>
+
+                    <!-- Indicators -->
+                    <div
+                        class="carousel-indicators absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
+                        <button class="w-3 h-3 rounded-full bg-white opacity-100 transition-all"
+                            onclick="App.goToHeroSlide(0)"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section class="about-section section-padding bg-white" style="border-bottom: 1px solid rgba(15, 23, 42, 0.05);">
+        <div class="container">
+            <div class="about-grid-content">
+                <div class="about-media-wrapper">
+                    <img src="commercial-copier.png" alt="About Copier Maximum Solutions">
+                    <div class="about-stats-badge">
+                        <div class="about-stats-count"><span class="about-counter" data-target="10">0</span>+</div>
+                        <div class="about-stats-label">Years of Trust</div>
+                    </div>
+                </div>
+                <div id="about" class="about-text-details">
+                    <h3>WHO WE ARE</h3>
+                    <h2 style="font-size: 2.25rem; margin-bottom: 1.5rem; line-height: 1.2;">Your Ultimate Partner in Office Efficiency & Automation</h2>
+                    <p style="font-size: 1.05rem; line-height: 1.75; color: var(--text-body); margin-bottom: 2rem;">
+                        At Copier Maximum Solutions, we specialize in supplying high-performance refurbished and brand new copiers, multi-functional printers, accessories, and spare parts. Backed by certified technical teams, same-day delivery options across Nairobi, and flexible leasing services, we ensure your business operations never miss a beat.
+                    </p>
+                    <div class="about-features-row">
+                        <div class="about-feature-box">
+                            <div class="about-feature-icon"><i class="fas fa-check-circle"></i></div>
+                            <div>
+                                <h4 style="margin: 0 0 0.25rem 0; font-size: 1rem; font-weight: 700;">Premium Imports</h4>
+                                <p style="font-size: 0.85rem; margin: 0; line-height: 1.5; color: var(--text-light);">Rigorous multi-point testing on all refurbished Kyocera, Ricoh & HP devices.</p>
+                            </div>
+                        </div>
+                        <div class="about-feature-box">
+                            <div class="about-feature-icon"><i class="fas fa-headset"></i></div>
+                            <div>
+                                <h4 style="margin: 0 0 0.25rem 0; font-size: 1rem; font-weight: 700;">24/7 Support SLA</h4>
+                                <p style="font-size: 0.85rem; margin: 0; line-height: 1.5; color: var(--text-light);">On-site certified engineer assistance and remote troubleshooting agreements.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Grid -->
+    <section class="categories-section section-padding">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>Our Collections</h2>
+                <p>Everything you need for a modern office.</p>
+            </div>
+            <div id="categories-grid" class="grid-categories">
+                <!-- Javascript will populate this -->
+            </div>
+            <div id="categories-pagination" class="pagination flex justify-center mt-8 gap-2"></div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section id="shop" class="products-section section-padding bg-white">
+        <div class="container">
+            <div class="flex justify-between items-center mb-8">
+                <h2>Latest Arrivals</h2>
+                <a href="#all-products" class="view-all-link">View All <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+            <!-- Horizontal Scroll Category Pills -->
+            <div id="category-pills-bar" class="category-pills-container">
+                <!-- Dynamically populated via JS -->
+            </div>
+            <div id="products-container" class="grid-products">
+                <!-- Javascript will populate this -->
+                <div class="loading-state">Loading products...</div>
+            </div>
+            <div id="products-pagination" class="pagination flex justify-center mt-8 gap-2"></div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services-section section-padding">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>Our Premium Services</h2>
+                <p>Beyond sales, we ensure your office runs smoothly.</p>
+            </div>
+            <div class="grid-services">
+                <div class="service-card">
+                    <i class="fas fa-tools fa-3x" style="color:var(--accent-color)"></i>
+                    <h3>Expert Repairs</h3>
+                    <p>Qualified technicians for Kyocera, Ricoh, and HP devices. We fix it right the first time.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-truck-fast fa-3x" style="color:var(--accent-color)"></i>
+                    <h3>Quick Delivery</h3>
+                    <p>Same-day delivery for toners and spare parts within Nairobi and environs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Brands Section -->
+    <section class="brands-section section-padding">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>Trusted Global Brands</h2>
+                <p>We stock premium office automation products from industry-leading manufacturers.</p>
+            </div>
+            <div class="brands-carousel-container">
+                <div class="brands-track">
+                    <div class="brand-item">
+                        <span class="brand-logo-text hp">HP</span>
+                    </div>
+                    <div class="brand-item">
+                        <span class="brand-logo-text ricoh">Ricoh</span>
+                    </div>
+                    <div class="brand-item">
+                        <span class="brand-logo-text bizhub">Bizhub</span>
+                    </div>
+                    <div class="brand-item">
+                        <span class="brand-logo-text dell">DELL</span>
+                    </div>
+                    <div class="brand-item">
+                        <span class="brand-logo-text kyocera">Kyocera</span>
+                    </div>
+                    <div class="brand-item">
+                        <span class="brand-logo-text canon">Canon</span>
+                    </div>
+                    <!-- Cloned items for seamless continuous marquee looping -->
+                    <div class="brand-item">
+                        <span class="brand-logo-text hp">HP</span>
+                    </div>
+                    <div class="brand-item">
+                        <span class="brand-logo-text ricoh">Ricoh</span>
+                    </div>
+                    <div class="brand-item">
+                        <span class="brand-logo-text bizhub">Bizhub</span>
+                    </div>
+                    <div class="brand-item">
+                        <span class="brand-logo-text dell">DELL</span>
+                    </div>
+                    <div class="brand-item">
+                        <span class="brand-logo-text kyocera">Kyocera</span>
+                    </div>
+                    <div class="brand-item">
+                        <span class="brand-logo-text canon">Canon</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Happy Customers Section -->
+    <section class="testimonials-section section-padding bg-slate">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>Our Happy Customers</h2>
+                <p>Here is what our clients have to say about our premium products and support.</p>
+            </div>
+            
+            <div class="testimonials-carousel-wrapper">
+                <div class="testimonials-carousel">
+                    <!-- Slide 1 -->
+                    <div class="testimonial-slide active">
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <p class="testimonial-text">Copier Maximum Solutions completely transformed our legal firm's workflow. The refurbished Kyocera TASKalfa printer we purchased is blazing fast, cost-effective, and their same-day toner delivery service is unmatched in Nairobi!</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar"><i class="fas fa-user-tie"></i></div>
+                            <div class="author-info">
+                                <h4>David Mutua</h4>
+                                <span>Managing Partner, Mutua & Partners Legal</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 2 -->
+                    <div class="testimonial-slide">
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <p class="testimonial-text">We got 5 high-performance HP laptops and a commercial printer for our startup showroom. Their customer service team went above and beyond to set everything up and configure our network. Superb support!</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar"><i class="fas fa-user-astronaut"></i></div>
+                            <div class="author-info">
+                                <h4>Sarah J. Omondi</h4>
+                                <span>Co-Founder, TechFlow Studios</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3 -->
+                    <div class="testimonial-slide">
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <p class="testimonial-text">Outstanding service! We ordered spare parts for our Ricoh MP C3004. They arrived within 2 hours in Nairobi CBD. The technician they recommended was highly professional and fixed our machine in minutes.</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar"><i class="fas fa-user-gear"></i></div>
+                            <div class="author-info">
+                                <h4>John Ndwiga</h4>
+                                <span>Operations Manager, Grogan Spares Zone</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Controls -->
+                <button class="carousel-control prev" onclick="window.App.prevTestimonial()"><i class="fas fa-chevron-left"></i></button>
+                <button class="carousel-control next" onclick="window.App.nextTestimonial()"><i class="fas fa-chevron-right"></i></button>
+                
+                <!-- Dots -->
+                <div class="testimonials-indicators">
+                    <button class="active" onclick="window.App.goToTestimonial(0)"></button>
+                    <button onclick="window.App.goToTestimonial(1)"></button>
+                    <button onclick="window.App.goToTestimonial(2)"></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQs Section -->
+    <section id="faqs" class="faqs-section section-padding bg-slate" style="border-top: 1px solid rgba(15, 23, 42, 0.05);">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>Frequently Asked Questions</h2>
+                <p>Everything you need to know about our products, support, and services.</p>
+            </div>
+            <div class="faq-container">
+                <div class="faq-item" id="faq-1">
+                    <button class="faq-trigger" onclick="window.App.toggleFaq('faq-1')">
+                        <span>Are your copiers and printers refurbished or brand new?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-content">
+                        <div class="faq-inner">
+                            We stock both! We offer premium imported refurbished copiers and printers (sourced from Europe & USA, meticulously tested and rebuilt to standard by our technicians) as well as factory brand new office machinery from Kyocera, Canon, and HP.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item" id="faq-2">
+                    <button class="faq-trigger" onclick="window.App.toggleFaq('faq-2')">
+                        <span>Do you provide warranties on office automation products?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-content">
+                        <div class="faq-inner">
+                            Yes! All our refurbished copiers come with a comprehensive 1-Year Warranty or a specific click-count guarantee, whichever comes first. Brand new items carry original manufacturer warranties.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item" id="faq-3">
+                    <button class="faq-trigger" onclick="window.App.toggleFaq('faq-3')">
+                        <span>How fast is your delivery service in Kenya?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-content">
+                        <div class="faq-inner">
+                            We offer same-day delivery within Nairobi and environs (usually within 2-4 hours for toners and spares). For orders outside Nairobi, we arrange prompt parcel shipping with trusted regional couriers.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item" id="faq-4">
+                    <button class="faq-trigger" onclick="window.App.toggleFaq('faq-4')">
+                        <span>Can we lease copiers instead of purchasing them outright?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-content">
+                        <div class="faq-inner">
+                            Absolutely. We offer tailored copier leasing contracts and SLA maintenance agreements for schools, law firms, corporations, and hospitals. Contact us for custom lease packages.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item" id="faq-5">
+                    <button class="faq-trigger" onclick="window.App.toggleFaq('faq-5')">
+                        <span>Where is your showroom located?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-content">
+                        <div class="faq-inner">
+                            Our showroom and technical warehouse is located in Nairobi CBD, Kenya. Visit us to see live product demonstrations, sample prints, and consult with our sales agents!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Service & Quotation Center -->
+    <section class="service-hub-section section-padding bg-slate" style="border-top: 1px solid rgba(15, 23, 42, 0.05); border-bottom: 1px solid rgba(15, 23, 42, 0.05);">
+        <div id="service-hub" class="container">
+            <div class="section-header text-center">
+                <h2>Interactive Service & Quote Center</h2>
+                <p>Request expert technical service or generate an instant purchase quotation.</p>
+            </div>
+            
+            <div class="hub-grid">
+                <!-- Service Request Card -->
+                <div id="service-request" class="hub-card">
+                    <h3><i class="fas fa-tools"></i> Technical Service Form</h3>
+                    <p>Need copier repair, maintenance, or original toner replenishment? Submit your request details below to chat directly with a technician.</p>
+                    
+                    <form class="hub-form" onsubmit="event.preventDefault(); window.App.submitServiceRequest(this);">
+                        <div class="form-row">
+                            <div class="hub-form-group">
+                                <label>Your Name</label>
+                                <input type="text" name="name" required placeholder="John Doe">
+                            </div>
+                            <div class="hub-form-group">
+                                <label>Phone Number</label>
+                                <input type="tel" name="phone" required placeholder="0712345678">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="hub-form-group">
+                                <label>Device Brand</label>
+                                <select name="brand" required>
+                                    <option value="Kyocera">Kyocera</option>
+                                    <option value="Ricoh">Ricoh</option>
+                                    <option value="HP">HP</option>
+                                    <option value="Canon">Canon</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="hub-form-group">
+                                <label>Service Type</label>
+                                <select name="service" required>
+                                    <option value="Hardware Repairs">Hardware Repairs</option>
+                                    <option value="Preventative Maintenance">Preventative Maintenance</option>
+                                    <option value="Toner / Supply Refill">Toner / Supply Refill</option>
+                                    <option value="Lease Inquiry">Lease Inquiry</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="hub-form-group">
+                            <label>Issue Description</label>
+                            <textarea name="description" rows="3" required placeholder="Describe device error codes or symptoms..."></textarea>
+                        </div>
+                        <button type="submit" class="hub-submit-btn btn-wa">
+                            <i class="fab fa-whatsapp"></i> Chat with Technician
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Quotation Request Card -->
+                <div id="quote-request" class="hub-card">
+                    <h3><i class="fas fa-file-invoice-dollar"></i> Instant Quotation Request</h3>
+                    <p>Compile a custom product purchase list. Choose a category, device, quantity, and optional extras to generate an estimated price check.</p>
+                    
+                    <form class="hub-form" onsubmit="event.preventDefault(); window.App.submitQuotationRequest(this);">
+                        <div class="form-row">
+                            <div class="hub-form-group">
+                                <label>Product Category</label>
+                                <select name="category" onchange="window.App.updateQuoteModels(this.value)" required>
+                                    <option value="Refurbished Copiers">Refurbished Copiers</option>
+                                    <option value="Kyocera B/W A4 Printers">Kyocera B/W A4 Printers</option>
+                                    <option value="Toners">Toners</option>
+                                    <option value="Spare Parts">Spare Parts</option>
+                                </select>
+                            </div>
+                            <div class="hub-form-group">
+                                <label>Select Model</label>
+                                <select id="quote-model-select" name="model" onchange="window.App.recalculateQuotePrice()" required>
+                                    <!-- Dynamic options -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="hub-form-group">
+                                <label>Quantity</label>
+                                <input type="number" name="qty" min="1" value="1" oninput="window.App.recalculateQuotePrice()" required>
+                            </div>
+                            <div class="hub-form-group">
+                                <label>Toner Add-on?</label>
+                                <select name="addon" onchange="window.App.recalculateQuotePrice()">
+                                    <option value="none">No additions</option>
+                                    <option value="single">Add 1x Extra Toner</option>
+                                    <option value="double">Add 2x Extra Toners</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="quote-preview-box">
+                            <div class="quote-preview-row">
+                                <span>Unit Base Price:</span>
+                                <span id="quote-unit-price">KES 0</span>
+                            </div>
+                            <div class="quote-preview-row">
+                                <span>Add-on Cost:</span>
+                                <span id="quote-addon-price">KES 0</span>
+                            </div>
+                            <div class="quote-preview-total">
+                                <span>Estimated Total:</span>
+                                <span id="quote-total-price">KES 0</span>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="hub-submit-btn btn-wa" style="margin-top:auto;">
+                            <i class="fab fa-whatsapp"></i> Send Quote Request
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section section-padding bg-white">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>Get in Touch</h2>
+                <p>Visit our showroom or speak to a sales agent.</p>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <h3>Contact Information</h3>
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>CBD Showroom, Nairobi, Kenya</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>info@copiermaxsolutions.co.ke</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-phone"></i>
+                        <span>+254717520268 | +254101520268</span>
+                    </div>
+                    <div class="social-links">
+                        <a href="#" target="_blank" aria-label="Facebook"><i
+                                class="fab fa-facebook"></i></a>
+                        <a href="https://x.com/CopiermaxSln" target="_blank" aria-label="X"><i class="fab fa-x-twitter"></i></a>
+                        <a href="#" target="_blank" aria-label="Instagram"><i
+                                class="fab fa-instagram"></i></a>
+                        <a href="https://www.tiktok.com/@copiermaxsolution7?_r=1&_t=ZS-96g93ZkDUwi" target="_blank" aria-label="TikTok"><i
+                                class="fab fa-tiktok"></i></a>
+                        <a href="#" target="_blank" aria-label="YouTube"><i
+                                class="fab fa-youtube"></i></a>
+                        <a href="#" target="_blank" aria-label="LinkedIn"><i
+                                class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="contact-form-wrapper">
+                    <form onsubmit="event.preventDefault(); alert('Message sent! We will contact you shortly.');">
+                        <div class="form-group">
+                            <input type="text" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea rows="5" placeholder="How can we help you?" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3>Copier Maximum Solutions</h3>
+                    <p>Your trusted partner for office automation solutions.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Shop</h4>
+                    <ul>
+                        <li><a href="#">Copiers</a></li>
+                        <li><a href="#">Printers</a></li>
+                        <li><a href="#">Toners</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-phone"></i> +254717520268 | +254101520268</p>
+                    <p class="text-sm mt-1 text-gray-400">+254725770263 | +254702454615</p>
+                    <p><i class="fas fa-envelope"></i> info@copiermaxsolutions.co.ke</p>
+                    <p class="text-sm mt-1 text-gray-400">copiermaxsolution@gmail.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom text-center">
+                <p>&copy; 2026 Copier Maximum Solutions. All rights reserved.</p>
+                <p style="margin-top: 0.5rem; color: #A8293B; font-size: 0.9rem;">
+                    Powered by <a href="https://www.techbrain.africa" target="_blank" style="color: #A8293B; text-decoration: none; font-weight: bold;">TechBrain</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Product Modal -->
+    <div id="product-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <button class="modal-close-btn" onclick="App.closeProductModal()">&times;</button>
+            <div class="modal-body">
+                <div class="modal-gallery">
+                    <div class="main-img-wrapper">
+                        <img id="modal-main-img" src="" alt="Product">
+                    </div>
+                    <div id="modal-thumbnails" class="thumbnail-list"></div>
+                </div>
+                <div class="modal-info">
+                    <h2 id="modal-title"></h2>
+                    <div id="modal-price" class="product-price"></div>
+                    <div class="modal-desc-container">
+                        <h3>Specifications</h3>
+                        <div id="modal-description" class="modal-desc"></div>
+                    </div>
+                    <div class="modal-actions">
+                        <a id="modal-product-link" href="" target="_blank" class="btn btn-outline hidden"
+                            style="width: 100%; margin-bottom: 1rem; border-color: var(--accent-color); color: var(--accent-color); text-align: center; justify-content: center; display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none;">
+                            <i class="fas fa-external-link-alt"></i> View More Details
+                        </a>
+                        <button id="modal-add-cart-btn" class="btn btn-primary"
+                            style="width: 100%; margin-bottom: 1rem;">
+                            <i class="fas fa-shopping-cart" style="margin-right: 0.5rem;"></i> Add to Cart
+                        </button>
+                        <button class="btn btn-outline cart-toggle"
+                            style="width: 100%; background-color:#25D366; color:white; border:none;"
+                            onclick="App.checkoutWhatsApp()">
+                            <i class="fab fa-whatsapp" style="margin-right: 0.5rem;"></i> Checkout via WhatsApp
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Cart Button for Mobile -->
+    <button class="mobile-cart-floating" onclick="window.App.checkoutWhatsApp()" title="View Cart & Checkout">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="badge hidden">0</span>
+    </button>
+
+    <!-- Scripts -->
+    <script src="config.js"></script> <!-- Config for URLs/Keys -->
+    <script type="module" src="app.js"></script>
+</body>
+
+</html>
