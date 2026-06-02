@@ -54,6 +54,31 @@
 }
 
 /* Reset & Base */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Core Section Scroll-Margin-Top offsets for sticky header alignment */
+#about,
+.products-section,
+.services-section,
+.faqs-section,
+#service-hub,
+.contact-section {
+    scroll-margin-top: 290px; /* Aligns perfectly below the frozen header and yellow toolbar on desktop */
+}
+
+@media (max-width: 768px) {
+    #about,
+    .products-section,
+    .services-section,
+    .faqs-section,
+    #service-hub,
+    .contact-section {
+        scroll-margin-top: 210px; /* Aligns perfectly below the mobile sticky bars */
+    }
+}
+
 * {
     margin: 0;
     padding: 0;
