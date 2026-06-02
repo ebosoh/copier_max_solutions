@@ -365,6 +365,9 @@ class App {
             this.updateHero(this.products);
             this.renderCategories(); // Re-render categories to use real product images once fetched
 
+            // Load discount offers and dynamic hero carousel
+            await this.loadDiscountsAndHero();
+
             // Load brand and testimonial settings dynamically
             await this.loadBrandsAndTestimonials();
 
@@ -983,6 +986,98 @@ class App {
         });
 
         counters.forEach(counter => observer.observe(counter));
+    }
+}
+
+    async loadDiscountsAndHero() {
+        try {
+            const discounts = await this.sheetDb.fetchDiscounts();
+            this.renderHeroDiscounts(discounts);
+        } catch (e) {
+            console.error("Failed to load discount offers:", e);
+            this.renderHeroDiscounts([]); // Fallback
+        }
+    }
+
+    renderHeroDiscounts(list) {
+        const carousel = document.querySelector('.hero-carousel');
+        const indicators = document.querySelector('.carousel-indicators');
+        if (!carousel || !indicators) return;
+
+        // Filter active discounts
+        const activeDiscounts = (list || []).filter(d => d.active === "TRUE");
+
+        let slidesHtml = '';
+        let indicatorsHtml = '';
+
+        if (activeDiscounts.length === 0) {
+            // Render Premium Fallback Brand Slide
+            slidesHtml = `
+                <div class="hero-slide active absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-100 bg-white" onclick="document.getElementById('shop').scrollIntoView({ behavior: 'smooth' })" style="cursor:pointer;">
+                    <img src="commercial-copier.png" class="w-full h-full object-contain" alt="Copier Maximum Solutions Premium Office Automations">
+                    <div class="hero-slide-overlay">
+                        <span class="slide-badge">OFFICIAL PARTNER</span>
+                        <h2 class="slide-title">Premium Office Automations</h2>
+                        <p class="slide-desc">Top deals on refurbished Kyocera copiers, printers & toners in Nairobi, Kenya.</p>
+                        <div class="slide-action">Explore Catalog <i class="fas fa-arrow-right"></i></div>
+                    </div>
+                </div>
+            `;
+            indicatorsHtml = `<button class="w-3 h-3 rounded-full bg-white opacity-100 transition-all" onclick="window.App.goToHeroSlide(0)"></button>`;
+        } else {
+            activeDiscounts.forEach((d, idx) => {
+                const activeClass = idx === 0 ? 'active opacity-100' : 'opacity-0';
+                const banner = d.banner_url || 'commercial-copier.png';
+                
+                // Format target parameters to make it dynamic
+                const escapedTargetType = d.target_type;
+                const escapedTargetId = d.target_id.replace(/'/g, "\\'");
+
+                slidesHtml += `
+                    <div class="hero-slide ${activeClass} absolute inset-0 transition-opacity duration-1000 ease-in-out bg-slate-900" 
+                         onclick="window.App.handleDiscountClick('${escapedTargetType}', '${escapedTargetId}')" 
+                         style="cursor:pointer;">
+                        <img src="${banner}" class="w-full h-full object-cover" alt="${d.title}" style="filter: brightness(0.65); width: 100%; height: 100%;">
+                        <div class="hero-slide-overlay">
+                            <span class="slide-badge">${d.discount_value}</span>
+                            <h2 class="slide-title">${d.title}</h2>
+                            <p class="slide-desc">${d.description}</p>
+                            <div class="slide-action">Claim Offer <i class="fas fa-arrow-right"></i></div>
+                        </div>
+                    </div>
+                `;
+
+                const indicatorActive = idx === 0 ? 'active bg-white' : 'bg-white/50';
+                indicatorsHtml += `
+                    <button class="w-3 h-3 rounded-full ${indicatorActive} transition-all" 
+                            onclick="window.App.goToHeroSlide(${idx})"></button>
+                `;
+            });
+        }
+
+        carousel.innerHTML = slidesHtml;
+        indicators.innerHTML = indicatorsHtml;
+
+        // Re-initialize carousel slides
+        this.initHeroCarousel();
+    }
+
+    handleDiscountClick(type, target) {
+        if (type === 'category') {
+            const pillBtn = Array.from(document.querySelectorAll('.category-pill'))
+                                 .find(btn => btn.textContent.trim() === target);
+            if (pillBtn) {
+                this.handleCategoryPillClick(pillBtn, target);
+            } else {
+                this.handleSearch(target);
+            }
+            const shopSec = document.getElementById('shop');
+            if (shopSec) shopSec.scrollIntoView({ behavior: 'smooth' });
+        } else if (type === 'product') {
+            this.openProductModal(encodeURIComponent(target));
+        } else if (type === 'link') {
+            window.open(target, '_blank');
+        }
     }
 }
 
