@@ -1084,12 +1084,26 @@ class App {
         } else {
             activeDiscounts.forEach((d, idx) => {
                 const activeClass = idx === 0 ? 'active' : '';
-                const banner = d.banner_url || 'commercial-copier.png';
-                const isProduct = !banner.startsWith('http') || banner.includes('commercial-copier');
-                const slideClass = isProduct ? 'slide-product' : '';
-                const imgStyle = isProduct
-                    ? 'width:100%;height:100%;object-fit:contain;padding:1.5rem;'
-                    : 'width:100%;height:100%;object-fit:cover;filter:brightness(0.6);';
+                
+                // Dynamically resolve target product image if banner_url is empty/missing
+                let banner = d.banner_url;
+                if (!banner || banner.trim() === '') {
+                    if (d.target_type === 'product' && d.target_id) {
+                        const matchedProduct = this.products.find(p => p.name === d.target_id);
+                        if (matchedProduct && matchedProduct.images) {
+                            banner = matchedProduct.images.split(',')[0];
+                        }
+                    }
+                }
+                
+                // Safe fallback to brand-new-copier or logo if still missing
+                if (!banner || banner.trim() === '') {
+                    banner = 'commercial-copier.png';
+                }
+
+                // Treat all slides as high-quality contained product slides
+                const slideClass = 'slide-product';
+                const imgStyle = 'width:100%;height:100%;object-fit:contain;padding:1.5rem;filter:brightness(1);';
                 const escapedTargetType = d.target_type;
                 const escapedTargetId = d.target_id.replace(/'/g, "\\'");
 
