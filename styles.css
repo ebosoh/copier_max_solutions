@@ -527,7 +527,9 @@ h3 {
     position: absolute;
     right: 2%;
     top: 50%;
-    transform: translateY(-50%);
+    /* translateZ(0) forces integer-pixel GPU layer — prevents sub-pixel blur */
+    transform: translateY(-50%) translateZ(0);
+    will-change: transform;
 }
 
 /* Premium Rounded Card */
@@ -535,9 +537,14 @@ h3 {
     border-radius: 24px;
     overflow: hidden;
     box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255,255,255,0.12);
-    background: #0F172A; /* Deep navy — eliminates transparent PNG ghost artifact */
+    background: #0F172A;
     height: 100%;
     position: relative;
+    /* Prevents GPU compositing blur from border-radius + overflow:hidden + transform */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    isolation: isolate;
 }
 
 /* Loading shimmer placeholder shown before JS loads */
@@ -598,19 +605,29 @@ h3 {
     transition: opacity 0.9s ease-in-out;
     background: #0F172A;
     overflow: hidden;
+    /* Prevent compositing blur during opacity transitions */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translateZ(0);
 }
 
 .hero-slide img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;        /* contain by default — never stretch/warp */
     display: block;
+    /* Force crisp pixel rendering — eliminates browser softening/blur */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    transform: translateZ(0);
 }
 
-/* Product image slides (PNG on dark bg) — contain keeps aspect ratio */
+/* Product images — padded so they don't touch carousel edges */
 .hero-slide.slide-product img {
     object-fit: contain;
-    padding: 1.5rem;
+    padding: 1.25rem;
 }
 
 .hero-slide.active {
