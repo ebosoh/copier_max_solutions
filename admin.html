@@ -194,7 +194,92 @@
         .preview-item img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            background: #ffffff;
+        }
+
+        /* Inventory List Table Image Constraints */
+        table td img {
+            width: 50px !important;
+            height: 50px !important;
+            min-width: 50px !important;
+            min-height: 50px !important;
+            object-fit: contain !important;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+
+        /* Mobile Inventory Grid for Admin */
+        .mobile-inventory-cards {
+            display: none;
+            flex-direction: column;
+            gap: 1rem;
+            width: 100%;
+        }
+        .mobile-inventory-card {
+            background: var(--surface, #FFFFFF);
+            border-radius: 12px;
+            padding: 1.25rem;
+            border: 1px solid var(--border, #E2E8F0);
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .card-header-main {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        .card-thumb {
+            width: 60px !important;
+            height: 60px !important;
+            min-width: 60px !important;
+            min-height: 60px !important;
+            object-fit: contain !important;
+            border-radius: 8px;
+            border: 1px solid var(--border, #E2E8F0) !important;
+            background: #ffffff;
+            flex-shrink: 0;
+        }
+        .card-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        .card-meta h4 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary, #0F172A);
+        }
+        .card-cat-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 9999px;
+            background-color: #F1F5F9;
+            color: var(--text, #334155);
+            width: max-content;
+        }
+        .card-price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border, #E2E8F0);
+            padding-top: 0.75rem;
+            margin-top: 0.25rem;
+        }
+        .card-price-label {
+            font-weight: 800;
+            font-size: 1.05rem;
+            color: var(--accent, #3B82F6);
+        }
+        .card-actions-wrapper {
+            display: flex;
+            gap: 0.5rem;
         }
 
         .hidden {
@@ -311,6 +396,13 @@
         }
 
         @media (max-width: 768px) {
+            #view-list table {
+                display: none !important;
+            }
+            .mobile-inventory-cards {
+                display: flex !important;
+            }
+
             .mobile-admin-header {
                 display: flex !important;
                 background: rgba(15, 23, 42, 0.96);

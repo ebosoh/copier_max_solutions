@@ -200,7 +200,7 @@ class AdminApplication {
             const tr = document.createElement('tr');
             tr.style.borderBottom = "1px solid var(--border)";
             tr.innerHTML = `
-                <td style="padding: 1rem;"><img src="${imgSrc}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"></td>
+                <td style="padding: 1rem;"><img src="${imgSrc}" style="width: 50px; height: 50px; object-fit: contain; background: #ffffff; border-radius: 4px; border: 1px solid var(--border);"></td>
                 <td style="padding: 1rem; font-weight: 500;">${p.name}${linkHtml}</td>
                 <td style="padding: 1rem;">${p.category || 'N/A'}</td>
                 <td style="padding: 1rem; font-weight: bold; color: var(--accent);">KES ${parseFloat(p.price || 0).toLocaleString()}</td>
