@@ -373,8 +373,9 @@ h3 {
     background-color: #FFD700;
     padding: 0.5rem 0;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    position: relative;
-    z-index: 10;
+    position: sticky;
+    top: var(--header-height);
+    z-index: 998;
 }
 
 /* Ensure container behaves as flex row */
