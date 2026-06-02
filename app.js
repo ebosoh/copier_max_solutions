@@ -80,6 +80,7 @@ class App {
         this.highlightMenu(); // Run on load
         this.initHeroCarousel(); // Start Hero Carousel
         this.initTestimonialsCarousel(); // Start Testimonials Carousel
+        this.initAboutCounters(); // Start About trust counters animation
     }
 
     /* --- Hero Carousel Logic --- */
@@ -928,6 +929,60 @@ class App {
         window.open(url, '_blank');
         form.reset();
         this.updateQuoteModels(category);
+    }
+
+    initAboutCounters() {
+        const counters = document.querySelectorAll('.about-counter');
+        if (counters.length === 0) return;
+
+        const animateCounter = (counter) => {
+            const target = parseInt(counter.getAttribute('data-target'), 10);
+            const duration = 1500; // 1.5 seconds for counting (medium speed)
+            const startTime = performance.now();
+
+            const update = (now) => {
+                const elapsed = now - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Ease out quad formula for smooth decelerating animation
+                const easeProgress = progress * (2 - progress); 
+                const value = Math.floor(easeProgress * target);
+                
+                counter.textContent = value;
+
+                if (progress < 1) {
+                    counter.animationFrameId = requestAnimationFrame(update);
+                } else {
+                    counter.textContent = target; // Ensure exact final target value
+                }
+            };
+
+            // Cancel any ongoing animation before starting a new one
+            if (counter.animationFrameId) {
+                cancelAnimationFrame(counter.animationFrameId);
+            }
+            counter.animationFrameId = requestAnimationFrame(update);
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const counter = entry.target;
+                if (entry.isIntersecting) {
+                    // Trigger dynamic increment count when scrolled into view
+                    animateCounter(counter);
+                } else {
+                    // Reset to 0 when scrolled out of view, so it restarts when entering again
+                    if (counter.animationFrameId) {
+                        cancelAnimationFrame(counter.animationFrameId);
+                    }
+                    counter.textContent = "0";
+                }
+            });
+        }, {
+            threshold: 0.1 // Triggers when at least 10% of the element is visible
+        });
+
+        counters.forEach(counter => observer.observe(counter));
     }
 }
 
