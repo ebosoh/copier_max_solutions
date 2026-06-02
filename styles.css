@@ -2489,6 +2489,129 @@ h3 {
     }
 }
 
+@media (max-width: 768px) {
+    /* ── Hub Section ── */
+    .service-hub-section {
+        padding: 2rem 0 !important;
+    }
+
+    .hub-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.25rem !important;
+        padding: 0 0.25rem;
+    }
+
+    /* ── Hub Card ── */
+    .hub-card {
+        padding: 1.5rem 1.25rem !important;
+        border-radius: 16px !important;
+        height: auto !important;
+        box-shadow: 0 2px 12px rgba(15,23,42,0.07) !important;
+    }
+
+    .hub-card h3 {
+        font-size: 1.2rem !important;
+        gap: 0.5rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    .hub-card h3 i {
+        font-size: 1.1rem !important;
+    }
+
+    .hub-card > p {
+        font-size: 0.88rem !important;
+        margin-bottom: 1.25rem !important;
+        line-height: 1.5 !important;
+    }
+
+    /* ── Form Layout: stack 2-col rows to single column ── */
+    .form-row {
+        grid-template-columns: 1fr !important;
+        gap: 0.85rem !important;
+    }
+
+    .hub-form {
+        gap: 0.85rem !important;
+    }
+
+    /* ── Input / Select / Textarea ── */
+    .hub-form-group label {
+        font-size: 0.82rem !important;
+        font-weight: 600 !important;
+        color: var(--text-body) !important;
+        margin-bottom: 0.25rem !important;
+    }
+
+    .hub-form-group input,
+    .hub-form-group select,
+    .hub-form-group textarea {
+        padding: 0.9rem 1rem !important;
+        font-size: 1rem !important;           /* Prevents iOS auto-zoom (must be ≥16px on iOS) */
+        min-height: 52px !important;          /* Touch-friendly target */
+        border-radius: 10px !important;
+        border-color: #CBD5E1 !important;
+        -webkit-tap-highlight-color: transparent;
+        -webkit-appearance: none;             /* Removes iOS default styling */
+        appearance: none;
+    }
+
+    .hub-form-group select {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748B' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        padding-right: 2.5rem !important;
+    }
+
+    .hub-form-group input:focus,
+    .hub-form-group select:focus,
+    .hub-form-group textarea:focus {
+        border-color: var(--accent-color) !important;
+        box-shadow: 0 0 0 3px rgba(59,130,246,0.12) !important;
+        outline: none !important;
+    }
+
+    .hub-form-group textarea {
+        min-height: 100px !important;
+        resize: vertical;
+    }
+
+    /* ── Quote Preview Box ── */
+    .quote-preview-box {
+        padding: 1rem !important;
+        margin-top: 1rem !important;
+        border-radius: 10px !important;
+        font-size: 0.92rem !important;
+    }
+
+    .quote-preview-row {
+        font-size: 0.9rem !important;
+        padding: 0.15rem 0 !important;
+    }
+
+    .quote-preview-total {
+        font-size: 1.05rem !important;
+        padding-top: 0.6rem !important;
+        margin-top: 0.4rem !important;
+    }
+
+    /* ── Submit Buttons ── */
+    .hub-submit-btn {
+        padding: 1rem 1.25rem !important;
+        font-size: 1rem !important;
+        min-height: 54px !important;
+        border-radius: 12px !important;
+        width: 100% !important;
+        margin-top: 0.5rem !important;
+        letter-spacing: 0.01em;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .hub-submit-btn i {
+        font-size: 1.15rem !important;
+    }
+}
+
 /* Multi-Step Upload Progress Modal */
 .progress-overlay {
     position: fixed;
