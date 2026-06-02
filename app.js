@@ -553,6 +553,12 @@ class App {
     }
 
     renderProducts(products, page = 1) {
+        // When showing ALL products (full unfiltered list), use the grouped layout
+        if (products === this.products) {
+            this.renderGroupedProducts(products);
+            return;
+        }
+
         const container = document.getElementById('products-container');
         if (!container) return;
 
@@ -577,6 +583,72 @@ class App {
 
         container.innerHTML = displayItems.map(p => this.createProductCard(p)).join('');
         this.renderProductsPagination(products, totalPages, page);
+    }
+
+    renderGroupedProducts(products) {
+        const container = document.getElementById('products-container');
+        if (!container) return;
+
+        // Clear pagination — grouped view shows everything
+        const paginationContainer = document.getElementById('products-pagination');
+        if (paginationContainer) paginationContainer.innerHTML = '';
+
+        const macroGroups = [
+            {
+                label: "Multifunctional Photocopiers and Printers",
+                subLabel: "Refurbished & Brand New Copiers, Kyocera Printers",
+                icon: "fas fa-print",
+                subCats: ["Refurbished Copiers", "Brand New Copiers", "Kyocera B/W A4 Printers", "Office Printers"]
+            },
+            {
+                label: "Computers & Laptops",
+                subLabel: "Laptops, Desktops & Computing Accessories",
+                icon: "fas fa-laptop",
+                subCats: ["Laptops & Computers"]
+            },
+            {
+                label: "Toner Cartridges & Refills",
+                subLabel: "Original & Compatible Toners, Drum Units, Accessories",
+                icon: "fas fa-fill-drip",
+                subCats: ["Toners", "Toner Refills", "Drum units", "Accessories"]
+            },
+            {
+                label: "Spareparts",
+                subLabel: "Genuine Replacement Parts & Consumables",
+                icon: "fas fa-tools",
+                subCats: ["Spare Parts"]
+            }
+        ];
+
+        let html = '';
+        let anyProducts = false;
+
+        macroGroups.forEach(group => {
+            const groupProducts = products.filter(p => group.subCats.includes(p.category));
+            if (groupProducts.length === 0) return;
+            anyProducts = true;
+
+            html += `
+                <div class="product-group-header">
+                    <div class="product-group-header-icon">
+                        <i class="${group.icon}"></i>
+                    </div>
+                    <div class="product-group-header-text">
+                        <h3>${group.label}</h3>
+                        <span>${group.subLabel}</span>
+                    </div>
+                    <span class="product-group-count">${groupProducts.length} item${groupProducts.length !== 1 ? 's' : ''}</span>
+                </div>
+                ${groupProducts.map(p => this.createProductCard(p)).join('')}
+            `;
+        });
+
+        if (!anyProducts) {
+            container.innerHTML = '<p class="text-center py-8 w-full" style="grid-column: 1/-1;">No products available yet.</p>';
+            return;
+        }
+
+        container.innerHTML = html;
     }
 
     renderProductsPagination(products, totalPages, currentPage) {
@@ -801,7 +873,8 @@ class App {
         element.classList.add('active');
 
         if (category === "All Products") {
-            this.renderProducts(this.products);
+            // Use grouped view for all products
+            this.renderGroupedProducts(this.products);
         } else {
             const filtered = this.products.filter(p => p.category === category);
             this.renderProducts(filtered);

@@ -751,6 +751,76 @@ h3 {
     transition: transform var(--transition-fast);
 }
 
+/* Product Group Headers (Collections grouping) */
+.product-group-header {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    margin: 1rem 0 0.5rem;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.06) 0%, rgba(15, 23, 42, 0.02) 100%);
+    border-left: 4px solid var(--accent-color);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.product-group-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(59, 130, 246, 0.05), transparent);
+    pointer-events: none;
+}
+
+.product-group-header-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--accent-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+}
+
+.product-group-header-text {
+    flex: 1;
+}
+
+.product-group-header-text h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+    line-height: 1.2;
+}
+
+.product-group-header-text span {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+.product-group-count {
+    background: var(--accent-color);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    flex-shrink: 0;
+}
+
+/* First group header has no top margin */
+.product-group-header:first-child {
+    margin-top: 0;
+}
+
 /* Product Card */
 .grid-products {
     display: grid;
