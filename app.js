@@ -1009,7 +1009,6 @@ class App {
 
         counters.forEach(counter => observer.observe(counter));
     }
-}
 
     async loadDiscountsAndHero() {
         try {
