@@ -524,6 +524,8 @@ h3 {
     width: 450px;
     /* Slightly larger */
     max-width: 50%;
+    height: 400px;
+    /* Explicit height — Tailwind h-[400px] does NOT work in vanilla CSS */
     position: absolute;
     /* Force positioning */
     right: 2%;
@@ -556,16 +558,41 @@ h3 {
     transition: opacity 1s ease-in-out;
 }
 
+.hero-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
 .hero-slide.active {
     opacity: 1;
     z-index: 10;
 }
 
+.carousel-indicators {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.5rem;
+    z-index: 20;
+}
+
 .carousel-indicators button {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+    border: none;
+    cursor: pointer;
+    padding: 0;
     transition: all 0.3s;
 }
 
 .carousel-indicators button.active {
+    background: white;
     opacity: 1;
     transform: scale(1.2);
 }

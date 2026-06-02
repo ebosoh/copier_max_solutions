@@ -90,10 +90,11 @@ class App {
         this.heroIndicators = document.querySelectorAll('.carousel-indicators button');
 
         if (this.heroSlides.length === 0) return;
-        if (this.heroSlides.length === 1) return; // Don't autoplay if only 1 slide
 
-        // Autoplay
-        this.startHeroCarousel();
+        // Only autoplay if more than 1 slide
+        if (this.heroSlides.length > 1) {
+            this.startHeroCarousel();
+        }
     }
 
     startHeroCarousel() {
@@ -1110,31 +1111,32 @@ class App {
         if (activeDiscounts.length === 0) {
             // Render Premium Fallback Brand Slide
             slidesHtml = `
-                <div class="hero-slide active absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-100 bg-white" onclick="document.getElementById('shop').scrollIntoView({ behavior: 'smooth' })" style="cursor:pointer;">
-                    <img src="commercial-copier.png" class="w-full h-full object-contain" alt="Copier Maximum Solutions Premium Office Automations">
+                <div class="hero-slide active" onclick="document.getElementById('shop').scrollIntoView({ behavior: 'smooth' })" style="cursor:pointer;">
+                    <img src="commercial-copier.png" style="width:100%;height:100%;object-fit:contain;" alt="Copier Maximum Solutions Premium Office Automations">
                     <div class="hero-slide-overlay">
                         <span class="slide-badge">OFFICIAL PARTNER</span>
                         <h2 class="slide-title">Premium Office Automations</h2>
-                        <p class="slide-desc">Top deals on refurbished Kyocera copiers, printers & toners in Nairobi, Kenya.</p>
+                        <p class="slide-desc">Top deals on refurbished Kyocera copiers, printers &amp; toners in Nairobi, Kenya.</p>
                         <div class="slide-action">Explore Catalog <i class="fas fa-arrow-right"></i></div>
                     </div>
                 </div>
             `;
-            indicatorsHtml = `<button class="w-3 h-3 rounded-full bg-white opacity-100 transition-all" onclick="window.App.goToHeroSlide(0)"></button>`;
+            indicatorsHtml = `<button class="active" onclick="window.App.goToHeroSlide(0)"></button>`;
         } else {
             activeDiscounts.forEach((d, idx) => {
-                const activeClass = idx === 0 ? 'active opacity-100' : 'opacity-0';
+                const activeClass = idx === 0 ? 'active' : '';
                 const banner = d.banner_url || 'commercial-copier.png';
+                const imgFit = banner.includes('commercial-copier') ? 'contain' : 'cover';
                 
                 // Format target parameters to make it dynamic
                 const escapedTargetType = d.target_type;
                 const escapedTargetId = d.target_id.replace(/'/g, "\\'");
 
                 slidesHtml += `
-                    <div class="hero-slide ${activeClass} absolute inset-0 transition-opacity duration-1000 ease-in-out bg-slate-900" 
+                    <div class="hero-slide ${activeClass}" 
                          onclick="window.App.handleDiscountClick('${escapedTargetType}', '${escapedTargetId}')" 
                          style="cursor:pointer;">
-                        <img src="${banner}" class="w-full h-full object-cover" alt="${d.title}" style="filter: brightness(0.65); width: 100%; height: 100%;">
+                        <img src="${banner}" style="width:100%;height:100%;object-fit:${imgFit};filter:brightness(0.65);" alt="${d.title}">
                         <div class="hero-slide-overlay">
                             <span class="slide-badge">${d.discount_value}</span>
                             <h2 class="slide-title">${d.title}</h2>
@@ -1144,9 +1146,9 @@ class App {
                     </div>
                 `;
 
-                const indicatorActive = idx === 0 ? 'active bg-white' : 'bg-white/50';
+                const indicatorActive = idx === 0 ? 'active' : '';
                 indicatorsHtml += `
-                    <button class="w-3 h-3 rounded-full ${indicatorActive} transition-all" 
+                    <button class="${indicatorActive}" 
                             onclick="window.App.goToHeroSlide(${idx})"></button>
                 `;
             });
