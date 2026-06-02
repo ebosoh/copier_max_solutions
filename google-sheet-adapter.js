@@ -64,4 +64,11 @@ export class GoogleSheetAdapter {
     async fetchTestimonials() {
         return this.fetchByType('testimonials');
     }
+
+    /**
+     * Fetches dynamic discount offers
+     */
+    async fetchDiscounts() {
+        return this.fetchByType('discounts');
+    }
 }
