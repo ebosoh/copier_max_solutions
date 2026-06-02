@@ -662,24 +662,83 @@
     <footer class="main-footer">
         <div class="container">
             <div class="footer-grid">
+                <!-- Column 1: Brand & Socials -->
                 <div class="footer-col">
-                    <h3>Copier Maximum Solutions</h3>
-                    <p>Your trusted partner for office automation solutions.</p>
+                    <img src="logo.png" alt="Copier Maximum Solutions" style="max-height: 45px; margin-bottom: 1.2rem; filter: brightness(0) invert(1);">
+                    <p style="color: rgba(255, 255, 255, 0.7); line-height: 1.6; font-size: 0.95rem; margin-bottom: 1.5rem;">
+                        Your trusted partner for premium refurbished and brand new office automation equipment, genuine toners, and certified support services.
+                    </p>
+                    <h4 style="margin-bottom: 1rem;">Our Social Links</h4>
+                    <div class="footer-social-icons flex gap-3 text-lg">
+                        <a href="https://facebook.com" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://instagram.com" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="https://youtube.com" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
                 </div>
+
+                <!-- Column 2: Quick Links -->
                 <div class="footer-col">
-                    <h4>Shop</h4>
+                    <h4>Quick Links</h4>
                     <ul>
-                        <li><a href="#">Copiers</a></li>
-                        <li><a href="#">Printers</a></li>
-                        <li><a href="#">Toners</a></li>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#service-hub" onclick="document.getElementById('quote-request').scrollIntoView({behavior: 'smooth'})">Request For Quotation</a></li>
+                        <li><a href="#service-hub" onclick="document.getElementById('service-request').scrollIntoView({behavior: 'smooth'})">Request for Service</a></li>
+                        <li><a href="javascript:void(0)" onclick="window.App.openPolicyModal('privacy')">Privacy Policy</a></li>
+                        <li><a href="javascript:void(0)" onclick="window.App.openPolicyModal('shipping')">Shipping Policy</a></li>
+                        <li><a href="javascript:void(0)" onclick="window.App.openPolicyModal('refund')">Refund & Returns Policy</a></li>
+                        <li><a href="javascript:void(0)" onclick="window.App.openPolicyModal('terms')">Terms & Conditions</a></li>
+                        <li><a href="#contact">Contacts</a></li>
                     </ul>
                 </div>
+
+                <!-- Column 3: Photocopiers & Printers -->
                 <div class="footer-col">
-                    <h4>Contact</h4>
-                    <p><i class="fas fa-phone"></i> +254717520268 | +254101520268</p>
-                    <p class="text-sm mt-1 text-gray-400">+254725770263 | +254702454615</p>
-                    <p><i class="fas fa-envelope"></i> info@copiermaxsolutions.co.ke</p>
-                    <p class="text-sm mt-1 text-gray-400">copiermaxsolution@gmail.com</p>
+                    <h4>Photocopiers & Printers</h4>
+                    <ul>
+                        <li><a href="#shop" onclick="window.App.handleSearch('Konica Minolta')">Konica Minolta Photocopiers</a></li>
+                        <li><a href="#shop" onclick="window.App.handleSearch('Ricoh')">Ricoh Photocopiers</a></li>
+                        <li><a href="#shop" onclick="window.App.handleSearch('Kyocera')">Kyocera Photocopiers</a></li>
+                        <li><a href="#shop" onclick="window.App.handleSearch('Printers')">Printers</a></li>
+                        <li><a href="#shop" onclick="window.App.handleSearch('Brand New Copiers')">New Photocopiers</a></li>
+                        <li><a href="#shop" onclick="window.App.handleSearch('Copy Printers')">Copy Printers</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 4: Toner Cartridges -->
+                <div class="footer-col">
+                    <h4>Toner Cartridges</h4>
+                    <ul>
+                        <li><a href="#shop" onclick="window.App.handleSearch('Kyocera Toners')">Kyocera Toners</a></li>
+                        <li><a href="#shop" onclick="window.App.handleSearch('Ricoh Toners')">Ricoh Toners</a></li>
+                        <li><a href="#shop" onclick="window.App.handleSearch('Konica Minolta')">Konica Minolta Toners</a></li>
+                        <li><a href="#shop" onclick="window.App.handleSearch('HP')">HP Toners</a></li>
+                        <li><a href="#shop" onclick="window.App.handleSearch('Xerox')">Xerox Toners</a></li>
+                        <li><a href="#shop" onclick="window.App.handleSearch('Canon')">Canon Toners</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 5: Spares & Other Consumables -->
+                <div class="footer-col">
+                    <h4>Spares & Consumables</h4>
+                    <ul>
+                        <li><a href="#shop" onclick="window.App.handleSearch('Developer')">Developers</a></li>
+                        <li><a href="#shop" onclick="window.App.handleSearch('Drum Unit')">Drum Units</a></li>
+                        <li><a href="#shop" onclick="window.App.handleSearch('Fuser Unit')">Fuser Units</a></li>
+                        <li><a href="#shop" onclick="window.App.handleSearch('OPC Drum')">OPC Drums</a></li>
+                        <li><a href="#shop" onclick="window.App.handleSearch('Roller')">Rollers</a></li>
+                        <li><a href="#shop" onclick="window.App.handleSearch('Fuser Film')">Fuser Films</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 6: Contact Info -->
+                <div class="footer-col">
+                    <h4>Contact Details</h4>
+                    <p style="margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem; color: rgba(255, 255, 255, 0.7);"><i class="fas fa-headset" style="color: #FFD700;"></i> <span>+254717520268</span></p>
+                    <p style="margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem; color: rgba(255, 255, 255, 0.7);"><i class="fas fa-phone-alt" style="color: #FFD700;"></i> <span>+254101520268</span></p>
+                    <p style="margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem; color: rgba(255, 255, 255, 0.7);"><i class="fas fa-envelope" style="color: #FFD700;"></i> <span style="font-size: 0.85rem; word-break: break-all;">info@copiermaxsolutions.co.ke</span></p>
+                    <p style="margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem; color: rgba(255, 255, 255, 0.7);"><i class="fas fa-map-marker-alt" style="color: #FFD700;"></i> <span>CBD Showroom, Nairobi, Kenya</span></p>
                 </div>
             </div>
             <div class="footer-bottom text-center">
@@ -690,6 +749,17 @@
             </div>
         </div>
     </footer>
+
+    <!-- Policy Modal -->
+    <div id="policy-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 650px;">
+            <button class="modal-close-btn" onclick="App.closePolicyModal()">&times;</button>
+            <div class="modal-body" style="display: block; padding: 2rem 2.5rem;">
+                <h2 id="policy-title" style="margin-bottom: 1.5rem; color: var(--primary-color); font-weight: 700; border-bottom: 2px solid var(--accent-color); padding-bottom: 0.5rem;"></h2>
+                <div id="policy-text" style="max-height: 400px; overflow-y: auto; padding-right: 0.75rem;"></div>
+            </div>
+        </div>
+    </div>
 
     <!-- Product Modal -->
     <div id="product-modal" class="modal-overlay hidden">
